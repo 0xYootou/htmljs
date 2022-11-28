@@ -1,8 +1,10 @@
-
-声明：为了响应国家互联网服务评论先审后发的要求，并且个人论坛无法完成等保认证等服务，今（2022年11月28日）在辖区派出所要求下关闭运行10年的“前端乱炖”技术论坛（https://www.html-js.com），故将代码重新上传 github，仅做留念。
+前端乱炖博客的repo。http://www.html-js.com
 ===
 
-前端乱炖博客的repo。http://www.html-js.com
+> 声明：为了响应国家互联网服务评论先审后发的要求，并且个人论坛无法完成等保认证等服务，今（2022年11月28日）在辖区派出所要求下关闭运行10年的“前端乱炖”技术论坛（https://www.html-js.com），故将代码重新上传 github，仅做留念。
+
+
+
 
 本站代码仅供参考，缺少配置文件在本地不能运行，基于express，rainbow，sequelize，jade，coffeescript，less，moment等技术和框架。
 
