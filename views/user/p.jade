@@ -1,0 +1,398 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    title #{locals.card?card.nick:""} - 花名册 - 前端乱炖
+    |<meta name="description" content="#{locals.card?card.nick:""} 特长：#{locals.card?card.techang:""} 介绍：#{locals.card?card.desc:""}">
+    include ../head
+    script(src='#{assets_head}/js/lazyload.js')
+    script(src='#{assets_head}/js/bootstrap/bootstrap-tooltip.js')
+    script(src='#{assets_head}/js/masonry.js')
+  body#card
+    - locals.pageId=2;
+    include ../header
+    #content.clearfix
+
+        if !locals.card
+          p.alert.alert-warnint 此用户还没有创建名片
+        else
+          .left-info
+
+            .base-info
+              .my_card.mod-white
+                if locals.card
+                  .top.clearfix
+
+                    .head-pic.user
+                      img(src="#{card.head_pic}",width="80",height="80")
+                      if card.sex == '男'
+                        .sex.nan
+                      else
+                        .sex.nv
+                    .nick #{card.nick}
+                    .coin 经验值：#{locals.card_user?card_user.coin:""}
+
+                  hr
+                  .desc #{card.desc}
+                  p.line
+                    if card.city
+                      span.item
+                        span.key 城市
+                        span.value #{card.city}
+                    span.item
+                      span.key 职业
+                      span.value #{card.zhiwei}
+                  .item
+                    if card.blog || card.github || card.weibo
+                      span.key 个人网站：
+                      span.sns
+                        if card.blog
+                          a.blog(href='#{card.blog}', target='_blank',title="博客地址") blog
+                        if card.github
+                          a.github(href='#{card.github}', target='_blank',title="github地址") github
+                        //if card.weibo
+                        //  a.weibo(href='#{card.weibo}', target='_blank',title="微博地址") weibo
+            //- p.actions.clearfix
+            //-   span.item
+            //-     i.icon-heart
+            //-     - var usss = [];
+            //-     if locals.zans
+            //-       each zan in zans
+            //-         if zan&&zan.users
+            //-           - usss.push(zan.users.nick);
+
+            //-     a.zan.tooltip-trigger(data-id="#{card.id}",data-original-title="#{usss.join('，')}") 赞（#{card.zan_count||0}）
+
+            //-   span.item
+            //-     i.icon-message-lock
+            //-     a.tooltip-trigger.kai(data-id="#{card.id}",data-original-title="催促作者开通专栏，对方会收到邮件，一天只会发送一次") 想看他写专栏
+          .right-info.mod-white
+            p.line
+              if locals.user && locals.user.is_admin
+                span.item
+                  span.key 真名
+                  span.value #{card.name}
+              span.item
+                span.key 昵称
+                span.value #{card.nick}
+              span.item
+                span.key 感情状况
+                span.value #{card.is_dan?card.is_dan:"不明"}
+
+
+            p.line
+              span.item
+                span.key 公司
+                span.value #{card.gongsi}
+
+            p.line
+              span.item
+                span.key email
+                if locals.user && locals.user.is_admin
+                  span.value #{card.email}
+                else
+                  span.value #{card.email?card.email.replace(/^.*@/,"****@"):"*********"}
+              span.item
+                span.key QQ
+                if locals.user && locals.user.is_admin
+                  span.value #{card.qq}
+                else
+                  span.value #{card.qq?card.qq.substr(0,4)+"******":"*********"}
+              span.item
+                span.key 手机号
+                if locals.user && locals.user.is_admin
+                  span.value #{card.tel}
+                else
+                  span.value #{card.tel?card.tel.substr(0,4)+"*******":"***********"}
+            p.line
+              span.item
+                span.key 特长
+                span.value #{card.techang}
+            if  card.alipay
+              p.line
+                span.item
+                  span.key 支付宝收款主页
+                  a.value(href="#{card.alipay}") #{card.alipay}
+          .visit-info.module
+            .hd 最近访问（#{locals.card&&card.visit_count||1}）
+            .bd.clearfix
+              div
+                if locals.visitors
+                  each visitor in locals.visitors
+                    div.visitor
+                      a(href="/user/#{visitor.user_id}",title="#{visitor.user_nick}",data-original-title="#{visitor.user_nick}")
+                        img(src="#{visitor.user_headpic}")
+          //- .github-repos.module
+          //-   .hd TA的github项目（共<em></em>个）
+          //-   .bd
+
+          .columns-list.module.my_columns
+            .hd TA的专栏（#{locals.my_columns.length}）
+            .bd
+              if locals.my_columns && my_columns.length
+                each column in my_columns
+                  .column
+                    a.title(href="/article/column/#{column.id}") #{column.name}（#{column.article_count}）
+                    .desc !{column.desc_html?column.desc_html.replace(/<[^>]*>/g,'').replace(/\s/g,'').substr(0,50)+"...":""}
+                    .time 更新时间：#{moment(column.last_article_time*1).fromNow()}
+                    .action
+                      if column.is_rssed
+                        span
+                          i.rss.social
+                          |  已订阅（#{column.rss_count}）
+                      else
+                        a.rss-btn(href="/article/column/#{column.id}/rss")
+                          i.rss.social
+                          |  邮件订阅（#{column.rss_count}）
+              else
+                .noitem TA还没有开通任何专栏，
+                  a.tooltip-trigger.kai(data-id="#{card.id}",data-original-title="催促作者开通专栏，对方会收到邮件，一天只会发送一次") 我想看他写的专栏
+          .his-infos.mod
+
+              .his-info.module.mod
+                a.hd(href="/article/user/#{card.user_id}") TA的专栏文章（#{his_articles_count}）
+                .bd
+                  if locals.his_articles && locals.his_articles.length
+                    ul.article-list
+                      each article,i in his_articles
+                        .item(class="#{article.visit_count<60?'new':''}")
+                          a.title(href="/article/#{article.id}") #{article.title}
+                          .desc
+
+                            a.user(href="/user/#{article.user_id}") #{article.user_nick}
+                            span.time #{moment(article.createdAt).fromNow()}
+                            span.desc-item
+                              span.index 浏览
+                              a.value #{article.visit_count}
+                            span.desc-item
+                              span.index 回答
+                              a.value #{article.comment_count}
+                  else
+                    .noitem 暂无文章，去订阅TA的专栏会触发催促作者写文章哦~~~
+            if locals.his_topics && locals.his_topics.length
+              .his-info.module.mod
+                .hd TA发起的话题（#{his_topics_count}）
+                .bd
+
+                  ul.article-list
+                    each topic,i in his_topics
+                      .item(class="#{topic.visit_count<30?'new':''}")
+                        a.title(href="/topic/#{topic.id}") #{topic.title}
+                        .desc
+                          if topic.last_comment_user_id
+                            | <a class="user" href="/user/#{topic.last_comment_user_id}">#{topic.last_comment_user_nick}</a>
+                          span.time #{moment(topic.last_comment_time).fromNow()}
+                          span.desc-item
+                            span.index 浏览
+                            a.value #{topic.visit_count}
+                          span.desc-item
+                            span.index 跟帖
+                            a.value #{topic.comment_count}
+          .comment.module#comment-module
+            .hd 评论
+            .bd
+              .publish
+                textarea.input-block-level#comment-text(placeholder="有什么要对TA说的？支持markdown语法")
+                .btn.comment-submit#comment-submit 发表评论
+              .comment-list
+                if comments.length
+                  each comment in comments
+                    .comment-item.clearfix
+                      a.headpic.user(href="/user/#{comment.user_id}",data-original-title="#{comment.user_nick}")
+                        img(src="#{comment.user_headpic}",width=70,height=70)
+                      .comment-right
+                        div.con
+                          span.author.vcard.item
+                            a.value.url.fn(rel='author', href='/user/#{comment.user_id}') #{comment.user_nick}：
+                          | !{comment.html}
+                        .time #{moment(comment.createdAt).fromNow()}
+                          a.reply(data-nick="#{comment.user_nick}") 回复
+                else
+                  div 暂无评论
+
+              script#comment-tpl(type="text/template")
+                .comment-item.clearfix
+                  a.headpic
+                    img(src="{{user_headpic}}",width=70,height=70)
+                  .comment-right
+                    div.con
+                      span.author.vcard.item
+                        a.value.url.fn(rel='author', href='/user/{{user_id}}') {{user_nick}}：
+                      | {{{html}}}
+                    .time {{createdAt}}
+
+
+
+
+
+    script#repo-tpl(type="text/template")
+      div.repo
+        .name {{name}}
+    include ../footer
+    if locals.card
+      //
+        div.
+        <script id="bdshare_js" data="type=tools&amp;uid=2555549" ></script>
+        <script type="text/javascript" id="bdshell_js"></script>
+        <script type="text/javascript">
+        var bds_config={"bdText":"这小子不错啊，分享给大家，快来吃他！@前端乱炖","snsKey":{'tsina':'659341943','tqq':'','t163':'','tsohu':''}}
+        document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date()/3600000)
+        </script>
+      script(src='#{assets_head}/js/ajaxfileupload.js')
+      script(src='#{assets_head}/js/loadingTip.js')
+      script(src='#{assets_head}/js/messageTip.js')
+      script(src='#{assets_head}/js/card.js')
+      script(src="#{assets_head}/js/mustache.js")
+      script.
+
+        $("a.zan").click(function(){
+        var id = $(this).data("id");
+          var self=this;
+          HtmlJS.util.ajax("/card/"+id+"/zan",{},"post",function(data){
+              if(data.success){
+                messageTip.show("赞过!")
+                $("em",$(self)).html(data.zan_count)
+              }else{
+                alert(data.info)
+              }
+            },function(){
+
+            },null,function(){
+            HtmlJS.util.ajax("/card/"+id+"/zan",{},"post",function(data){
+                if(data.success){
+                  messageTip.show("Great!")
+                  $("em",$(self)).html(data.zan_count)
+                }else{
+                }
+              },function(){
+                alert(data.info)
+              })
+
+
+          })
+
+        })
+        $("a.kai").click(function(){
+        var id = $(this).data("id");
+          var self=this;
+          HtmlJS.util.ajax("/card/"+id+"/kai",{},"post",function(data){
+              if(data.success){
+                messageTip.show("成功鸟!好兴奋~~~")
+                $("em",$(self)).html(data.zan_count)
+              }else{
+                alert(data.info)
+              }
+            },function(){
+
+            },null,function(){
+            HtmlJS.util.ajax("/card/"+id+"/kai",{},"post",function(data){
+                if(data.success){
+                  messageTip.show("Great!")
+                  $("em",$(self)).html(data.zan_count)
+                }else{
+                }
+              },function(){
+                alert(data.info)
+              })
+
+
+          })
+
+        })
+        $(".rss-btn").click(function(e){
+        e.preventDefault();
+        var href= $(this).attr("href")
+        HtmlJS.util.ajax(href,{
+
+            },"post",function(data){
+                loadingTip.hide()
+                if(data.success){
+                  messageTip.show("订阅成功！")
+                }else{
+                  alert(data.info)
+                }
+            },function(){
+              HtmlJS.util.ajax(href,{
+
+              },"post",function(data){
+                  loadingTip.hide()
+                  if(data.success){
+                    messageTip.show("订阅成功！")
+                  }else{
+                    alert(data.info)
+                  }
+              },function(){
+
+
+            })
+
+          })
+        })
+
+      script.
+        $(window).scroll(function(){
+          if($(window).scrollTop()+$(window).height()>=$(".comment").offset().top){
+            $(".comment-layer").addClass("hidden")
+          }else{
+          $(".comment-layer").removeClass("hidden")
+          }
+          })
+        $(".comment-layer").click(function(){
+          $("html,body").animate({
+            scrollTop:$(".comment").offset().top-200
+            })
+          $(".comment textarea").focus()
+          })
+        var comment_tpl = $("#comment-tpl").html()
+        $('.visitor a').tooltip({
+          placement:"bottom"
+        })
+        $('.user').tooltip({
+          placement:"bottom"
+        })
+        $(".reply").click(function(){
+        $("#comment-text").val("@"+$(this).attr("data-nick")+" ").focus()
+         $("#comment-text")[0].setSelectionRange($("#comment-text")[0].value.length, $("#comment-text")[0].value.length)
+        })
+        $("#comment-submit").click(function(){
+          var text = $("#comment-text").val();
+          if(!text){
+            messageTip.show("请输入评论内容");
+          }else{
+            loadingTip.show("正在提交中")
+            HtmlJS.util.ajax("/comment/add",{
+              md:text,
+              target_id:"card_#{card.id}"
+            },"post",function(data){
+              loadingTip.hide()
+                if(data.success){
+                $("#comment-text").val("")
+                var html = Mustache.render(comment_tpl,data.comment);
+                  $(".comment-list").prepend(html)
+                }else{
+                  alert(data.info)
+                }
+            },function(){
+
+            },null,function(){
+            HtmlJS.util.ajax("/comment/add",{
+              md:text,
+              target_id:"card_#{card.id}"
+            },"post",function(data){
+              loadingTip.hide()
+                if(data.success){
+                $("#comment-text").val("")
+                var html = Mustache.render(comment_tpl,data.comment);
+                  $(".comment-list").prepend(html)
+                }else{
+                  alert(data.info)
+                }
+            },function(){
+
+            },null,function(){
+
+          })
+          })
+          }
+          })
+      

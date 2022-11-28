@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <script src="http://www.html-js.com/assets//js/jquery.js"></script>
+    <script src="http://www.html-js.com/assets//js/jquery.easing.1.3.js"></script>
+    <style>
+    html,body{
+      height:100%;
+      margin:0;
+      padding:0;
+    }
+    #main{
+      width:100%;
+      height:100%;
+    }
+      #screen{
+        width:100%;
+      height:100%;
+      overflow: hidden;
+      }
+      .color-item{
+        width:100%;
+        height:100%;
+ -webkit-transform:skewY(10deg);
+      }
+      @font-face {
+  font-family: "cooper black";
+  src: url("./fonts/CooperBlackStd.otf");
+}
+      .color-item .inner-text{
+        font-size: 50px;
+        font-weight: 2000;
+        text-align: center;
+        width:100%;
+        vertical-align: middle;
+        display: inline-block;
+        color: #fff;
+         -webkit-text-stroke: 3px #444;
+         font-family: "cooper black";
+        
+         -webkit-transform:skewY(-10deg);
+   color: white;
+   text-shadow:
+       3px 3px 0 #666,
+     -1px -1px 0 #666,  
+      1px -1px 0 #666,
+      -1px 1px 0 #666,
+       1px 1px 0 #666;
+      }
+      .time{
+        font-family: "cooper black";
+        font-size: 24px;
+        color:#fff;
+        position: absolute;
+        right:10px;
+        top:10px;
+      }
+      #controls{
+        position: fixed;
+        bottom:30px;
+        margin-left:0;
+        text-align: center;
+        width:100%;
+      }
+      .control-item{
+        width:50px;
+        height:50px;
+        border:5px solid #fff;
+        display: inline-block;
+        margin: 0 10px;
+        border-radius: 15px;
+      }
+      .popup{
+        width:80%;
+        height:300px;
+        background: #4db1de;
+        border:10px solid #fff;
+        border-radius: 15px;
+        position: absolute;
+        top:100px;
+        left:5%;
+      }
+      .layer{
+        width:100%;
+        height:100%;
+        position: absolute;
+        top:0;
+        left:0;
+        background: #000;
+        opacity: 0.6;
+      }
+      .popup .t{
+        text-align: center;
+        font-size: 35px;
+        color:#fff;
+        line-height: 80px;
+        font-family: "Helvetica";
+      }
+      .popup .c ul{
+
+      }
+      .popup .c ul li{
+        color:#fff;
+        font-size: 16px;
+        line-height: 20px;
+        margin-bottom: 10px;
+      }
+      .popup .begin{
+        width:170px;
+        height:60px;
+        margin: 30px auto;
+        font-size: 30px;
+        background: #333;
+        color:#fff;
+        text-align: center;
+        border:none;
+        border-radius: 3px;
+        display: block;
+      }
+      .popup .items{
+        line-height: 35px;
+        margin:20px;
+        color:#fff;
+        font-size: 20px;
+      }
+    </style>
+
+  </head>
+  <body>
+    <div id="main">
+      <div id="screen">
+      </div>
+      <div id="controls">
+      </div>
+      <div class="time">00:00</div>
+      <div class="layer"></div>
+      <div class="popup">
+        <div class="t">小脑大比拼</div>
+
+        <div class="c">
+          <ul>
+            <li>请不要受底色的干扰，选择文字描述的颜色</li>
+            <li>比比谁用的时间最短</li>
+            <li>选错一次颜色，游戏结束</li>
+          </ul>
+          <button class="begin btn">Fight!</button>
+        </div>
+      </div>
+      <!-- <div class="popup">
+        <div class="c">
+          <div class="items">
+            <div class="item" style="font-size:30px;line-height:45px;">太厉害了！</div>
+            <div class="item">你的小脑发达程度堪称完美！</div>
+            <div class="item">本次游戏耗时：00：22</div>
+          </div>
+          
+          <button class="begin btn">重新开始!</button>
+        </div>
+      </div> -->
+    </div>
+    <script>
+      var colors = [
+        {
+          name:"yellow",
+          hex:"e3e851"
+        },
+        {
+          name:"blue",
+          hex:"4db1de"
+        },
+        {
+          name:"red",
+          hex:"ff6459"
+        },
+        {
+          name:"green",
+          hex:"4dde69"
+        }
+      ];
+      var Game = (function(){
+        var bgColorList = [];
+        var nowColorList = [];
+        var displayNameList = [];
+        var isNotList = [];
+        var length = 10;
+        var nowIndex=0;
+        var itemHeight;
+        var arr = [0,1,2,3]
+            var randomArr = []
+            for(var i=0;i<200;i++){
+              randomArr = randomArr.concat(arr);
+            }
+            randomArr.sort(function(){
+              return Math.random()>0.5;
+            })
+            var nowNumIndex = 0;
+
+            var clickMethod = "click";
+            if("ontouchstart" in window){
+              clickMethod = "touchstart"
+            }
+
+            var userTime = 0;
+        return {
+          init:function(){
+            var self = this;
+            this.createData();
+            this.createHtml();
+            this.createControl();
+            $("#screen").scrollTop(50)
+            // $(document.body).click(function(){
+            //   self.next();
+            // })
+            // 
+            this.bind();
+          },
+          bind:function(){
+
+          },
+          begin:function(){
+            setInterval(function(){
+              userTime+=10;
+              var ss = (Math.floor(userTime%1000/10));
+              if(ss<10){
+                ss = "0"+ss;
+              }
+              $(".time").html(Math.floor(userTime/1000)+":"+ss);
+            },10);
+          },
+          createControl:function(){
+            var self = this;
+            for(var i=0;i<colors.length;i++){
+              var color = colors[i];
+              $("<div class=control-item data-color="+color.name+"></div>").css({
+                background:"#"+color.hex
+
+              }).appendTo($("#controls")).on(clickMethod,function(){
+                if(nowIndex==20){
+                  self.showSuccess();
+                  return;
+                }
+                var colorname = $(this).attr("data-color")
+                if(self.chooseRight(colorname)){
+                  console.log("right")
+                  self.next();
+                }else{
+                  console.log("wrong")
+                  self.showFail();
+                }
+                
+              })
+            }
+          },
+          showSuccess:function(){
+
+          },
+          showFail:function(){
+
+          },
+          createData:function(){
+
+            for(var i=0;i<length;i++){
+              nowNumIndex++;
+              var num = randomArr[nowNumIndex];
+              while(num==randomArr[nowNumIndex-1]){
+                nowNumIndex++;
+                num = randomArr[nowNumIndex];
+              }
+              var nowColor = colors[Math.floor(Math.random()*colors.length)]
+              var nowIsNot = Math.random()>0.5?true:false;
+              var nowDisplayText = nowIsNot?("not "+nowColor.name):nowColor.name;
+              nowColorList.push(nowColor)
+              bgColorList.push(num);
+              isNotList.push(nowIsNot);
+              displayNameList.push(nowDisplayText);
+            }
+          },
+          createHtml:function(){
+            nowColorList.forEach(function(color,i){
+              $("<div class=color-item></div>").html("<span class=inner-text>"+displayNameList[i]+"</span>").css({
+                background:"#"+colors[bgColorList[i]].hex
+              }).appendTo($("#screen"))
+            })
+            $(".inner-text").css({
+              marginTop:$(window).height()/2-30
+            })
+            itemHeight = $(".color-item").height();
+          },
+          next:function(){
+            nowIndex++;
+            $("#screen").animate({
+              scrollTop:nowIndex*itemHeight+50
+            },300)
+
+          },
+          chooseRight:function(colorName){
+            var isRight = false;
+            var nowIsNot = isNotList[nowIndex]
+            var nowColor = nowColorList[nowIndex]
+            if(nowIsNot){
+              if(colorName!=nowColor.name){
+                isRight = true;
+              }
+            }else{
+              if(colorName==nowColor.name){
+                isRight = true;
+              }
+            }
+            return isRight;
+          }
+        }
+      })();
+
+      Game.init();
+      $(".begin").on("click",function(){
+        $(".popup").hide();
+        $(".layer").hide();
+        Game.begin();
+      })
+
+    </script>
+  </body>
+</html>

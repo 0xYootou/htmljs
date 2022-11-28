@@ -1,0 +1,44 @@
+doctype html
+html
+  head
+    include head
+    title 前端乱炖-admin
+    style.
+      .types a{float:left;margin-right:10px;}
+      .types a.active{color:#aaa;}
+      td a{margin-right:10px;}
+  body#articles
+    - var pageId = 1;
+    include header
+    include ./../page
+    include ./../article_cats
+    table.table.table-bordered.table-striped
+      tr
+        th id
+        th status
+        th title
+        th 操作
+        th(width=200) 修改类型
+      for article in articles
+
+        tr
+          td #{article.id}
+          td #{article.is_publish?"已发布":"待审核"}
+          td
+            a(href="/article/#{article.id}") #{article.title}
+          td
+            if !article.is_publish
+              a(href="/admin/article/#{article.id}/update?is_publish=1") 通过审核
+            else
+              a(href="/admin/article/#{article.id}/update?is_publish=0") 下线
+            if article.sort == 100000
+              a(href="/admin/article/#{article.id}/update?sort=#{article.id}") 取消置顶
+            else
+              a(href="/admin/article/#{article.id}/update?sort=100000") 置顶
+            a(href="/admin/article/#{article.id}/del") kill
+          td.types
+            for cat,i in cats
+              a(href="/admin/article/#{article.id}/update?type=#{i}",class="#{article.type==i?'active':''}") #{cat}
+            a(href="/admin/article/#{article.id}/update?is_yuanchuang=1",class="#{article.is_yuanchuang==1?'active':''}") 原创
+            a(href="/admin/article/#{article.id}/update?is_yuanchuang=0",class="#{article.is_yuanchuang==0?'active':''}") 选录
+    

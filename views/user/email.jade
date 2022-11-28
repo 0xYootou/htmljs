@@ -1,0 +1,66 @@
+doctype html
+html
+  head
+    include ./../head
+    title 前端乱炖-填写email
+    style.
+      #content{
+      width:500px;
+      margin: 200px auto;
+      text-align:center;
+      background:#fff;
+      border:1px solid #ddd;
+      padding:20px;
+      border-radius:5px;
+      font-family:Hei,"微软雅黑";
+      }
+      h1{
+      font-size:20px;
+      color:#444;
+      font-weight:normal;
+      line-height:50px;
+      margin-bottom:20px;
+      }
+      #content input{
+        height:30px;
+      }
+      #need-email #content button{
+      height:39px;
+      vertical-align:4px;
+      margin-left:20px;
+      }
+    if locals.query.mini
+      style.
+        #content{
+        width:300px;
+        margin: 50px auto;
+        }
+  body#need-email
+    #content
+      h1 只需一步，输入常用email来完成注册
+      form#form(action="")
+        input(type="text",name="email",placeholder="Email地址")
+        button.btn 提交注册
+    script.
+      document.domain="html-js.com";
+      var query = !{JSON.stringify(query)};
+      $("#form").submit(function(e){
+        e.preventDefault();
+        $.ajax({
+          url:"",
+          type:"post",
+          dataType:"json",
+          data:$("#form").serialize(),
+          success:function(data){
+            if(data.success){
+              if(query.mini){
+                parent.window.HtmlJS.util.logincallback&&parent.window.HtmlJS.util.logincallback()
+              }else{
+                window.location.href=query.redirect||"/user"
+              }
+            }else{
+              alert(data.info)
+            }
+          }
+          })
+        })

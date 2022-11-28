@@ -1,0 +1,145 @@
+doctype html
+html
+  head
+    include ../head
+    link(href='#{assets_head}/css/Markdown.Editor.css?ddd2', type='text/css', rel='stylesheet', charset='utf-8')
+    script(src='#{assets_head}/js/jquery.js')
+    script(src='#{assets_head}/js/pcaunzip.js')
+    include ../editor_head
+    title 添加简历
+    style.
+      #content textarea{
+      height:200px;
+      }
+  body#job
+    - locals.pageId=50;
+    include ../header
+    #content.clearfix
+      .content
+        .left
+          .module
+            form.form-horizontal#form(method='post')
+              fieldset
+                if locals.resume
+                  legend 编辑简历
+                else
+                  legend 添加简历
+                if locals.resume
+                  input(type='hidden', value = "#{resume.id}",name='id')
+                input(type='hidden', value = "#{user.id}",name='user_id')
+                .control-group
+                  input#zhiwei.input-xlarge(type='text', value = "#{locals.resume?locals.resume.zhiwei:''}",name='zhiwei', placeholder='求职职位',required)
+                .control-group
+                  label 薪资范围
+                  select#min_price(name="min_price",value="#{locals.resume?resume.min_price:''}")
+                    option(value="0") 请选择
+                    option(value="2000") 2000
+                    option(value="3000") 3000
+                    option(value="4000") 4000
+                    option(value="5000") 5000
+                    option(value="7000") 7000
+                    option(value="9000") 9000
+                    option(value="10000") 10000
+                    option(value="12000") 12000
+                    option(value="15000") 15000
+                    option(value="17000") 17000
+                    option(value="20000") 20000
+                    option(value="25000") 25000
+                    option(value="30000") 30000
+                  | -
+                  select#max_price(name="max_price",value="#{locals.resume?resume.max_price:''}")
+                    option(value="0") 请选择
+                    option(value="2000") 2000
+                    option(value="3000") 3000
+                    option(value="4000") 4000
+                    option(value="5000") 5000
+                    option(value="7000") 7000
+                    option(value="9000") 9000
+                    option(value="10000") 10000
+                    option(value="12000") 12000
+                    option(value="15000") 15000
+                    option(value="17000") 17000
+                    option(value="20000") 20000
+                    option(value="25000") 25000
+                    option(value="30000") 30000
+                    option(value="40000") 40000
+                    option(value="50000") 50000
+                .control-group
+                  label 意向城市
+                  select#privince( value = "#{locals.resume?locals.resume.privince:''}",name='privince',required)
+                  select#city( value = "#{locals.resume?locals.resume.city:''}",name='city',required)
+
+
+                .tab-pane#seeeditor
+                    .control-group
+                      label 自我简短介绍
+                      script(type="text/plain",id="desc")
+                .control-group
+                  label 简历附件（doc或pdf)
+                  input#jianli.input-xlarge(type='file',name="file", placeholder='求职简历附件')
+                  input#jianli_result(type="hidden",name="jianli",required,value="#{locals.resume?resume.jianli:''")
+                  span#jianli_success.alert.hidden 上传成功
+                .control-group
+                  button.btn(type='submit') 添加
+
+      .right
+        .module
+          .hd 提示
+          .bd
+            //- div 提交专栏添加申请后，需要管理员审核后方能使用。
+            //- div 专栏可以设置私有和共有。
+            div 请准确填写所有信息
+      #fullscreen-editor.hidden
+      #fullscreen-exit.hidden
+        a.btn
+          i.icon-resize-small
+    include ../footer
+    script(src='#{assets_head}/js/ajaxfileupload.js')
+    script(src='#{assets_head}/js/loadingTip.js')
+    script(src='#{assets_head}/js/messageTip.js')
+    script.
+      UE.getEditor('desc',{
+            //这里可以选择自己需要的工具按钮名称,此处仅选择如下五个
+            //focus时自动清空初始化时的内容
+            autoClearinitialContent:true,
+            //关闭字数统计
+            wordCount:false,
+            //关闭elementPath
+            elementPathEnabled:false,
+            //默认的编辑区域高度
+            initialFrameHeight:100,
+            textarea:"desc",
+            initialContent:"!{locals.resume?resume.desc:''}",
+            autoClearinitialContent:0
+            //更多其他参数，请参考ueditor.config.js中的配置项
+        })
+
+      $("#min_price").val(#{locals.resume?resume.min_price:0})
+      $("#max_price").val(#{locals.resume?resume.max_price:0})
+      new PCAS("privince","city","#{locals.resume?resume.privince:''}","#{locals.resume?resume.city:''}");
+      $("#jianli")[0].onchange=function(){
+          $.ajaxFileUpload({
+            url:"/upload_resume",
+            secureuri:false,
+            fileElementId:'jianli',
+            dataType: 'json',
+            success: function (data, status)
+            {
+              if(data.success){
+                $("#jianli_result").val(data.data.filename)
+                $("#jianli_success").removeClass("hidden");
+                $("#jianli").addClass("hidden")
+              }else{
+                messageTip.show(data.info)
+
+              }
+              loadingTip.hide()
+            },
+            error:function(){
+
+              loadingTip.hide()
+            }
+          })
+        };
+
+      

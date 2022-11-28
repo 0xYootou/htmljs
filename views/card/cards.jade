@@ -1,0 +1,166 @@
+doctype html
+html
+  head
+    include ../head
+    title 前端花名册
+    |<meta name="description" content="前端乱炖 花名册 是国内最大的前端人员信息库，而且规模在不断增加中。">
+    script(src='#{assets_head}/js/lazyload.js')
+  body#cards
+    - locals.pageId=2;
+    include ../header
+    #content.clearfix
+      .main.clearfix
+        .content
+            .module
+              span(style="font-size:13px;margin-right:10px;color:#666;") 花名册是一个前端开发人员的信息集合，可以看到每个人的基本信息和创造的内容。
+              if !(locals.user && user.card_id)
+                a.btn.btn-primary.small-btn(href="/add-card") 我也要加入
+              else if (locals.user)
+                a.btn.btn-primary.small-btn(href="/edit-card") 编辑我的花名册
+
+            .f2er-list
+              each card in cards
+                a.vcard.card.mod-white(href="/card/#{card.id}")
+                  div.head_pic.user
+                    img.lazy(itemprop="photo",data-original='#{card.head_pic||"http://www.gravatar.com/avatar/"+md5(card.email)+"?d=http://ww2.sinaimg.cn/mw690/6663ae3cgw1dw6f3l62w6j.jpg"}', width='50',height="50")
+                    if card.sex
+                      if card.sex == '男'
+                        .sex.nan
+                      else
+                        .sex.nv
+                  div.infos
+                    div
+                      span.key 昵称
+                      span.value.fn.nickname ：#{card.nick}
+                      span.key 经验值：
+                      span.value #{card.user?card.user.coin:0}
+                    
+
+                    div
+                      span.key 性别
+                      span.value ：#{card.sex}
+
+
+                      span.key 感情状况
+                      span.value ：#{card.is_dan?card.is_dan:"未知"}
+                    div
+                      span.key 城市
+                      span.value.adr ：#{card.city}
+                    div 
+                      span.key 职位
+                      span.value.title ：#{card.zhiwei}
+                    //- div.shanchang.clearfix
+                    //-   span.key 擅长：
+                    //-   span.value #{card.techang?card.techang.substr(0,100):""}
+                    div
+                      span.key 网站：
+                      if card.blog || card.github || card.weibo
+                        span.sns
+                          if card.blog
+                            span.blog(href='#{card.blog}', target='_blank',title="博客地址") blog
+                          if card.github
+                            span.github(href='#{card.github}', target='_blank',title="github地址") github
+                          //if card.weibo
+                          //  span.weibo.url(href='#{card.weibo}', target='_blank',title="微博地址") weibo
+
+                  div.count-infos
+                    span(href="/card/#{card.id}")
+                      .icon-eye-open.icon
+                      span #{card.visit_count||0}
+                    span.zan(data-id="#{card.id}")
+                      .icon-heart.icon
+                      em #{card.zan_count||0}
+                    span(href="/card/#{card.id}#comment-module")
+                      .icon-comments.icon
+                      span #{card.comment_count||0}
+                  
+            include ../page
+        //- .right
+        //-   if locals.comments
+        //-     .module
+        //-       .hd 最新评论
+        //-       .bd
+        //-         each comment in comments
+        //-           div.item
+        //-             |#{comment.user_nick}：
+        //-             a(href="/card/#{comment.target_id.split("_")[1]}") #{comment.md.substr(0,70)}
+        //-   if locals.recents
+        //-     .module
+        //-       .hd 最新加入
+        //-       .bd
+        //-         each recent in recents
+        //-           .item
+        //-             a(href="/card/#{recent.id}") #{recent.nick}
+        //-   .module.fix-ad
+        //-       .hd 广告位
+        //-       .bd
+
+    include ../footer
+    script(src="#{assets_head}/js/messageTip.js")
+    script.
+      $("img.lazy").lazyload();
+      $("#gotop").click(function(){
+      $('html,body').animate({
+      scrollTop:0
+      })
+      })
+      $("#layer").css({width:$(document.body).width(),height:$(document.body).height()})
+      $("#login_popup").css({left:$(window).width()/2-125})
+      $("a.zan").click(function(){
+        var id = $(this).data("id");
+          var self=this;
+          HtmlJS.util.ajax("/card/"+id+"/zan",{},"post",function(data){
+              if(data.success){
+                messageTip.show("Great!")
+                $("em",$(self)).html(data.zan_count)
+              }else{
+                alert(data.info)
+              }
+            },function(){
+
+            },null,function(){
+            HtmlJS.util.ajax("/card/"+id+"/zan",{},"post",function(data){
+                if(data.success){
+                  messageTip.show("Great!")
+                  $("em",$(self)).html(data.zan_count)
+                }else{
+                }
+              },function(){
+                alert(data.info)
+              })
+
+
+          })
+
+        })
+      $("a.zan")[0].onselectstart = function(){return false;}
+      $("a.renling").click(function(){
+        if(confirm("你只能认领一次名片，确定这是您的名片并认领？")){
+          var id = $(this).data("id");
+          var self=this;
+          $.ajax("/user/connet-card",{
+            dataType:"json",
+            type:"post",
+            data:{
+              id:id
+            },
+            success:function(data){
+              if(data.success){
+                alert("认领成功")
+                window.location.href=window.location.href
+              }else{
+                if(data.isnotlogin){
+                  alert("请先登录")
+                  window.location.href="/user/login"
+                }else{
+                  alert(data.info)
+                }
+
+              }
+            },
+            error:function(){
+
+            }
+          })
+        }
+      });

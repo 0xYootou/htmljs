@@ -1,0 +1,271 @@
+doctype html
+html
+  head
+    include ../head
+    title 添加专栏文章
+    include ../editor_head
+    style.
+      .control-group{width:680px;}
+      .tags .label{display: inline-block;margin-right:5px;margin-bottom:5px;font-size:14px;padding:5px 9px;font-weight:normal;}
+    script.
+      var article_id = #{locals.article?article.id:0}
+  body#add-article
+    - locals.pageId=1;
+
+    include ../header
+    form.form-horizontal#form(method='post')
+      #content
+
+        .content
+          .left
+            .module
+              input(type='hidden', name='is_yuanchuang',value="1")
+              if locals.article
+                input#is_publish(type='hidden', name='is_publish',value="#{article.is_publish}")
+              else
+                input#is_publish(type='hidden', name='is_publish',value="0")
+              fieldset
+                legend #{locals.article?"编辑文章":"发表新文章"}
+                if locals.article
+                  input#article_id(type="hidden",name="id",value="#{article.id}")
+                else
+                  input#article_id(type="hidden",name="id",value="")
+                .control-group
+                  input#title(type='text', name='title', placeholder='文章标题',value="#{locals.article?article.title:''}",required)
+                //- ul.editor-tab.nav.nav-tabs
+                //-   li.active
+                //-     a(data-toggle="tab",href="#markdowneditor") markdown编辑器
+                //-   li
+                //-     a(data-toggle="tab",href="#seeeditor") 可视化编辑器
+                .control-group
+                  textarea#desc(name="desc",placeholder="请用200字以内简单描述此文内容",required) !{(locals.article&&article.desc)?article.desc.replace(/<[^>]*?>/g,'').replace(/\s/g,''):''}
+                .tab-content
+                  .tab-pane#markdowneditor.active
+                    .control-group#wmd-editor-parent
+                      .wmd-panel#wmd-editor-con
+                        .padding
+                          #wmd-bar-parent
+                            #wmd-button-bar
+                          textarea.expand.wmd-input#wmd-input(name="md",placeholder="文章内容，markdown语法。如果没有写完，可以直接关闭页面，下次打开内容仍然会在。工具栏最后一个按钮点击后可以全屏编辑。") #{locals.article?article.md:''}
+                  .tab-pane#seeeditor
+                    .control-group
+                      script(type="text/plain",id="myEditor")
+
+
+                .control-group
+                  .columns
+                    input#column(type="hidden",name="column_id",value="#{locals.article?article.column_id:column_id}")
+                    div.hd 发表到的专栏：
+                    div.bd
+                      each column,i in columns
+                        if locals.article&&article.column_id
+                          if column.id==article.column_id
+                            span.label(data-id="#{column.id}",class="label-success",data-original-title="#{column.desc_md&&column.desc_md.substr(0,100)}",title="#{column.desc_md&&column.desc_md.substr(0,100)}") #{column.name}
+                        else if column.id==locals.column_id
+                          span.label(data-id="#{column.id}",class="label-success",data-original-title="#{column.desc_md&&column.desc_md.substr(0,100)}",title="#{column.desc_md&&column.desc_md.substr(0,100)}") #{column.name}
+                if locals.tags
+                  - if(locals.article&&article.tags){var ts = article.tags.split(",");}else{var ts=[]}
+                  .control-group
+                    .tags
+                      input#tags(type="hidden",name="tags",value="#{locals.article?article.tags:''}")
+                      .tags-hd 技术标签
+                      .tags-bd
+                        each tag,i in tags
+                          span.label(data-id="#{tag.id}",class="#{ts.indexOf(tag.id)==-1?'':'label-success'}") #{tag.name}
+                        a(href="/tag/add",target="_blank",style="padding-left:10px;font-size:12px;") 添加新标签
+                .control-group
+                  label.checkbox
+                    input(type="checkbox",name="to_weibo",checked="true")
+                    |分享到微博
+                .control-group.hidden
+                  label.checkbox
+                    input(type="checkbox",name="fufei")
+                    |申请付费阅读
+                .control-group
+
+                  button.btn#submit(type='submit') 发表
+                  if !(locals.article&&article.is_publish)
+                    a.btn.save-article(style="margin-left:10px;")
+                      i.icon-circle-ok
+                      span 保存草稿
+                .control-group#wmd-preview-parent
+                  .wmd-panel.wmd-preview#wmd-preview-con
+                    .padding
+                      #wmd-preview
+
+
+            #myModal.modal.hide.fade.
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabel">插入图片</h3>
+              </div>
+              <div class="modal-body">
+                  <input type="file" name="pic" id="file" />
+              </div>
+              <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
+                <button class="btn btn-primary">插入</button>
+              </div>
+        .right
+          .module
+            .hd 提示
+            .bd
+              div.item 每篇技术专栏通过审核后即可获得本站的10元基础赞助，小小心意，希望大家多多分享自己的心得。
+              div.item 可以使用markdown语法，可以插入图片。
+              div.item 插入代码，请先输入代码，然后选中后点击工具栏里的 <> 符号。
+          .module
+            .hd 准则
+            .bd
+              .item 专栏第一准则：我们特别欣赏【入门式】，【基础性】，【总结性】，【普及式】，【系列化】的文章。以帮助别人为本，而不是为了炫技为了让别人看着觉得很”牛逼“。
+        #fullscreen-editor.hidden
+        #fullscreen-exit.hidden
+          a.btn
+            i.icon-resize-small
+            |  返回
+        if !(locals.article&&article.is_publish)
+          #save-article.hidden.save-article
+            a.btn
+              i.icon-circle-ok
+              span 保存草稿
+    script(src='#{assets_head}/js/ajaxfileupload.js?dd')
+    script(src='#{assets_head}/js/loadingTip.js')
+    script(src='#{assets_head}/js/messageTip.js')
+    script.
+      $(".tags .label").click(function(){
+        $(this).toggleClass("label-success");
+        var selectedTags = []
+        var selectedTagNames=[]
+        $(".tags .label").each(function(i,tag){
+          if($(tag).hasClass("label-success")){
+            selectedTags.push($(tag).attr("data-id"))
+              selectedTagNames.push($(tag).html())
+          }
+          })
+        $("#tags").val(selectedTags.join(","))
+        })
+      $(".columns .label").click(function(){
+        $(".columns .label").removeClass("label-success")
+        $(this).addClass("label-success");
+       $("#column").val($(this).attr("data-id"))
+        })
+      $('.columns .label').tooltip({
+          placement:"bottom"
+      })
+      var converter1 =new  Markdown.Converter();
+      Markdown.Extra.init(converter1);
+      var editor1 = new Markdown.Editor(converter1);
+
+      editor1.run();
+      $(".save-article").click(function(){
+        var url = "";
+        if($("#article_id").val()){
+          url="/article/"+$("#article_id").val()+"/edit"
+        }else{
+          url="/article/add"
+        }
+        $(".save-article span").html("保存中")
+        var postData ={};
+        $("#form").serialize().split("&").forEach(function(e){
+          var s = e.split("=")
+          postData[s[0]] = decodeURIComponent(s[1].replace(/\+/g, '%20'));
+          })
+        postData.is_publish = 0;
+        HtmlJS.util.ajax(url,postData,"post",function(data){
+             setTimeout(function(){
+                  $(".save-article span").html("保存草稿")
+                },3000)
+            if(data.success){
+            if(data.article&&data.article.id){
+              $("#article_id").val(data.article.id)
+            }
+               $(".save-article span").html("保存成功")
+
+            }else{
+              alert(data.info)
+            }
+          },function(){
+
+          },$("#submit"))
+        })
+       $("#wmd-input").one("click",function(){
+          $("#fullscreen-editor").removeClass("hidden")
+          $("#fullscreen-exit").removeClass("hidden")
+          $("#save-article").removeClass("hidden")
+          $("#wmd-button-bar").appendTo($("#fullscreen-editor"))
+          $("#wmd-editor-con").appendTo($("#fullscreen-editor"))
+          $("#wmd-preview-con").appendTo($("#fullscreen-editor"))
+          $("#fullscreen-editor #wmd-preview").css({height:$(window).height()-93});
+          $("#fullscreen-editor textarea").focus();
+          $("#fullscreen-editor textarea").css({height:$(window).height()-73,overflowY:"auto"}).addClass("fullscreen-textarea");
+      })
+      //- if(!article_id){
+      //-  $("#wmd-input").val(localStorage.getItem("textarea_article_add"))
+      //-   $("#wmd-input").keyup(function(){
+      //-     localStorage.setItem("textarea_article_add",this.value)
+      //-     })
+      //-   $("#title").val(localStorage.getItem("textarea_article_add_title"))
+      //-   $("#title").keyup(function(){
+      //-     localStorage.setItem("textarea_article_add_title",this.value)
+      //-     })
+      //- }
+
+      $("#form").submit(function(e){
+        e.preventDefault()
+        var url = "";
+        if($("#article_id").val()){
+          url="/article/"+$("#article_id").val()+"/edit"
+        }else{
+          url="/article/add"
+        }
+        var postData ={};
+        $("#form").serialize().split("&").forEach(function(e){
+          var s = e.split("=")
+          postData[s[0]] = decodeURIComponent(s[1].replace(/\+/g, '%20'));
+          })
+        postData.is_publish = 1;
+        if($("#is_publish").val()!="1"){
+          postData.is_pub = 1;
+        }
+        HtmlJS.util.ajax(url,postData,"post",function(data){
+            if(data.success){
+             if(!article_id) alert("发布成功")
+
+             window.history.back()
+             //- !article_id&&localStorage.setItem("textarea_article_add","")
+             //- !article_id&&localStorage.setItem("textarea_article_add_title","")
+
+            }else{
+              alert(data.info)
+            }
+          },function(){
+
+          },$("#submit"))
+      })
+      editor1.hooks.set('insertImageDialog', function(callback) {
+        $("#myModal").modal("show");
+        $("#file")[0].onchange=function(){
+          $.ajaxFileUpload({
+            url:"/upload",
+            secureuri:false,
+            fileElementId:'file',
+            dataType: 'json',
+            success: function (data, status)
+            {
+              if(data.success){
+                callback(data.data.filename)
+                $("#myModal").modal("hide");
+              }else{
+                messageTip.show(data.info)
+
+              }
+              loadingTip.hide()
+            },
+            error:function(){
+
+              loadingTip.hide()
+            }
+          })
+        };
+        return true; // tell the editor that we'll take care of getting the image url
+      });
+      

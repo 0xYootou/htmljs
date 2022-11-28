@@ -1,0 +1,160 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    title 前端花名册
+    include head
+    style.
+
+
+    script(src='/google_analytics_auto.js')
+  body#me
+    - locals.pageId=3;
+    include header
+    #content.clearfix
+      if !locals.q
+        p.alert.alert-success
+          | wellcome #{locals.user && locals.user.nick} ，这里是你的个人页面！
+      .left
+        div.my_card
+          .hd
+            | 我的名片信息
+            if locals.card
+              a.edit(href="/edit-card") 编辑
+          if locals.card
+            .bd
+              .item.clearfix
+                span.key 头像
+                span.value
+                  img(src="#{locals.user.head_pic}")
+              .item.clearfix
+                span.key 姓名
+                span.value #{card.name}
+              .item.clearfix
+                span.key 昵称
+                span.value #{card.nick}
+              .item.clearfix
+                span.key 性别
+                span.value #{card.sex}
+              .item.clearfix
+                span.key 感情状况
+                span.value #{card.is_dan}
+              .item.clearfix
+                span.key 城市
+                span.value #{card.city}
+              .item.clearfix
+                span.key 职位
+                span.value #{card.zhiwei}
+              .item.clearfix
+                span.key 特长
+                span.value #{card.techang}
+              .item.clearfix
+                span.key 公司
+                span.value #{card.gongsi}
+              .item.clearfix
+                span.key blog
+                span.value #{card.blog}
+              .item.clearfix
+                span.key github
+                span.value #{card.github}
+              .item.clearfix
+                span.key weibo
+                span.value #{card.weibo}
+              .item.clearfix
+                span.key email
+                span.value #{card.email}
+              .item.clearfix
+                span.key QQ
+                span.value #{card.qq}
+              .item.clearfix
+                span.key 手机号
+                span.value #{card.tel}
+              .item.clearfix
+                span.key 简介(工作经历)
+                span.value #{card.desc}
+              .item.clearfix
+                span.key 每天工作时长
+                span.value #{card.shijian}
+              .item.clearfix
+                span.key 收货地址
+                span.value #{card.address}
+
+          else
+              div.alert.alert-warning 你还没有认领名片，
+                a(href="/cards") 去认领
+                | 或者
+                a(href="/add-card") 创建新名片
+      .right
+        if locals.card
+          div.module
+            .hd 分享我的名片
+            .bd
+              div.share#bdshare.bdshare_t.bds_tools.get-codes-bdshare.clearfix(data="{'url':'/card/#{card.id}'}")
+                a.bds_tsina
+                a.bds_qzone
+                a.bds_tqq
+                a.bds_douban
+                a.bds_renren
+                a.shareCount
+        div.setting
+          .hd 设定我的状态
+          if locals.card
+            .bd
+              .item.clearfix
+                span.key 是否求职：
+                span.value
+                  a.r(class="#{card.is_qiuzhi?'active':''}",data-key="is_qiuzhi",data-value="1") 是
+                  a.r(class="#{card.is_qiuzhi?'':'active'}",data-key="is_qiuzhi",data-value="0") 否
+              .item.clearfix
+                span.key 是否招人：
+                span.value
+                  a.r(class="#{card.is_zhaopin?'active':''}",data-key="is_zhaopin",data-value="1") 是
+                  a.r(class="#{card.is_zhaopin?'':'active'}",data-key="is_zhaopin",data-value="0") 否
+              .item.clearfix
+                span.key 是否接活：
+                span.value
+                  a.r(class="#{card.is_jiehuo?'active':''}",data-key="is_jiehuo",data-value="1") 是
+                  a.r(class="#{card.is_jiehuo?'':'active'}",data-key="is_jiehuo",data-value="0") 否
+              .item.clearfix
+                span.key 是否相亲：
+                span.value
+                  a.r(class="#{card.is_xiangqin?'active':''}",data-key="is_xiangqin",data-value="1") 是
+                  a.r(class="#{card.is_xiangqin?'':'active'}",data-key="is_xiangqin",data-value="0") 否
+          else
+              div.alert.alert-warning 你还没有自己的名片，不能设置状态
+    include footer
+    script(src='#{assets_head}/js/messageTip.js')
+    script.
+      $("#layer").css({width:$(document.body).width(),height:$(document.body).height()})
+      $("#login_popup").css({left:$(window).width()/2-125})
+      $(".r").click(function(){
+        if(!$(this).hasClass("active")){
+          var self=this;
+          var data={}
+          data[$(this).attr("data-key")]=$(this).attr("data-value")
+          $.ajax("/user/update",{
+            dataType:"json",
+            type:"post",
+            data:data,
+            success:function(data){
+              if(data.success){
+                messageTip.show("更新成功")
+                $(".r",self.parentNode).removeClass("active")
+                $(self).addClass("active")
+              }else{
+                alert(data.info)
+              }
+            },
+            error:function(){
+
+            }
+          })
+        }
+      })
+    div.
+      <script id="bdshare_js" data="type=tools&amp;uid=2555549" ></script>
+      <script type="text/javascript" id="bdshell_js"></script>
+      <script type="text/javascript">
+      var bds_config={"bdText":"这小子不错啊，分享给大家，快来吃他！@前端乱炖","snsKey":{'tsina':'659341943','tqq':'','t163':'','tsohu':''}}
+      document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date()/3600000)
+      </script>

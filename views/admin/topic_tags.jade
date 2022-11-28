@@ -1,0 +1,27 @@
+doctype html
+html
+  head
+    include head
+    title 前端乱炖-admin
+    style.
+      .types a{float:left;margin-right:10px;}
+      .types a.active{color:#aaa;}
+      td a{margin-right:10px;}
+  body#articles
+    - var pageId = 2;
+    include header
+    a.btn(href="/admin/topic_tag/add") 添加tag
+    table.table.table-bordered.table-striped
+      tr
+        th id
+        th name
+        th 操作
+      for tag in tags
+
+        tr
+          td #{tag.id}
+          td #{tag.name}
+          td
+            a(href="/admin/topic_tag/#{tag.id}/del") kill
+
+    

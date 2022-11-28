@@ -1,0 +1,106 @@
+doctype html
+html(xmlns:wb='http://open.weibo.com/wb')
+  head
+    include ../head
+    title #{locals.column?locals.column.name+' - ':''}专栏 - 前端乱炖
+    |<meta name="description" content="用于展示各种原创文章，原创翻译文章，知识性比较强，内容比较专业和系统。专栏这个称呼是一个总称，而其内部，可以分很多独立的专栏，有私人的，也有公开可以投稿的。每个人都可以申请创建一个专栏，但是需要审核。一个专栏是同一系列文章的一个集合，而这个系列可以是一个技术点（例如NodeJS入门系列），也可以是一种抽象的类别（例如情感专栏）。">
+    script(src='#{assets_head}/js/bootstrap/bootstrap-tooltip.js')
+    script(src='#{assets_head}/js/masonry.js')
+    style.
+  body#articles
+    - locals.pageId=1;
+    include ../header
+    #content.clearfix
+      ul.breadcrumb
+        li
+          a(href="/") 首页
+          span.divider /
+        li
+          a(href="/article") 专栏
+          span.divider /
+        li.active
+          span 所有专栏
+      .actions.topactions
+        a.btn(href="/article/column/add",data-original-title="专栏按照最新文章的添加时间排序，要让自己的专栏有更多展示机会，那就经常更新文章吧。") 创建我的专栏
+
+
+      .columns-list.module
+        .hd 所有专栏
+        .bd
+          if locals.columns && columns.length
+            each column in columns
+              .column
+                a.title(href="/article/column/#{column.id}") #{column.name}（#{column.article_count}）
+                .desc !{column.desc_html?column.desc_html.replace(/<[^>]*>/g,'').replace(/\s/g,'').substr(0,50)+"...":""}
+                .user
+                  span 作者：
+                  a(href="/user/#{column.user.id}") #{column.user.nick}
+                .time 更新时间：#{moment(column.last_article_time*1).fromNow()}
+                .actions
+                  if column.is_rssed
+                    span
+                      i.rss.social
+                      |  已订阅（#{column.rss_count}）
+                  else
+                    a.rss-btn(href="/article/column/#{column.id}/rss")
+                      i.rss.social
+                      |  邮件订阅（#{column.rss_count}）
+                  if locals.user && user.is_admin
+                    span.views.item
+                      if column.is_jian == 1
+                        a.value(href="/article/column/#{column.id}/update?is_jian=0") 不荐
+                      else
+                        a.value(href="/article/column/#{column.id}/update?is_jian=1") 荐
+      include ../page
+
+
+    include ../footer
+    if locals.column
+      p.
+        <script id="bdshare_js" data="type=tools&amp;uid=2555549" ></script>
+        <script type="text/javascript" id="bdshell_js"></script>
+        <script>
+          var bds_config={"bdText":"分享一个@前端乱炖 的系列文章专栏【#{column.name}】，所有者：@#{column.user.nick}，专栏简介：#{column.desc_md.replace(/\s/g,'')}","snsKey":{'tsina':'659341943','tqq':'','t163':'','tsohu':''}}
+          document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date()/3600000)
+        </script>
+    script(src="#{assets_head}/js/messageTip.js")
+    script(src="#{assets_head}/js/loadingTip.js")
+    script.
+      $(document).ready(function(){
+         $('.column-list').masonry({
+                    itemSelector : '.column-item',
+                   columnWidth :510
+                });
+        })
+      $(".rss-btn").click(function(e){
+        e.preventDefault();
+        var href= $(this).attr("href")
+        HtmlJS.util.ajax(href,{
+
+            },"post",function(data){
+                loadingTip.hide()
+                if(data.success){
+                  messageTip.show("订阅成功！")
+                }else{
+                  alert(data.info)
+                }
+            },function(){
+              HtmlJS.util.ajax(href,{
+
+              },"post",function(data){
+                  loadingTip.hide()
+                  if(data.success){
+                    messageTip.show("订阅成功！")
+                  }else{
+                    alert(data.info)
+                  }
+              },function(){
+
+
+            })
+
+          })
+        })
+      $('.actions a').tooltip({
+          placement:"bottom"
+      })

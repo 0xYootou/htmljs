@@ -1,0 +1,17 @@
+.module.nav
+    ul.nav.nav-pills
+      li(class="#{user_page_id==1?'active':''}")
+        a(href="/user") 和我相关的状态
+          if unread_count
+            |（#{unread_count}）
+      //- li(class="#{user_page_id==2?'active':''}")
+      //-   a 消息
+
+      li(class="#{user_page_id==4?'active':''}")
+        a(href="/user/myarticles") 我的专栏（#{article_count}）
+      li(class="#{user_page_id==5?'active':''}")
+        a(href="/user/myqa") 我的提问（#{qa_count}）
+      li(class="#{user_page_id==6?'active':''}")
+        a(href="/user/mytopics") 我的话题（#{topic_count}）
+      li(class="#{user_page_id==3?'active':''}")
+        a(href="/user/coinhis") 经验值记录（#{user.coin}）

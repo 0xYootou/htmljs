@@ -1,0 +1,87 @@
+doctype html
+html
+  head
+    include ../head
+    title unicode转换
+    style.
+      #content{
+      width:940px;
+      margin:0 auto;
+      }
+      body{
+        background:#efefef;
+        font-size:12px;
+      }
+      textarea{
+        width:370px;
+        height:100px;
+        font-size:12px;
+      }
+      .left{
+        width:420px;
+        display:inline-block;
+      }
+      .center{
+      width:50px;
+      margin-left:20px;
+        display:inline-block;
+      }
+      .center button{width:60px;}
+      .right{
+      width:420px;
+      margin-left:20px;
+      display:inline-block;
+      }
+      h2{
+      margin-top:30px;
+      font-size:15px;
+      }
+      h1{
+      text-align:center;
+      font-size:20px;
+      }
+    |<meta name="description" content="unicode编码和解码工具">
+  body#tools
+    - locals.pageId = 9;
+    include ../header
+    #content
+      include nav
+      h1 unicode编码和解码工具
+      h2.title unicode编码
+
+      .left
+        .module
+          textarea#n_1(placeholder="输入要编码的汉字")
+      .center
+        a.btn(href="javascript:bianma();") --》
+      .right
+        .module
+          textarea#n_2(placeholder="结果")
+      h2.title unicode解码
+      .left
+        .module
+          textarea#n_3(placeholder="输入要解码的编码串")
+      .center
+        a.btn(href="javascript:jiema();")  --》
+      .right
+        .module
+          textarea#n_4(placeholder="结果")
+    script.
+      var decToHex = function(str) {
+          var res=[];
+          for(var i=0;i < str.length;i++)
+              res[i]=("00"+str.charCodeAt(i).toString(16)).slice(-4);
+          return "\\u"+res.join("\\u");
+      }
+      var hexToDec = function(str) {
+          str=str.replace(/\\/g,"%");
+          return unescape(str);
+      }
+      var bianma=function()
+      {
+      document.getElementById('n_2').value=decToHex(document.getElementById('n_1').value);
+      }
+      var jiema=function()
+      {
+      document.getElementById('n_4').value=hexToDec(document.getElementById('n_3').value);
+      }

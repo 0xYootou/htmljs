@@ -1,0 +1,32 @@
+doctype html
+html
+  head
+    include ./../head
+    title 前端乱炖-标签
+    script(src='#{assets_head}/js/bootstrap/bootstrap-tooltip.js')
+
+  body#tags
+    - locals.pageId=8;
+    include ./../header
+    #content.clearfix
+      .content
+          .actions
+            a.btn(href="/tag/add") <i class="icon-plus icon-white"></i>添加tag
+          if locals.tags
+            .tag-list
+              each tag,i in tags
+                .tag-item(class="#{i%2==1?'yooo':''}")
+                  a.tag-name(href="/tag/#{tag.id}") #{tag.name}
+                  a.tag-edit(href="/tag/#{tag.id}/edit") <i class="icon-edit icon-gray"></i>
+                  .tag-keywords 别名：#{tag.keywords}
+                  .tag-desc !{tag.desc_md.substr(0,200)}
+                  .tag-action
+
+
+    include ../footer
+    script.
+      $('.user a').tooltip({
+          placement:"bottom"
+      })
+
+

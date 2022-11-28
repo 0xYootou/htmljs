@@ -1,0 +1,46 @@
+doctype html
+html
+    head
+        include ../head
+        link(href='#{assets_head}/css/Markdown.Editor.css?ddd2', type='text/css', rel='stylesheet', charset='utf-8')
+        script(src='#{assets_head}/js/jquery.js')
+        script(src='#{assets_head}/js/pcaunzip.js')
+        include ../editor_head
+        title 添加消息
+        style.
+            #content textarea {
+                height: 200px;
+            }
+    body#job
+        - locals.pageId=50;
+        include ../music_header
+        #content.clearfix
+            .content
+                .left
+                    .module
+                        form.form-horizontal#form(method='post')
+                            fieldset
+                                legend 添加消息
+                                .control-group
+                                    input#title.input-xlarge(type='text', value = "",name='title', placeholder='消息标题',required)
+                                .control-group
+                                    textarea.input-xlarge(name='content', placeholder='消息内容',required)
+                                .control-group
+                                    input.input-xlarge(type='text',name='link', placeholder='链接地址')
+                                .control-group
+                                    input.input-xlarge(type='text',name='story_id', placeholder='故事id')
+                                .control-group
+                                    label 消息类型
+                                    select(name="type")
+                                        option(value="0") 默认
+                                        option(value="1") 故事更新
+                                        option(value="2") 绘本更新
+                                        option(value="3") 活动通知
+                                .checkbox
+                                    label
+                                        input.input-xlarge(type='checkbox',name='send_push')
+                                        |是否推送消息
+                                .control-group
+                                    button.btn(type='submit') 添加
+
+

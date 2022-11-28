@@ -1,0 +1,7 @@
+{
+  "rules": {
+    "nns/no-illegal-working-time": 2
+  },
+  "plugins": ["nns"],
+  "parser": "babel-eslint"
+}

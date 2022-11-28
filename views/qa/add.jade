@@ -1,0 +1,235 @@
+doctype html
+html
+  head
+    include ../head
+    title 添加问题
+    script(src='#{assets_head}/js/jquery.js')
+    include ../editor_head
+    style.
+      #content textarea{height:300px !important;}
+  body#qa-add
+    - locals.pageId=7;
+    include ../header
+    #content.clearfix
+      .content
+        .left
+          .module
+            form.form-horizontal#form(method='post')
+                legend 提问
+                .control-group
+                  input#title(type='text', name='title', placeholder='简单描述',required)
+                .control-group#wmd-editor-parent
+                  .wmd-panel#wmd-editor-con
+                    .padding
+                      #wmd-bar-parent
+                        #wmd-button-bar
+                    textarea.expand.wmd-input#wmd-input(name="md",placeholder='详细问题,提问后当有人回答你的时候，你会收到邮件通知',required)
+                if locals.channels
+                  .control-group
+                    .channels
+                      input#channel_id(type="hidden",name="channel_id",value="#{locals.channel_id?channel_id:''}")
+                      .channels-hd 所属分类
+                      .channels-bd
+                        each channel,i in channels
+                          span.channel(data-id="#{channel.id}",class="#{locals.channel_id?(channel_id==channel.id?'active':'hidden'):''}",data-original-title="#{channel.desc.substr(0,100)}",title="#{channel.desc.substr(0,100)}") #{channel.name}
+                if locals.tags
+                  .control-group
+                    .tags
+                      input#tags(type="hidden",name="tags",value="")
+                      input#tagNames(type="hidden",name="tagNames",value="")
+                      .tags-hd 问题标签
+                      .tags-bd
+                        each tag,i in tags
+                          span.label(data-id="#{tag.id}",data-original-title="#{tag.desc_md.substr(0,100)}",title="#{tag.desc_md.substr(0,100)}") #{tag.name}
+                        a(href="/tag/add",target="_blank",style="padding-left:10px;font-size:12px;") 添加新标签
+                .control-group.invite
+                  .invite-hd 邀请回答
+                  .invite-area
+                    input#invite_input(type="text",placeholder="输入关键字搜索用户，支持拼音，对方会收到站内和邮箱通知。")
+                    ul.invite-user-dropdown.hidden
+                  .invite-list.clearfix
+                    if locals.pros
+                      each pro in pros
+                        |<li class=user data-id=#{pro.user.id}>#{pro.user.nick}<img width="20" src="#{assets_head}/images/pro.png"/><i class="close icon-remove-2"></i></li>
+                  input#invite(type="hidden",name="invites")
+                .control-group
+                  label.checkbox
+                    input(type="checkbox",name="to_weibo",checked="true")
+                    |分享到微博
+                .control-group
+                  button.btn#submit(type='submit') 发表
+                .control-group#wmd-preview-parent
+                  .wmd-panel.wmd-preview#wmd-preview-con
+                    .padding
+                      #wmd-preview
+            #myModal.modal.hide.fade.
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabel">插入图片</h3>
+              </div>
+              <div class="modal-body">
+                  <input type="file" name="pic" id="file" />
+              </div>
+              <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
+                <button class="btn btn-primary">插入</button>
+              </div>
+
+
+      .right
+        .module
+          .hd 提示
+          .bd
+            div.item 标题中需带有问号和疑问语气。
+            div.item 可以使用markdown语法，可以插入图片。
+            div.item 分享到微博可以让更多人关注并回答问题。
+            div.item 提问前请阅读：<a href="/qa/7" target="_blank">问答系统指南</a>
+            div.item 插入代码，请先输入代码，然后选中后点击工具栏里的 <> 符号。
+        .module
+          .hd 提问三原则
+          .bd
+            div.item 一。请确保描述清楚以便别人可以回答您的问题。例如直击本质的现象，所有表现形式，报错信息，发生场景等。
+            div.item 二。不要吝啬多贴代码，推荐使用 <a href="http://jsfiddle.net/" target="_blank">http://jsfiddle.net/</a> 演示代码。
+            div.item 三。请带着求教或者请教的态度问问题，没有人有回答你问题的义务，如果有人回答你，请感谢他，并且给他点上一个赞，作者会收到感谢并为别人解决更多问题。
+      #fullscreen-editor.hidden
+      #fullscreen-exit.hidden
+        a.btn
+          i.icon-resize-small
+    include ../footer
+    script(src='#{assets_head}/js/ajaxfileupload.js')
+    script(src='#{assets_head}/js/loadingTip.js')
+    script(src='#{assets_head}/js/messageTip.js')
+
+    script.
+      $(".channels .channel").click(function(){
+        $(".channels .channel").removeClass("active");
+        $(this).addClass("active");
+        $("#channel_id").val($(this).attr("data-id"))
+        })
+      var users = [];
+      $.ajax({
+        url:"/user/all-users",
+        dataType:"json",
+        success:function(data){
+          users = data;
+        }
+        })
+      var showUsers = function(us){
+      $(".invite-user-dropdown").html("")
+      $(".invite-user-dropdown").removeClass("hidden")
+      var count = 0;
+        if(us.length==0){
+        $(".invite-user-dropdown").append("<li class=no>无结果</div>")
+        }
+        for(var i=0;i<(us.length>8?8:us.length);i++){
+        var u = us[i]
+          $(".invite-user-dropdown").append("<li class=user data-id="+u.id+">"+u.nick+"</div>")
+        }
+      }
+      var invited=[]
+
+    if locals.pros
+      each pro in pros
+        script.
+         invited.push(#{pro.user.id})
+    script.
+      $(document.body).click(function(){
+        $(".invite-user-dropdown").addClass("hidden")
+      })
+      $(".invite-user-dropdown").click(function(e){
+        var target=e.target;
+        if($(target).hasClass("user")){
+          if(invited.indexOf($(target).attr("data-id"))==-1){
+            $(".invite-user-dropdown").addClass("hidden")
+            $(".invite-list").append("<li class=user data-id="+$(target).attr("data-id")+" >"+$(target).html()+"<i class=\"close icon-remove-2\"></i></li>")
+            invited.push($(target).attr("data-id"))
+            $("#invite").val(invited.join(","))
+            $("#invite_input").val("");
+          }
+
+        }
+        })
+      $(".invite-list").click(function(e){
+
+        if($(e.target).hasClass("close")){
+          var id = $(e.target.parentNode).attr("data-id")
+          $(e.target.parentNode).remove()
+          for(var i=0;i<invited.length;i++){
+            if(id==invited[i]){
+              invited.splice(i,1)
+            }
+          }
+          $("#invite").val(invited.join(","))
+
+        }
+        })
+      $("#invite_input").keyup(function(){
+        var keyword = $("#invite_input").val();
+        var matchUsers = []
+        users.forEach(function(u){
+          if(u.nick.indexOf(keyword)!=-1||u.pinyin.indexOf(keyword)!=-1){
+            matchUsers.push(u)
+          }
+          })
+        showUsers(matchUsers)
+        })
+      $(".tags .label").click(function(){
+        $(this).toggleClass("label-success");
+        var selectedTags = []
+        var selectedTagNames=[]
+        $(".tags .label").each(function(i,tag){
+          if($(tag).hasClass("label-success")){
+            selectedTags.push($(tag).attr("data-id"))
+              selectedTagNames.push($(tag).html())
+          }
+          })
+        $("#tags").val(selectedTags.join(","))
+        $("#tagNames").val(selectedTagNames.join(","))
+        })
+
+      var converter1 =new  Markdown.Converter();
+      Markdown.Extra.init(converter1);
+      var editor1 = new Markdown.Editor(converter1);
+
+      editor1.run();
+
+      $("#form").submit(function(e){
+        e.preventDefault()
+          HtmlJS.util.ajax("/qa/add",$("#form").serialize(),"post",function(data){
+            if(data.success){
+              alert("发布成功")
+              window.location.href="/qa"
+            }else{
+              alert(data.info)
+            }
+          },function(){
+
+          },$("#submit"))
+      })
+      editor1.hooks.set('insertImageDialog', function(callback) {
+        $("#myModal").modal("show");
+        $("#file")[0].onchange=function(){
+          $.ajaxFileUpload({
+            url:"/upload",
+            secureuri:false,
+            fileElementId:'file',
+            dataType: 'json',
+            success: function (data, status)
+            {
+              if(data.success){
+                callback(data.data.filename)
+                $("#myModal").modal("hide");
+              }else{
+                messageTip.show(data.info)
+
+              }
+              loadingTip.hide()
+            },
+            error:function(){
+
+              loadingTip.hide()
+            }
+          })
+        };
+        return true; // tell the editor that we'll take care of getting the image url
+      });

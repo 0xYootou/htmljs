@@ -1,0 +1,63 @@
+doctype html
+html
+  head
+    include ../head
+    link(href='#{assets_head}/css/Markdown.Editor.css?dd', type='text/css', rel='stylesheet', charset='utf-8')
+    script(src='#{assets_head}/js/jquery.js')
+    include ../editor_head
+    title #{locals.tag?"编辑标签":"添加标签"}
+    style.
+      #content input[type="text"]{
+        width:400px;
+      }
+  body#qa-add
+    - locals.pageId=8;
+    include ../header
+    #content.clearfix
+      .content
+        .left
+          .module
+            form.form-horizontal#form(method='post')
+              fieldset
+                legend #{locals.tag?"编辑标签":"添加标签"}
+                if locals.tag
+                  input(type="hidden",name="id",value="#{tag.id}")
+                .control-group
+                  input#title(type='text', value = "#{locals.tag?tag.name:''}",name='name', placeholder='标签名',disabled=locals.tag)
+                .control-group
+                  input#keywords(type='text',value = "#{locals.tag?tag.keywords:''}", name='keywords', placeholder='关键词（英文逗号分隔）')
+                .control-group
+                  .wmd-panel
+                    #wmd-button-bar
+                    textarea.wmd-input#wmd-input(name="desc_md",placeholder='标签描述') #{locals.tag?tag.desc_md:''}
+                    .wmd-panel.wmd-preview
+                      div 预览
+                      #wmd-preview
+                .control-group
+                  button.btn(type='submit') #{locals.tag?"更新":"添加"}
+
+      .right
+        .module
+          .hd 提示
+          .bd
+            div 每个人都可以添加和编辑标签，但是恶意提交和修改会被降权或销号。
+    include ../footer
+    script(src='#{assets_head}/js/ajaxfileupload.js')
+    script(src='#{assets_head}/js/loadingTip.js')
+    script(src='#{assets_head}/js/messageTip.js')
+    script.
+
+      var converter1 = Markdown.getSanitizingConverter();
+      var editor1 = new Markdown.Editor(converter1);
+      editor1.run();
+      var converter2 = new Markdown.Converter();
+
+      converter2.hooks.chain("preConversion", function (text) {
+          return text.replace(/\b(a\w*)/gi, "*$1*");
+      });
+
+      converter2.hooks.chain("plainLinkText", function (url) {
+          return "This is a link to " + url.replace(/^https?:\/\//, "");
+      });
+
+      

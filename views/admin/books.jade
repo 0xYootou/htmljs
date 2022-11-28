@@ -1,0 +1,27 @@
+doctype html
+html
+  head
+    include head
+    title 前端乱炖-admin
+    style.
+      .types a{float:left;margin-right:10px;}
+      .types a.active{color:#aaa;}
+      td a{margin-right:10px;}
+  body#articles
+    - var pageId = 5;
+    include header
+    include ./../page
+    table.table.table-bordered.table-striped
+      tr
+        th id
+        th title
+        th 操作
+      for book in books
+
+        tr
+          td #{book.id}
+          td
+            div #{book.title}
+          td
+            a(href="/admin/book/#{book.id}/del") kill
+    

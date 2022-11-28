@@ -1,0 +1,78 @@
+doctype html
+html(xmlns:wb='http://open.weibo.com/wb')
+  head
+    include ../head
+    title #{locals.column?locals.column.name+' - ':''}专栏 - 前端乱炖
+    |<meta name="description" content="用于展示各种原创文章，原创翻译文章，知识性比较强，内容比较专业和系统。专栏这个称呼是一个总称，而其内部，可以分很多独立的专栏，有私人的，也有公开可以投稿的。每个人都可以申请创建一个专栏，但是需要审核。一个专栏是同一系列文章的一个集合，而这个系列可以是一个技术点（例如NodeJS入门系列），也可以是一种抽象的类别（例如情感专栏）。">
+    script(src='#{assets_head}/js/bootstrap/bootstrap-transition.js')
+    script(src='#{assets_head}/js/bootstrap/bootstrap-modal.js')
+    script(src='#{assets_head}/js/bootstrap/bootstrap-tooltip.js')
+    style.
+    script(src='http://tjs.sjs.sinajs.cn/open/api/js/wb.js')
+  body#articles
+    img(src="#{assets_head}/images/clear-head.png",style="width:100%;")
+    #content.clearfix
+
+      .column
+        .col-title 专栏名：#{column.name}
+        .col-user 所有者：#{column.user.nick}
+        .col-desc !{column.desc_html}
+
+      .content
+
+        if articles && articles.length
+          .articles
+            each article,i in articles
+              article(id="post-#{article.id}",class="#{i%2==0?'yooo':''}")
+                .lft
+                  .line
+                    i.icon-thumbs-up
+                    span.count #{article.zan_count}
+                  .line
+                    i.icon-heart
+                    span.count #{article.fav_count}
+                .rht
+                  h2.entry-title
+
+                      a.real-title(href='/article/#{article.pinyin?article.pinyin:article.id}', title='#{article.title}', rel='bookmark') #{article.title}
+
+                  if article.desc
+                    .entry-content.hidden.clearfix
+                      |!{article.desc.replace(/<[^>]*?>/g," ").substr(0,200)}
+                      a(href="/article/#{article.id}")  阅读更多>>
+                  .entry-foot
+                    div.others
+                      span.author.vcard.item
+                        span.index
+                          i.icon-user
+                        a.value.url.fn(rel='author', href='/user/#{article.user_id}') #{article.user_nick}
+
+
+                      span.time.item
+                        span.index
+                          i.icon-clock
+                        a.value #{moment(article.publish_time*1000).fromNow()}
+
+                      if locals.user && (user.is_admin||user.id==article.user_id)
+                        span.views.item
+                          a.value(href="/article/#{article.id}/edit") 编辑
+                        span.views.item
+                          span.index
+                            i.icon-thumbs-up
+                          a.value #{article.zan_count}
+                        //- span.views.item
+                        //-   span.index
+                        //-     i.icon-signal
+                        //-   a.value #{article.visit_count}
+
+        else
+          .articles 暂无文章
+        include ../page
+        .wx-mp.module
+          .hd 更多信息欢迎关注“前端乱炖”公众号
+          .bd
+            img(src="http://htmljs.b0.upaiyun.com/uploads/1393252270532-qrcode_for_gh_fa421f002680_258.jpg",style="width:100%;")
+
+
+
+    

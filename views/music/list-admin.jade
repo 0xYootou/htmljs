@@ -1,0 +1,72 @@
+doctype html
+html
+    head
+        include ../head
+        link(href='#{assets_head}/css/Markdown.Editor.css?ddd2', type='text/css', rel='stylesheet', charset='utf-8')
+        script(src='#{assets_head}/js/jquery.js')
+        script(src='#{assets_head}/js/pcaunzip.js')
+        include ../editor_head
+        title 喵
+        style.
+            #content textarea {
+                height: 200px;
+            }
+            #content{width:1200px;}
+    body#job
+        include ../music_header
+        #content.clearfix
+            .content
+                include ../page
+                table
+                    tr
+                        th(style="width:100px;") 标题
+                        th(style="width:60px;") 图片
+                        th(style="width:50px;") index
+                        th(style="width:100px;") isbn
+                        th(style="width:300px;") 简介
+                        th(style="width:100px;") 发布时间
+                        th(style="width:50px;") 操作
+                        th 标签
+                    if musics && musics.length
+                        each music,i in musics
+                            tr
+                                td
+                                    a(href="/music/#{music.id}") #{music.title}
+                                td
+                                    img(src="#{music.cover}",style="width:40px;height:40px;")
+                                td #{music.index}
+                                td #{music.isbn}
+                                td #{music.desc}
+
+                                td #{moment(music.createdAt).format('LLL')}
+                                td
+                                    a(href="/music/add?id=#{music.id}") 编辑
+                                td
+                                    div.tags.clearfix
+                                        each cat,i in cats
+                                            span.tag.label.label-default(style="cursor:pointer;float:left;margin-right:5px;" +
+                                            "margin-bottom:5px;font-weight:normal;",class="#{music.cats.indexOf(cat.id)!=-1?'label-success':''}",data-cat='#{cat.id}',data-music='#{music.id}') #{cat.name}
+                                    a(href='/music/cat/add') 添加分类
+
+                include ../page
+        script(src='#{assets_head}/js/ajaxfileupload.js')
+        script(src='#{assets_head}/js/loadingTip.js')
+        script(src='#{assets_head}/js/messageTip.js')
+        script.
+            $('.tag').on('click',function(){
+                var music_id = $(this).attr('data-music')
+                var cat_id = $(this).attr('data-cat')
+
+                $.ajax({
+                    url:'/music/cat/music',
+                    type:'post',
+                    data:{
+                        music_id:music_id,
+                        cat_id:cat_id
+                    },
+                    success: function(){
+                        window.location.reload();
+                    }
+                })
+
+            })

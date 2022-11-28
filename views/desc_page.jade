@@ -1,0 +1,41 @@
+.pagination.clearfix
+  pageList = []
+  page = page*1
+  totalPage = totalPage*1
+  if page-1>4
+    pageList = pageList.concat([1,2,3,"...",page-1])
+  else
+    i = 0
+    while ++i < page
+      - pageList.push (i)
+  - pageList.push (page)
+  if page+1<totalPage-3
+    pageList = pageList.concat([page+1,"...",totalPage-2,totalPage-1,totalPage])
+  else
+    i = page
+    while ++i < totalPage*1+1
+      - pageList.push (i)
+  ul
+    if page==totalPage
+      li.disabled
+        a Prev
+    else
+      li
+        a(href="?page=#{page+1}") Prev
+    - var i=0
+    - pageList = pageList.reverse()
+    for p in pageList
+      if p =="..."
+        li
+          a(href="javascript:void(0);") ...
+      else
+        li(class="#{p==page?'active':''}")
+          a(href="?page=#{p}") #{p}
+    if page==1
+      li.disabled
+        a Next
+    else
+      li
+        a(href="?page=#{page-1}") Next
+
+  .total.label 共 #{total} 

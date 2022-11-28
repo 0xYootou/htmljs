@@ -1,0 +1,36 @@
+doctype html
+html
+  head
+    include ./../head
+    title 活动 - 前端乱炖
+    style.
+      #act{
+        background:url(http://htmljs.b0.upaiyun.com/images/act1-bg.jpg) no-repeat center top;
+        background-attachment:fixed;
+      }
+  body#acts
+    - locals.pageId=5;
+    include ./../header
+    #content.clearfix
+      if !locals.acts || !locals.acts.length
+        .no-act 暂无活动，敬请关注
+      else
+        each act in acts
+          .act-item.clearfix(class="#{act.is_down?'isdown':''}")
+            .act-infos
+              .ln.act-title
+                a(href="/act/#{act.id}") #{act.title}
+              if act.time.getTime()
+                .ln.act-time 时间：#{moment(act.time.getTime()-8000*60*60).format("LLL")}
+              .ln.act-location 地点：#{act.location}
+              .ln.act-limit 限制人数：#{act.person_limit}  浏览人数：#{act.visit_count}
+              .ln.act-action
+                if act.is_down
+                  a.btn(href="/act/#{act.id}") 已结束，去看看
+                else
+                  a.btn(href="/act/#{act.id}")
+                    |详情，去报名
+                if locals.user && user.is_admin
+                  a.btn(href="/act/#{act.id}/edit",style="margin-left:10px;") 编辑
+    include ../footer
+

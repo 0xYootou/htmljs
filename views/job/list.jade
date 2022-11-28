@@ -1,0 +1,85 @@
+doctype html
+html
+  head
+    include ../head
+    title 招聘求职 - 前端乱炖
+    script(src='#{assets_head}/js/bootstrap/bootstrap-tooltip.js')
+  body#jobs
+    - locals.pageId = 50
+    include ../header
+    #content
+      .module
+        .hd 我的信息
+        .bd.my-resume
+          if !locals.resume
+            div.no-resume.alert 你还没有上传简历，请上传简历增加工作机会。
+            a.btn(href="/job/resume/add") 上传简历
+            .item.add-job 我是招聘企业
+                a.small-btn.btn(href="/job/add",style="margin-left:10px;") 发布招聘信息
+          else
+
+              span.item
+                span.key 求职职位
+                span.value #{resume.zhiwei}
+              span.item
+                span.key 薪资范围
+                span.value #{resume.min_price} - #{resume.max_price}
+              span.item
+                span.key 求职城市
+                span.value #{resume.city}
+              .item
+                span.key 简介
+                span.value !{resume.desc.replace(/<[^>]*>/g,'')}
+              .item
+                a(href="/job/resume/edit/#{resume.id}") 编辑简历信息
+              .item.add-job 我是招聘企业
+                a.btn.small-btn(href="/job/add",style="margin-left:10px;") 发布招聘信息
+      if locals.jobs
+        .content
+          .left
+            .joblist
+                .job-list.clearfix
+                  each job in jobs
+                    .job
+                      .title
+
+                        a.t(href="/job/#{job.id}") [#{job.company_city=="市辖区"?job.company_country:job.company_city}]【#{job.company_name}】 招聘 【#{job.zhiwei}】 (#{job.min_price}元 - #{job.max_price==0?"不限":job.max_price+"元"})
+                        a.headpic.user(href="/user/#{job.user.id}",data-original-title="#{job.user.nick}")
+                          img(src="#{job.user.head_pic}")
+                      //.con
+                      //    span.item
+                      //      span.key 公司：
+                      //      span.value #{job.company_name}
+                      //    span.item
+                      //      span.key 招聘职位：
+                      //      span.value #{job.zhiwei}
+                      //    span.item
+                      //      span.key 薪水范围：
+                      //      span.value #{job.min_price} - #{job.max_price==0?"不限":job.max_price}
+                      //
+                      //    div
+                      //        span.item
+                      //          span.key 公司规模：
+                      //          span.value #{job.company_personcount}
+                      //        span.item
+                      //          span.key 所在城市：
+                      //          span.value #{job.company_city}
+                      //        if locals.user && locals.user.is_admin
+                      //              if job.is_jian
+                      //                  a(href="/job/#{job.id}/update?is_jian=0") no推荐
+                      //              else
+                      //                  a(href="/job/#{job.id}/update?is_jian=1") 推荐
+                include ../page
+        .right
+          .module.jian-jobs
+            .hd 推荐职位
+            .bd
+                each a in jian_jobs
+                    div.item <a href="/job/#{a.id}">#{a.title}</a>
+          a.ad-blank(href="http://www.html-js.com/topic/827",style="width:280px;height:180px;")
+            .ad-inner 广告位 点击查看投放指南
+        include ../footer
+        script.
+          $('.user').tooltip({
+              placement:"bottom"
+          })

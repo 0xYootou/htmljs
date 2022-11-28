@@ -1,0 +1,32 @@
+config =
+  socket_port:8756
+  base_host:"http://www.html-js.com"
+  assets_head:"/assets"
+  run_port:5687
+  session_secret:""
+  mysql_table:""
+  mysql_username:"" #数据库用户名
+  mysql_password:"" #数据库密码
+  mysql_host:""
+  upload_path:__dirname+"/uploads/"
+  resume_path:__dirname+"/resumes/"
+  "upyun_bucketname":""
+  "upyun_username":""
+  "upyun_password":""
+  base_path:__dirname
+  script_ext:".js"
+  day_coin_max:300
+  sdks:
+    sina:
+      app_key:""
+      app_secret:""
+      redirect_uri : 'http://www.html-js.com/user/sina_cb'
+  mail:
+    api_key  : '',
+    api_user : ''
+    from     : 'master@html-js.com'
+    fromname : '前端乱炖 - 国内最专业的前端原创内容社区'
+    api_user_list:"postmaster@htmljsmessage.sendcloud.org"
+    api_key_list:""
+  xunsearch_bin:""
+global.__C = module.exports = config

@@ -1,0 +1,73 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    link(rel="Shortcut Icon",href="http://htmljs.b0.upaiyun.com/uploads/1420299703794-icon.png")
+    link(href="#{assets_head}/amazeui/css/amazeui.min.css",rel="stylesheet",type="image/x-icon")
+    title 二十一点·睡前故事 第#{music.index}期《#{music.title}》
+    style.
+      #content{
+        padding:20px;
+
+        }
+      #header{
+        background: url(http://htmljs.b0.upaiyun.com/uploads/1420209087983-music-bg.jpg) no-repeat;
+        background-size:cover;
+        width:100%;
+        height:50px;
+        font-size:18px;
+        color:#fff;
+        line-height: 50px;
+        text-align: center;
+        display: block;
+      }
+      .nav-music{
+        margin-bottom:10px;
+      }
+      .all-music{
+        line-height:40px;
+        font-size:14px;
+        color:#999;
+        border:1px solid #ddd;
+        padding:10px;
+        margin-right:10px;
+
+      }
+      .share-tip{height:25px;background: #eee;color:#444;line-height: 25px;
+      padding-left:10px;font-size:12px;}
+    |<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  body
+    a#header(href="/music") 二十一点 · 睡前故事
+    .share-tip 点击右上角通过微信分享给朋友们哦,谢谢大家的支持！
+    #content
+      div.nav-music
+        a.all-music(href="/music") 查看往期的睡前故事
+      article.am-article
+        .am-article-hd
+          h1.am-article-title 第#{music.index}期《#{music.title}》
+          p.am-article-meta 十一 <time style="margin-left:10px;">#{moment(music.createdAt).format("YYYY-MM-DD")}</time> <span style="margin-left:10px;">#{music.visit_count}浏览</span>
+        .am-article-bd
+          p.am-article-lead !{music.desc.replace(/\n/g,"<br/>")}
+          .am-article-divider
+          p <audio src="#{music.audio}" preload="auto" controls="true"/>
+          p
+            img(src="#{music.cover}")
+          p.am-article-lead 二十一点 微信公众号，是由卓老师维护的一个面向各位小朋友和大朋友的深夜故事公众号。<br/><br/>卓老师每天晚上都会讲一个非常可爱的故事，然后录音发布在公众号上。<br/><br/>记住哦~每天晚上九点发布<br/>赶紧关注卓老师的公众号：二十一点<br/><br/>或者扫描二维码：<br/><img src="http://ww3.sinaimg.cn/bmiddle/6663ae3cgw1enwoooq45fj2076076dga.jpg"/><br/>如果您觉得卓老师讲的不错，欢迎多多分享给自己的朋友哦。谢谢啦~\(≧▽≦)/~
+          p.
+            <!-- 多说评论框 start -->
+              <div class="ds-thread" data-thread-key="#{music.uuid}" data-title=" 第#{music.index}期《#{music.title}》#{music.desc}" data-url="http://www.html-js.com/music/#{music.id}"></div>
+            <!-- 多说评论框 end -->
+            <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+            <script type="text/javascript">
+            var duoshuoQuery = {short_name:"htmljs"};
+              (function() {
+                var ds = document.createElement('script');
+                ds.type = 'text/javascript';ds.async = true;
+                ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+                ds.charset = 'UTF-8';
+                (document.getElementsByTagName('head')[0]
+                 || document.getElementsByTagName('body')[0]).appendChild(ds);
+              })();
+              </script>
+            <!-- 多说公共JS代码 end -->
+

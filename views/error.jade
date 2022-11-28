@@ -1,0 +1,13 @@
+doctype html
+html
+  head
+    include head
+    style.
+      body{text-align:center;padding-top:100px;}
+
+  body#404
+    div !{error}
+      if locals.code && code ==100
+        |<a href="/add-card">创建名片</a>
+      else
+        |<a href="javascript:history.go(-1);">返回</a>

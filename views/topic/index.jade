@@ -1,0 +1,164 @@
+doctype html
+html
+  head
+    include ./../head
+    title node分享笔记
+    |<meta name="description" content="如果你觉得自己写不出专业文章，也没什么专业问题要问的，你可以来【话题】频道发发牢骚，八卦一下，灌灌水，问一些比较业余的问题等等。总之这就是一个游离于专栏和问答之外的一个小论坛。">
+    script(src='#{assets_head}/js/bootstrap/bootstrap-tooltip.js')
+    style.
+
+  body#topics
+    - locals.pageId=10;
+    include ./../header
+    #content.clearfix
+      if locals.tags
+        ul.breadcrumb
+          li
+            a(href="/") 首页
+            span.divider /
+          li.active
+            span 话题
+      else
+        ul.breadcrumb
+          li
+            a(href="/") 首页
+            span.divider /
+          li
+            a(href="/topic") 话题
+            span.divider /
+          li.active
+            span #{tag.name}
+      .content
+          .head.mod-white
+            if !locals.tag
+              .tags
+                //- a(href="/topic",class="#{!locals.tag_id?'active':''}") 全部
+                each tag in tags
+                  .tag
+                    if tag.id==3
+                      a.name.important(href="/job") 招聘求职
+                    else
+                      a.name(href="/topic?tag_id=#{tag.id}",class="#{locals.tag_id==tag.id?'active':''} #{tag.important?'important':''}") #{tag.name}
+
+                    .others
+                      span.views.item
+                        span.index 主题数：
+                        a.value #{tag.topic_count}
+                      span.views.item
+                        span.index 浏览：
+                        a.value #{tag.visit_count}
+                    .desc #{tag.desc}
+                    .topics.hidden
+                      if tag.topics
+                        each t in tag.topics
+                          .topic
+                            span [#{moment(t.createdAt).format("MM-DD")}]
+                            a.t(href="/topic/#{t.id}") #{t.title}
+                            //- span (#{moment(t.createdAt).format("MM-DD")})
+                        a.more(href="/topic?tag_id=#{tag.id}") 更多话题 >>
+
+              .publish-tip.alert 如要发表话题，请点击分类进入之后，再发表到此分类。
+            else
+              .simple-tags
+                each c,i in  tags
+                  a.item(href="/topic?tag_id=#{c.id}",class="#{tag_id==c.id?'active':''}") #{c.name}
+              .now-tag
+                a.name(href="/topic?tag_id=#{tag.id}",class="#{locals.tag_id==tag.id?'active':''} #{tag.important?'important':''}") #{tag.name}
+                .others
+                  span.views.item
+                    span.index 主题数：
+                    a.value #{tag.topic_count}
+                  span.views.item
+                    span.index 浏览：
+                    a.value #{tag.visit_count}
+                .desc #{tag.desc}
+                .actions
+                  a.btn.small-btn(href="/topic/add#{locals.tag_id?('?tag_id='+locals.tag_id):''}") 添加话题
+          if !(locals.topics&&topics.length)
+            .topic-list
+              .notopic 还没有话题，快去发表一个吧！
+
+          else
+            .topic-list.mod-white
+              each topic,i in topics
+                .topic-item(class="#{i%2==1?'':'yooo'} #{topic.answer_count==1?'':''}")
+
+
+                  .entry-title
+                    h2.title
+
+                      a(href='/topic/#{topic.id}', title='#{topic.title}', rel='bookmark')
+
+                        |#{topic.title}
+                      if topic.topicTag
+                        |[
+                        a.tag(href="/topic/?tag_id=#{topic.tag_id}")
+                          |#{topic.topicTag.name}
+                        |]
+                      if topic.comment_count == 0
+                        span.label.tip.new New
+                      else if topic.comment_count >=20 || topic.is_hot
+                        span.label.tip.hot HOT
+                      else if topic.sort == 10000
+                        span.label.tip.top 置顶
+                    div.others
+                      //
+                        span.author.vcard.item
+                          span.index 提问者：
+                          a.value.url.fn(rel='author', href='/user/#{topic.user_id}') #{topic.user_nick}
+
+
+                      //- span.time.item
+                        //- a.value 发布于：#{moment(topic.createdAt).fromNow()}
+                      span.views.item
+                        span.index 跟帖：
+                        a.value #{topic.comment_count}
+                      span.views.item
+                        span.index 浏览：
+                        a.value #{topic.visit_count}
+
+                      if topic.last_comment_user_id
+                        span.time.item
+                          span.value 最后由 <a href="/user/#{topic.last_comment_user_id}">#{topic.last_comment_user_nick}</a> 回复于 #{moment(topic.last_comment_time).fromNow()}
+
+
+                      if locals.user&&locals.user.is_admin
+                        span.actions.item
+                          span.index 操作：
+                          if topic.sort ==10000
+                            a(href="/topic/#{topic.id}/update?sort=#{topic.id}") 取消置顶
+                          else
+                            a(href="/topic/#{topic.id}/update?sort=10000") 置顶
+                          a(href="/topic/#{topic.id}/update?is_hot=1") hot
+                          a(href="/topic/#{topic.id}/update?is_hot=0") nohot
+                          a(href="/topic/#{topic.id}/delete") 删除
+                    div.user
+                      a(data-original-title="#{topic.user_nick}",href="/user/#{topic.user_id}")
+                        img(src="#{topic.user_headpic}")
+                        if topic.user&&topic.user.sex
+                          if topic.user.sex == '男'
+                            .sex.nan
+                          else
+                            .sex.nv
+          include ../page
+          include ../google970
+      //- .right
+      //-   .module
+      //-     .bd
+      //-       .item 话题用于闲散轻松的讨论，无太多限制。
+      //-   .module
+      //-     .hd 最新回复
+      //-     .bd
+      //-       if locals.recent_replys
+      //-         each reply in recent_replys
+      //-           div.item
+      //-             span #{reply.user_nick}：
+      //-             a(href="/topic/#{reply.topic_id}",style="word-break:break-all;") #{reply.html.replace(/<[^>]*?>/g,"").substr(0,70)+"..."}
+
+
+    script.
+      $('.user a').tooltip({
+          placement:"bottom"
+      })
+
+    include ../footer

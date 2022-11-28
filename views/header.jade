@@ -1,0 +1,81 @@
+
+#header
+  .wrapper.clearfix
+    a.logo(href="/",title="前端乱炖")
+      span.dun 炖
+    .navbar.navbar-inverse
+      .navbar-inner
+            ul.nav.left-nav
+              //li(class="#{locals.pageId==0?'active':''}",pageId="0")
+              //  a(href="/") <i class="icon-home"></i>首页
+              li(class="#{locals.pageId==1?'active':''}",pageId="1")
+                a(href="/article")  前端乱炖
+              //li(class="#{locals.pageId==7?'active':''}",pageId="7")
+              //  a(href="/qa") <i class="icon-lightbulb"></i>问答
+              li(class="#{locals.pageId==10?'active':''}",pageId="10")
+                a(href="/topic")  讨论区
+              li.hidden(class="#{locals.pageId==20?'active':''}",pageId="20")
+                a(href="/talk") <i class="icon-conversation"></i>实时讨论
+              li.hidden(class="#{locals.pageId==15?'active':''}",pageId="15")
+                a(href="/blog") <i class="icon-sampler"></i>博集
+              li.hidden(class="#{locals.pageId==8?'active':''}",pageId="8")
+                a(href="/tag") 标签
+              li.hidden(class="#{locals.pageId==50?'active':''}",pageId="2")
+                a(href="/job") <i class="icon-leaf"></i>招聘
+              li(class="#{locals.pageId==2?'active':''}",pageId="2")
+                a(href="/cards")  花名册
+              //li(class="",pageId="101")
+              //  a(href="https://www.upyun.com/https") 网站 HTTPS 检测
+              //li.search
+              //  form(action="/search",method="get",style="margin:0;")
+              //    i.icon-search
+              //    input#keyword.span2.input-large(type="text",name="q",placeholder="搜索全站、站外内容")
+
+
+
+
+
+
+              li.hidden(class="#{locals.pageId==6?'active':''}",pageId="6")
+                a(href="/book") 免费送书
+              //- li.dropdown
+              //-   a.dropdown-toggle(data-toggle="dropdown")
+              //-     |<i class="icon-list"></i> 花名册
+              //-   ul.dropdown-menu
+
+            ul.right-nav
+              if locals.user
+                li
+                  a(href="/user",title="有#{unread_count}条未读消息",style="margin-right:5px;")
+                    img(src="#{user.head_pic}",width="20px")
+                    if locals.unread_count
+                      span.unread(href="/user",) #{unread_count}
+              else
+                li
+                  a(href="/user/login?redirect=#{encodeURIComponent(locals.url)}") 登录
+              
+              li.hidden.sub-trigger()
+                a 其他功能
+                ul.sub-menu.hidden
+
+                  li(class="#{locals.pageId==5?'':''}",pageId="5")
+                    a(href="/act") 活动
+                  li(class="#{locals.pageId==9?'':''}",pageId="9")
+                    a(href="/tools") <i class="icon-classic-hammer hidden"></i>常用工具
+                    span.my-favs
+                  li()
+                    a(href="/talk")
+
+                      |实时讨论
+              if locals.user
+                li
+                  a(href="/user/logout?redirect=#{encodeURIComponent(locals.url)}") 退出
+script.
+   
+if locals.user && (!locals.user.card_id)
+  style.
+    #content{margin-top:10px;}
+  #tips(style="width:1000px;margin:0 auto;margin-top:10px;")
+    .module
+        |您还没有加入 前端花名册 ，加入花名册后，可以享受更多功能，现在加入，<a href="/add-card">加入花名册</a>。<br/>
+

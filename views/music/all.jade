@@ -1,0 +1,232 @@
+doctype html
+html(xmlns:wb='http://open.weibo.com/wb')
+  head
+    link(rel="Shortcut Icon",href="http://htmljs.b0.upaiyun.com/css/music/story-icon2.png")
+    |<link rel="apple-touch-icon" href="http://htmljs.b0.upaiyun.com/css/music/story-icon2.png" />
+    link(rel="stylesheet",href="#{assets_head}/css/bootstrap.css?dddddddd",type="text/css")
+    link(rel="stylesheet",href="#{assets_head}/css/music.css?zdzddddddddd92dd3dz",type="text/css")
+    title 喵老师绘本故事
+    |<meta name="apple-itunes-app" content="app-id=998079819" />
+    |<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+    style.
+      #header{
+        background: url(http://htmljs.b0.upaiyun.com/uploads/1420209087983-music-bg.jpg) no-repeat;
+        background-size:cover;
+        width:100%;
+        height:50px;
+        font-size:18px;
+        color:#fff;
+        line-height: 50px;
+        text-align: center;
+        display: block;
+      }
+      .content{padding:10px;}
+      #musics article{
+        margin:10px 0px;
+      }
+      #app-header{height:80px;background:#eee;display:block;color:#333;}
+      .app-icon{margin:10px;margin-left:20px;width:60px;float:left;}
+      .app-desc{margin-top:15px;float:left;font-size:16px;}
+      .app-use{font-size:12px;margin-top:8px;}
+      .app-download{position:absolute;right:10px;top:30px;height:25px;line-height:25px;
+        background: #0088CC;
+        background-image: -webkit-linear-gradient(top, #00a3f5 0%, #0088CC 100%);
+        background-image: linear-gradient(to bottom, #00a3f5 0%, #0088CC 100%);
+        color:#fff;
+        padding:0 10px;
+        font-size:12px;
+        border-radius:5px;
+      }
+      .hidden{display:none !important;}
+      .app-open{position:fixed;width:100%;top:0;left:0;z-index:100;}
+      .cccc{background:#fff;opacity:0.7;position:fixed;width:100%;top:0;left:0;height:10000px;}
+      .app-open img{position:fixed;width:100%;top:0;left:0;}
+      article img{width:100%;}
+      .ap-frame{
+      position:fixed;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      background:url(#{assets_head}/images/app-bg.jpg) #fff;
+      background-size:100% 100%;
+      }
+      .ap-container{
+      width:100%;
+      margin-top:80px;
+      }
+      .ap-icon{
+        margin:20px auto;
+        width:100px;
+        height:100px;
+        display:block;
+      }
+      .ap-icon img{
+      width:100px;
+      height:100px;
+      }
+      .ap-title{
+        width:100%;
+        margin-top:50px;
+      }
+      .ap-title img{
+      width:400px;
+      display:block;
+      margin:20px auto;
+      }
+      .ap-download{
+        width:100%;
+        margin-top:50px;
+      }
+      .ap-download img{
+      width:200px;
+      display:block;
+      margin:20px auto;
+      }
+      .ap-see{
+      width:100%;
+      display:block;
+      text-align:center;
+      font-size:16px;
+      color:#aaa;
+      text-decoration:underline;
+      font-weight:200;
+      margin-top:20px;
+      }
+      .ap-share{
+        position:absolute;
+        bottom:30px;
+        width:100%;
+        text-align:center;
+      }
+      .as-weibo{
+          width:40px;
+          height:40px;
+          background:url(#{assets_head}/images/app-weibo.png) no-repeat;
+          background-size:100%;
+          display:inline-block;
+          margin-right:10px;
+      }
+      .as-weixin{
+          width:40px;
+          height:40px;
+          margin-left:10px;
+          background:url(#{assets_head}/images/app-weixin.png) no-repeat;
+          background-size:100%;
+          display:inline-block;
+      }
+      .weixin-layer{
+      position:absolute;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      background:#333;
+      opacity:0.9;
+      display:none;
+      }
+      .weixin-pop{
+      width:300px;
+      height:300px;
+      position:absolute;
+      left:50%;
+      margin-left:-150px;
+      top:150px;
+      border:10px solid #fff;
+      box-shadow:3px 0px 0px #444;
+      display:none;
+      }
+      .ap-pro{position:absolute;
+      width:100%;
+      bottom:0;
+      left:0;
+      font-size:13px;
+      color:#aaa;
+      text-align:center;
+      line-height:30px;font-weight:100;}
+      @media screen and (min-width:100px) and (max-width:700px){
+      .ap-share{display:none;}
+      }
+  body#musics
+    a#header(href="/music") 喵老师绘本故事
+    #content.clearfix
+      .content
+          if musics && musics.length
+            .articles
+              each music,i in musics
+                article(id="post-#{music.id}",class="")
+                  h2.entry-title
+                    a.real-title(href='/music/#{music.id}', title='#{music.title}', rel='bookmark') 第#{music.index}期 绘本故事《#{music.title}》
+                  .entry-img
+                    a(href='/music/#{music.id}', title='#{music.title}', rel='bookmark')
+                      img(src="#{music.cover}!/both/600x600")
+                  .entry-foot
+                    div.others
+                      div.item.meta 十一 <time style="margin-left:10px;">#{moment(music.createdAt).format("YYYY-MM-DD")}</time> <span style="margin-left:10px;">#{music.visit_count}浏览</span>
+                      if locals.user && user.is_admin
+                        span.views.item
+                          a.value(href="/music/#{music.id}/edit") 编辑
+
+          else
+            .articles 暂无
+          include ../page
+    //.ap-frame
+    //
+    //  .ap-container
+    //    a.ap-icon
+    //      img(src="#{assets_head}/images/app-icon.png")
+    //    .ap-title
+    //      img(src="#{assets_head}/images/app-title.png")
+    //    a.ap-download(href="https://itunes.apple.com/cn/app/er-shi-yi-dian-shui-qian-gu-shi/id998079819")
+    //      img(src="#{assets_head}/images/app-download.png")
+    //    a.ap-see(href="#") 查看所有故事
+    //    .ap-share
+    //      a.as-weibo(target="_blank",href="http://service.weibo.com/share/share.php?url=http%3A%2F%2Fwww.html-js.com%music&title=二十一点睡前故事，是卓老师个人维护的微信公众号，几个月来每天坚持更新一个儿童故事，现在我们有自己的App啦，背景播放自动连播，更有内置绘本预览功能，边看边听两不误，准爸妈的育儿小帮手，赶紧来下载一个吧！&pic=http://htmljs.b0.upaiyun.com/uploads/1434642744793-b6141b315f447b48cd388e991153673e.png&appkey=791755736")
+    //      a.as-weixin
+    //    .weixin-layer
+    //    img.weixin-pop(src="http://htmljs.b0.upaiyun.com/uploads/1434640950178-9855e6c7b4c7e29bec027223a63b4df2.png")
+    //    .ap-pro 芋头君&卓老师 个人出品
+    //.app-open.hidden
+    //  .cccc
+    //  img(src="http://htmljs.b0.upaiyun.com/uploads/1434429969730-78bb034a62978df4b828249055816c02.png")
+    .module(style="width:1000px;margin:0 auto;")
+      div(style="font-size:12px;line-height:20px;")  <a href="https://beian.miit.gov.cn">浙ICP备12047043号</a>
+    script(src='#{assets_head}/js/jquery.js')
+    script.
+      $('.app-frame').css({
+        height:$(window).height()
+        })
+      $(".ap-see").on("click",function(e){
+        e.preventDefault();
+        $(".ap-frame").hide();
+        })
+      $(".as-weixin").on("click",function(e){
+          e.preventDefault();
+          $(".weixin-layer").show();
+          $(".weixin-pop").show();
+        })
+      $(".weixin-layer").on("click",function(e){
+          e.preventDefault();
+          $(".weixin-layer").hide();
+          $(".weixin-pop").hide();
+        })
+      var isWeixin = (/MicroMessenger/i).test(window.navigator.userAgent);
+      $("#app-header").on("click",function(e){
+        e.preventDefault();
+        if(isWeixin){
+          $(".app-open").removeClass("hidden")
+        }else{
+          window.location.href=$(this).attr("href");
+        }
+        })
+      $(".ap-download").on("click",function(e){
+        e.preventDefault();
+        if(isWeixin){
+          $(".app-open").removeClass("hidden")
+        }else{
+          window.location.href=$(this).attr("href");
+        }
+        })
+      $(".app-open").on("click",function(){
+        $(".app-open").addClass("hidden")
+        })

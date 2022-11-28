@@ -1,0 +1,124 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    title 前端花名册
+    include ../head
+    script(src='#{assets_head}/js/lazyload.js')
+    style.
+
+
+  body#add-card
+    - locals.pageId=2;
+    include ../header
+    #content.clearfix
+      .module
+        form.form-horizontal(method='post')
+          fieldset
+            legend 填写以下信息
+            p.alert(style='margin-bottom: 20px;') 您的关键信息不会被暴露，我们只会在《前端花名册》中暴露极少量信息，请放心填写。我们会利用这些信息来为您推荐工作、推荐活动、和其他服务。
+            input(type="hidden",name="head_pic",value="#{card.head_pic||user.head_pic}")
+            input(type="hidden",name="id",value="#{card.id}")
+            .control-group
+              label.control-label
+                | 姓名
+                span(style='color: #ff0000;') *
+                span.label.label-warning 保密
+              .controls
+                input(type='text', name='name', placeholder='',value="#{card.name}",required)
+            .control-group
+              label.control-label
+                | 网名，昵称
+                span(style='color: #ff0000;') *
+              .controls
+                input(type='text', name='nick', placeholder='',value="#{card.nick}",required)
+            .control-group
+              label.control-label
+                | 常用邮箱
+                span(style='color: #ff0000;') *
+                span.label.label-warning 保密
+              .controls
+                input(type='text', name='email', placeholder='',value="#{user.email}",required)
+            .control-group
+              label.control-label
+                | 手机
+                span(style='color: #ff0000;') *
+                span.label.label-warning 保密
+              .controls
+                input(type='text', name='tel', placeholder='',value="#{card.tel}",required)
+            .control-group
+              label.control-label
+                | 性别
+                span(style='color: #ff0000;') *
+              .controls
+                label.radio.inline
+                  | <input type='radio' name='sex' value='男' #{card.sex=="男"?"checked":""}/> 男
+                label.radio.inline
+                  | <input type='radio' name='sex' value='女' #{card.sex=="女"?"checked":""}/> 女
+            .control-group
+              label.control-label
+                | 感情状况
+                span(style='color: #ff0000;') *
+              .controls
+                label.radio.inline
+                  | <input type='radio' name='is_dan' value='单身' #{card.is_dan=="单身"?"checked":""}/> 单身
+                label.radio.inline
+                  | <input type='radio' name='is_dan' value='已婚' #{card.is_dan=="已婚"?"checked":""}/> 已婚
+                label.radio.inline
+                  | <input type='radio' name='is_dan' value='恋爱中' #{card.is_dan=="恋爱中"?"checked":""}/> 恋爱中
+            .control-group
+              label.control-label
+                | 所在城市
+                span(style='color: #ff0000;') *
+              .controls
+                input(type='text', name='city', placeholder='',value="#{card.city}")
+            .control-group
+              label.control-label 公司或大学
+              .controls
+                input(type='text', name='gongsi', placeholder='',value="#{card.gongsi}")
+            .control-group
+              label.control-label
+                | 职位
+                span(style='color: #ff0000;') *
+              .controls
+                input(type='text', name='zhiwei', placeholder='',value="#{card.zhiwei}")
+            .control-group
+              label.control-label 博客地址
+              .controls
+                input(type='text', name='blog', placeholder='',value="#{card.blog}")
+
+            //- .control-group
+            //-   label.control-label 每天的工作时间
+            //-   .controls
+            //-     label.radio.inline
+            //-       | <input type='radio' name='shijian' value='小于8小时' #{card.shijian=="小于8小时"?"checked":""}/> 小于8小时
+            //-     label.radio.inline
+            //-       | <input type='radio' name='shijian' value='8小时' #{card.shijian=="8小时"?"checked":""}/> 8小时
+            //-     label.radio.inline
+            //-       | <input type='radio' name='shijian' value='8-10小时' #{card.shijian=="8-10小时"?"checked":""}/> 8-10小时
+            //-     label.radio.inline
+            //-       | <input type='radio' name='shijian' value='10小时以上' #{card.shijian=="10小时以上"?"checked":""}/> 10小时以上
+            .control-group
+              label.control-label 微博地址
+              .controls
+                input(type='text', name='weibo', placeholder='',value="#{card.weibo||('http://weibo.com/'+user.weibo_id)}")
+            .control-group
+              label.control-label github地址
+              .controls
+                input(type='text', name='github', placeholder='',value="#{card.github}")
+
+            .control-group
+              label.control-label 介绍下自己
+              .controls
+                textarea(name='desc', style='width: 400px; height: 100px;') #{card.desc}
+            .control-group
+              .controls
+                button.btn(type='submit') 提交
+    if !locals.user
+      #layer
+      #login_popup
+        span 请先用新浪微博登录
+        a(href="/user/login")
+    script.
+      $("#layer").css({width:$(document.body).width(),height:$(document.body).height()})
+      $("#login_popup").css({left:$(window).width()/2-125})

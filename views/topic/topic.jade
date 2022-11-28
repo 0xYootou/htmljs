@@ -1,0 +1,480 @@
+doctype html
+html
+  head
+    include ./../head
+    title #{topic.title} - 话题 - 前端乱炖
+    link(href='#{assets_head}/css/Markdown.Editor.css?33', type='text/css', rel='stylesheet', charset='utf-8')
+    include ../editor_head
+    |<meta name="description" content="#{topic.html.replace(/<[^>]*>/g,'').replace(/\s/g,'').substr(0,140)} html,js,css,nodejs,前端开发,前端招聘,jquery,qianduan">
+    script(src='#{assets_head}/js/jquery.githubRepoWidget.min.js')
+    if locals.is_clear
+      style.
+
+        html,body{
+        background:#fff;
+        }
+        #content{
+        background:#fff;
+        }
+        #content .module{border:none;margin:0 !important;padding:0 !important;}
+        #content{
+        margin:0;
+        }
+        #content .actions{display:none;}
+        .main .adsbygoogle iframe {width:670px !important;}
+  body#topic
+    - locals.pageId=10;
+    if !locals.is_clear
+      include ./../header
+    #content.clearfix
+      if !locals.is_clear
+        ul.breadcrumb
+          li
+            a(href="/") 首页
+            span.divider /
+          li
+            a(href="/topic") 话题
+            span.divider /
+          li.active
+            span #{topic.title}
+      .content
+        .left
+          .module.main
+            .topic-title
+              h2.title
+                if topic.topicTag
+                  |「#{topic.topicTag.name}」
+                |#{topic.title}
+            include ../320ad
+            .topic-content
+
+              .desc !{topic.html.replace(/<code>/g,"<code class='language-javascript'>").replace(/(htmljs\.b0\.upaiyun\.com.*?(\.jpg|\.png))/g,"$1")}
+            .topic-user.clearfix
+              .zans.clearfix
+                a.zan.action(href="javascript:void(0);")
+                    i.icon-thumbs-up
+                    if locals.has_zan
+                      |<em>已赞</em> <span>#{topic.zan_count}</span>
+                    else
+                      |<em>赞</em> <span>#{topic.zan_count}</span>
+                  if locals.zan_logs
+                    span.zanlogs
+                      each zan in zan_logs
+                        a.tooltip-trigger(href="/user/#{zan.user.id}",data-original-title="#{zan.user.desc}")
+                          img(src='#{zan.user.head_pic}')
+              .actions
+
+                  if locals.user && (user.is_admin||user.id==topic.user_id)
+                    a.action(href="/topic/#{topic.id}/edit") <i class="icon-pencil icon-gray"></i>编辑
+                  a.action#add_fav(href="javascript:void(0);")
+                    i.icon-heart
+                    span 收藏 #{locals.favs?locals.favs.length:0}
+                  a.action#bdshare.bdshare_t.bds_tools.get-codes-bdshare(style="float:none;")
+                    i.icon-new-window
+                    span.bds_more(style="background:none !important;float:none;display:inline;padding:0;") 分享
+                  span 浏览 #{topic.visit_count}
+              .user
+                img(src="#{topic.user_headpic}")
+                .nick
+                  a(href="/user/#{topic.user_id}") #{topic.user_nick}
+                  em(title="经验值") #{topic.user.coin||0}
+                .time #{moment(topic.createdAt).fromNow()}
+          .topic-comments.module(class="#{locals.is_clear?'hidden':''}")
+            .hd 跟帖
+            .bd
+              if !comments.length
+                div 暂无
+              else
+                .comment-list
+                  each ans,i in comments
+                    if !ans.is_unused && ans.md
+                      .comment-item.clearfix(id="comment-#{ans.id}")
+                        .ans-user.clearfix
+                          a.user(href="/user/#{ans.user_id}",data-original-title="#{ans.user_nick}")
+                            img(src="#{ans.user_headpic}")
+                            if ans.user&&ans.user.sex
+                              if ans.user.sex == '男'
+                                .sex.nan
+                              else
+                                .sex.nv
+                            //.nick #{ans.user_nick}
+                            //.time #{moment(ans.createdAt).fromNow()}
+
+                        .ans-con
+                          .con-hd
+                            a(href="/user/#{ans.user_id}") #{ans.user_nick}
+                            .hd-time #{moment(ans.createdAt).fromNow()}
+                          .con-bd !{ans.html.replace(/<code>/g,"<code class='language-javascript'>").replace(/(htmljs\.b0\.upaiyun\.com.*?(\.jpg|\.png))/g,"$1!bac")}
+                          .con-action
+                            //
+                              if locals.user && (locals.user.id == ans.user_id||locals.user.is_admin)
+                                a.edit(href="/topic/comment/#{ans.id}/edit") <i class="icon-pencil icon-gray"></i>编辑
+                            a.at(href="",data-nick="#{ans.user_nick}") <i class="icon-new-window icon-gray"></i>回复
+                            a.reply(href="",data-md="#{ans.md}",data-nick="#{ans.user_nick}") <i class="icon-retweet icon-gray"></i>引用
+                            a.zan(href="",data-id="#{ans.id}") <i class="icon-thumbs-up"></i>赞 <em>#{ans.zan_count}</em>
+                        if i==0 && locals.page==1
+                          .ans-lou 沙发
+                        else if i==1&& locals.page==1
+                          .ans-lou 板凳
+                        else if i==2&& locals.page==1
+                          .ans-lou 地板
+                        else
+                          .ans-lou #{(locals.page-1)*30+i+1} 楼
+                          //- if topic.id ==3
+                          //-   - var shulie = [ 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66, 78, 91, 105, 120, 136, 153, 171, 190, 210, 231, 253, 276, 300, 325, 351, 378, 406, 435, 465, 496, 528, 561, 595, 630, 666, 703, 741, 780, 820, 861, 903, 946, 990];
+                          //-   - if(shulie.indexOf((locals.page-1)*30+i+1)!=-1)
+                          //-     |  中奖
+                include ../page
+          .add-comment.module(class="#{locals.is_clear?'hidden':''}")
+            .hd 说几句
+            .publish.bd
+              form.form-horizontal#form(method='post')
+                fieldset
+                  .fake-form
+                    textarea(placeholder="支持markdown语法")
+                  .real-form.hidden
+                    .control-group
+                      .wmd-panel
+                        #wmd-button-bar
+                        textarea.wmd-input#wmd-input(name="md",placeholder='杜绝无意义的回复。',style="height:200px;")
+                        .wmd-panel.wmd-preview
+                          #wmd-preview
+                    .control-group
+                      label.checkbox
+                        input(type="checkbox",name="to_weibo")
+                        |分享到微博
+                    .control-group
+                      button.btn#submit(type='submit') 发表
+              #myModal.modal.hide.fade.
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                  <h3 id="myModalLabel">插入图片</h3>
+                </div>
+                <div class="modal-body">
+                    <input type="file" name="pic" id="file" />
+                </div>
+                <div class="modal-footer">
+                  <button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
+                  <button class="btn btn-primary">插入</button>
+                </div>
+      .right(class="#{locals.is_clear?'hidden':''}")
+
+          .module.sametag_topics
+            .hd 同类型的话题
+            .bd
+              each a in sametag_topics
+                if a.id != topic.id
+                  div.item <a href="/topic/#{a.id}">#{a.title}</a>
+          a.ad-blank(href="http://www.html-js.com/topic/827",style="width:280px;height:280px;")
+            .ad-inner 广告位 点击查看投放指南
+
+    script#comment-tpl(type="text/template")
+      .comment-item.clearfix
+        div.con
+          span.author.vcard.item
+            a.value.url.fn(rel='author', href='/user/{{user.id}}') {{user.nick}}：
+          span.content {{{content}}}
+          span.time {{createdAt}}
+          span.action
+            a.reply(data-nick="{{user.nick}}") 回复
+    script#comment-tpl-q(type="text/template")
+      .comment-item.clearfix
+        a.headpic
+          img(src="{{user_headpic}}",width=70,height=70)
+        .comment-right
+          div.con
+            span.author.vcard.item
+              a.value.url.fn(rel='author', href='/user/{{user_id}}') {{user_nick}}：
+            | {{{html}}}
+          .time {{createdAt}}
+            a.reply(data-nick="{{user_nick}}") 回复
+    if locals.is_clear
+      .wx-mp.module
+        .hd 更多信息欢迎关注“前端乱炖”公众号
+        .bd
+          img(src="http://htmljs.b0.upaiyun.com/uploads/1393252270532-qrcode_for_gh_fa421f002680_258.jpg",style="width:100%;")
+    script(src='#{assets_head}/js/ajaxfileupload.js?1')
+    script(src='#{assets_head}/js/loadingTip.js')
+    script(src='#{assets_head}/js/messageTip.js')
+    script(src='#{assets_head}/js/mustache.js')
+    script(src='#{assets_head}/js/moment.js')
+    script.
+      $(".zans .zan").click(function(){
+          var self = this;
+        HtmlJS.util.ajax("/topic/#{topic.id}/zan",{
+          score:$(self).attr("data-index")
+        },"post",function(data){
+          loadingTip.hide()
+            if(data.success){
+
+              messageTip.show("成功！")
+                $("em",self).html("已赞")
+                $("span",self).html($("span",self).html()*1+1)
+            }else{
+              alert(data.info)
+            }
+        },function(){
+
+        },null,function(){
+        HtmlJS.util.ajax("/topic/#{topic.id}/zan",{
+          score:$(self).attr("data-index")
+        },"post",function(data){
+          loadingTip.hide()
+            if(data.success){
+              messageTip.show("成功！")
+                $("em",self).html("已赞")
+                $("span",self).html($("span",self).html()*1+1)
+            }else{
+              alert(data.info)
+            }
+        },function(){
+
+        },null,function(){
+
+      })
+      })
+      })
+      $('.user').tooltip({
+          placement:"bottom"
+      })
+      var comment_tpl = $("#comment-tpl").html()
+      var comment_tpl_1 = $("#comment-tpl-q").html()
+      $(".con-action .zan").click(function(e){
+        e.preventDefault();
+        var self=this;
+        $.ajax({
+          url:"/topic/comment/"+$(this).attr("data-id")+"/zan",
+          type:"post",
+          dataType:"json",
+          success:function(data){
+          if(data.isnotlogin){
+              alert("请先登录")
+                window.location.href="/user/login"
+            }else if(data.success){
+              $("em",self).html( $("em",self).html()*1+1)
+              messageTip.show("成功")
+            }else{
+              alert(data.info)
+            }
+
+          }
+          })
+        })
+      moment.lang('zh-cn')
+      $(".reply").click(function(e){
+        e.preventDefault();
+        var md = $(this).attr("data-md");
+        var nick = $(this).attr("data-nick");
+        $(".real-form textarea").val("引用自：@"+nick+" ：\n"+"> "+md.replace(/\n/g,"\n> ")+"\n\n")
+        editor1.refreshPreview();
+        $(".fake-form").addClass("hidden")
+        $(".real-form").removeClass("hidden")
+        $(".real-form textarea").focus();
+        $(".real-form textarea")[0].setSelectionRange($(".real-form textarea")[0].value.length, $(".real-form textarea")[0].value.length)
+        })
+      $(".at").click(function(e){
+        e.preventDefault();
+        var nick = $(this).attr("data-nick");
+        $(".real-form textarea").val("@"+nick+" ")
+        editor1.refreshPreview();
+        $(".fake-form").addClass("hidden")
+        $(".real-form").removeClass("hidden")
+        $(".real-form textarea").focus();
+        $(".real-form textarea")[0].setSelectionRange($(".real-form textarea")[0].value.length, $(".real-form textarea")[0].value.length)
+        })
+      $(".con-comments").click(function(e){
+        if($(e.target).hasClass("reply")){
+          $("textarea",this).val("@"+$(e.target).attr("data-nick")+" ").focus()
+          $("textarea",this)[0].setSelectionRange($("textarea",this)[0].value.length, $("textarea",this)[0].value.length)
+        }
+        })
+
+      $(".fake-form textarea").click(function(){
+        $(".fake-form").addClass("hidden")
+        $(".real-form").removeClass("hidden")
+        $(".real-form textarea").focus();
+        })
+      if(localStorage.getItem("textarea_topic_#{topic.id}")){
+      $(".fake-form").addClass("hidden")
+        $(".real-form").removeClass("hidden")
+        $(".real-form textarea").focus();
+      }
+      var converter1 = Markdown.getSanitizingConverter();
+      var editor1 = new Markdown.Editor(converter1);
+      editor1.run();
+      var converter2 = new Markdown.Converter();
+
+      converter2.hooks.chain("preConversion", function (text) {
+          return text.replace(/\b(a\w*)/gi, "*$1*");
+      });
+
+      converter2.hooks.chain("plainLinkText", function (url) {
+          return "This is a link to " + url.replace(/^https?:\/\//, "");
+      });
+      $("#wmd-input").val(localStorage.getItem("textarea_topic_#{topic.id}"))
+      $("#wmd-input").keyup(function(){
+        localStorage.setItem("textarea_topic_#{topic.id}",this.value)
+        })
+      $("#form").submit(function(e){
+        e.preventDefault()
+          HtmlJS.util.ajax("/topic/#{topic.id}/add",$("#form").serialize(),"post",function(data){
+            if(data.success){
+              localStorage.setItem("textarea_topic_#{topic.id}","")
+              window.location.href="/topic/#{topic.id}"
+            }else{
+              alert(data.info)
+            }
+          },function(){
+
+          },$("#submit"),function(){
+            HtmlJS.util.ajax("/topic/#{topic.id}/add",$("#form").serialize(),"post",function(data){
+              if(data.success){
+                localStorage.setItem("textarea_topic_#{topic.id}","")
+                window.location.href="/topic/#{topic.id}"
+              }else{
+                alert(data.info)
+              }
+            },function(){
+
+            },$("#submit"),function(){
+
+            })
+          })
+
+      })
+      editor1.hooks.set('insertImageDialog', function(callback) {
+        $("#myModal").modal("show");
+        $("#file")[0].onchange=function(){
+          $.ajaxFileUpload({
+            url:"/upload",
+            secureuri:false,
+            fileElementId:'file',
+            dataType: 'json',
+            success: function (data, status)
+            {
+              if(data.success){
+                callback(data.data.filename)
+                $("#myModal").modal("hide");
+              }else{
+                messageTip.show(data.info)
+
+              }
+              loadingTip.hide()
+            },
+            error:function(){
+
+              loadingTip.hide()
+            }
+          })
+        };
+        return true; // tell the editor that we'll take care of getting the image url
+      });
+      $("#q_comment_add").click(function(e){
+        e.preventDefault()
+        var con_comments= $("#q_comment_con")
+        if(con_comments.hasClass("hidden")){
+          loadingTip.show("努力加载中")
+          HtmlJS.util.ajax("/comment/topic_"+$(this).attr("data-topic-id")+"",{},"get",function(data){
+              if(data.success){
+                if(data.comments.length>0){
+                $(".comment-list",con_comments).html("")
+                }else{
+                $(".comment-list",con_comments).html("暂无评论")
+                }
+                data.comments.forEach(function(comment){
+                  comment.createdAt=moment(comment.createdAt).fromNow();
+                  var html = Mustache.render(comment_tpl_1,comment);
+
+                  $(".comment-list",con_comments).append(html)
+                  })
+              }else{
+                alert(data.info)
+              }
+              con_comments.removeClass("hidden")
+                loadingTip.hide("努力加载中")
+            },function(){
+              loadingTip.hide("努力加载中")
+            })
+        }else{
+          con_comments.addClass("hidden")
+        }
+
+
+        })
+      $("#q_comment_submit").click(function(){
+        loadingTip.show("努力提交中")
+          var self = this;
+        HtmlJS.util.ajax("/comment/add",{md:$("#q_comment_content").val(),target_id:"topic_#{topic.id}"},"post",function(data){
+            if(data.success){
+              if($("#q_comment_list .comment-item").length==0){
+                $("#q_comment_list").html("")
+              }
+              data.comment.createdAt=moment(data.comment.createdAt).fromNow();
+                var html = Mustache.render(comment_tpl_1,data.comment);
+
+                $("#q_comment_list").append(html)
+                $("#q_comment_content").val("")
+            }else{
+              alert(data.info)
+            }
+            loadingTip.hide("努力加载中")
+          },function(){
+            loadingTip.hide("努力加载中")
+          },$(this),function(){
+            HtmlJS.util.ajax("/comment/add",{md:$("#q_comment_content").val(),target_id:"topic_#{topic.id}"},"post",function(data){
+            if(data.success){
+              if($("#q_comment_list .comment-item").length==0){
+                $("#q_comment_list").html("")
+              }
+              data.comment.createdAt=moment(data.comment.createdAt).fromNow();
+                var html = Mustache.render(comment_tpl_1,data.comment);
+
+                $("#q_comment_list").append(html)
+                $("#q_comment_content").val("")
+            }else{
+              alert(data.info)
+            }
+            loadingTip.hide("努力加载中")
+          },function(){
+            loadingTip.hide("努力加载中")
+          },$(this),function(){
+
+        })
+        })
+        })
+        $("#add_fav").click(function(){
+            HtmlJS.util.ajax("/user/fav",{
+              uuid:"#{topic.uuid}"
+            },"post",function(data){
+                loadingTip.hide()
+                if(data.success){
+                  messageTip.show("收藏成功！")
+                }else{
+                  alert(data.info)
+                }
+            },function(){
+            HtmlJS.util.ajax("/user/fav",{
+              uuid:"#{topic.uuid}"
+            },"post",function(data){
+                loadingTip.hide()
+                if(data.success){
+                  messageTip.show("收藏成功！")
+                }else{
+                  alert(data.info)
+                }
+            },function(){
+
+
+          })
+
+          })
+            })
+    p.
+      <script id="bdshare_js" data="type=tools&amp;uid=2555549" ></script>
+      <script type="text/javascript" id="bdshell_js"></script>
+      <script type="text/javascript">
+      var bds_config={"bdText":"分享一个@#{topic.user_nick} 发起的话题【#{topic.title}】来自@前端乱炖 {{前端乱炖是一个专业的前端知识原创内容社区}}","bdPic":"http://www.html-js.com/uploads/article_thumb/topic-#{topic.id}.png","snsKey":{'tsina':'659341943','tqq':'','t163':'','tsohu':''}}
+      document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date()/3600000)
+      </script>
+    if !locals.is_clear
+      include ../footer

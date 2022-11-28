@@ -1,0 +1,91 @@
+doctype html
+html
+    head
+        include ../head
+        link(href='#{assets_head}/css/Markdown.Editor.css?ddd2', type='text/css', rel='stylesheet', charset='utf-8')
+        script(src='#{assets_head}/js/jquery.js')
+        script(src='#{assets_head}/js/pcaunzip.js')
+        include ../editor_head
+        title 添加
+        style.
+            #content textarea {
+                height: 200px;
+            }
+    body#job
+        - locals.pageId=50;
+        include ../music_header
+        #content.clearfix
+            .content
+                .left
+                    .module
+                        form.form-horizontal#form(method='post')
+                            fieldset
+                                if locals.resume
+                                    legend 编辑分类
+                                else
+                                    legend 添加分类
+                                if locals.music
+                                    input(type='hidden', value = "#{music.id}",name='id')
+                                .control-group
+                                    input#title.input-xlarge(type='text', value = "#{locals.cat?locals.cat.name:''}",name='name', placeholder='分类名字',required)
+                                .control-group
+                                    input#desc.input-xlarge(type='text', value = "#{locals.cat ? locals.cat.desc : ''}",name='desc', placeholder='分类介绍',required)
+                                .control-group
+                                    button.btn(type='submit') 添加
+            .right
+                .module
+                    .hd 提示
+                    .bd
+                        //- div 提交专栏添加申请后，需要管理员审核后方能使用。
+                        //- div 专栏可以设置私有和共有。
+                        div 请准确填写所有信息
+        include ../footer
+        script(src='#{assets_head}/js/ajaxfileupload.js')
+        script(src='#{assets_head}/js/loadingTip.js')
+        script(src='#{assets_head}/js/messageTip.js')
+        script.
+
+            $("#cover")[0].onchange=function(){
+                $.ajaxFileUpload({
+                    url:"/upload",
+                    secureuri:false,
+                    fileElementId:'cover',
+                    dataType: 'json',
+                    success: function (data, status)
+                    {
+                        if(data.success){
+                            $("#cover_result").val(data.data.filename)
+                            $("#cover_success").removeClass("hidden");
+                            $("#cover").addClass("hidden")
+                        }else{
+                            messageTip.show(data.info)
+                        }
+                        loadingTip.hide()
+                    },
+                    error:function(){
+                        loadingTip.hide()
+                    }
+                })
+            };
+            $("#audio")[0].onchange=function(){
+                $.ajaxFileUpload({
+                    url:"http://niu.souche.com/upload",
+                    secureuri:false,
+                    fileElementId:'audio',
+                    dataType: 'json',
+                    success: function (data, status)
+                    {
+                        if(data.success){
+                            $("#audio_result").val(data.path)
+                            $("#audio_success").removeClass("hidden");
+                            $("#audio").addClass("hidden")
+                        }else{
+                            messageTip.show(data.info)
+                        }
+                        loadingTip.hide()
+                    },
+                    error:function(){
+                        loadingTip.hide()
+                    }
+                })
+            };

@@ -1,0 +1,597 @@
+@charset "utf-8";
+/* iTianpin webApp 明信片 V1 style 2014.12.15 */
+body {
+    background-color: #fff;
+    color: #5e5e5e;
+}
+
+.itp-hide {
+    display: none !important;
+}
+
+.itp-show {
+    display: block !important;
+}
+
+.pc-colourbar-top,
+.pc-colourbar-bottom {
+    position: fixed;
+    z-index: 10;
+    width: 100%;
+    max-width: 960px;
+    margin: 0 auto;
+    height: 15px;
+    background: url("/static/webapp/webapp-img/activities/pc-barbg.png") repeat-x;
+    background-size: 75px 15px;
+}
+
+.pc-colourbar-top {
+    top: 0;
+}
+
+.pc-colourbar-bottom {
+    bottom: 0;
+}
+
+.pc-stamp-bg {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: -1;
+    width: 173px;
+    height: 95px;
+    background: url(/static/webapp/webapp-img/activities/pc-bg01.png) no-repeat 30px 5px;
+    background-size: 173px 95px;
+}
+
+.pc-snow-bg {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    z-index: -1;
+    width: 102px;
+    height: 106px;
+    background: url(/static/webapp/webapp-img/activities/pc-bg02.png) no-repeat 20px 20px;
+    background-size: 102px 106px;
+}
+
+.pc-title-bar {
+    width: 100%;
+    margin-top: 30px;
+    text-align: center;
+}
+
+.pc-title-bar h2 {
+    margin: 0 1em;
+    padding-bottom: .5em;
+    /*border-bottom: #ededed 2px solid;*/
+    font-size: xx-large;
+    color: #fe5568;
+}
+
+.pc-form {
+    margin-top: 10px;
+}
+
+.pc-form select {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    width: 60px;
+    color: #5e5e5e;
+    position: relative;
+}
+
+.pc-arrow {
+    display: inline-block;
+    border-width: 5px 3px 0;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-color: rgba(0, 0, 0, .5) transparent;
+    vertical-align: middle;
+}
+
+.pc-select-line {
+    display: inline-block;
+    width: 1px;
+    height: 100%;
+    margin: 0 10px;
+    background-color: #dedfe0;
+    vertical-align: top;
+}
+
+.pc-form .select-ml {
+    margin-left: 59px;
+}
+
+.ui-form {
+    margin: 0 20px;
+    border: #dadada 1px solid;
+    border-radius: 3px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.ui-form-item {
+    padding-right: 10px;
+}
+
+.ui-form-item label {
+    width: 50px;
+    color: #a9a9a9;
+}
+
+.ui-form-item input {
+    height: 100%;
+}
+
+.ui-form-item input:not([type=checkbox]), .ui-form-item textarea {
+    padding-left: 0;
+}
+
+.ui-form-item textarea {
+    margin-top: 12px;
+}
+
+.ui-form .ui-form-item-r input {
+    padding: 0 120px 0 0;
+}
+
+.ui-form-item-l label, .ui-form-item-r button {
+    color: #5e5e5e;
+}
+
+.ui-btn-wrap {
+    padding: 30px 30px 50px 30px;
+}
+
+.ui-btn-danger {
+    background-color: #fe5568;
+    background-image: none;
+    border-color: #e93b4f;
+}
+
+/*---- 插画师 ----*/
+.pc-inset-head {
+    width: 100%;
+    background: url(http://itianpin1.qiniudn.com/static/activity/pc-inset-bg01.png) no-repeat center top / cover;
+}
+
+.pc-inset-bg2 {
+    background: url(http://itianpin1.qiniudn.com/static/activity/pc-inset-bg02.png) no-repeat center top / cover;
+}
+
+.pc-inset-figure {
+    width: 100%;
+    padding: 6em 0 40px 0;
+    text-align: center;
+}
+@media screen and (min-width: 640px) {
+    .pc-inset-figure {
+        padding: 15em 0 40px 0;
+    }
+}
+
+.pc-inset-figure .avatar {
+    display: inline-block;
+    width: 83px;
+    height: 83px;
+    border: #ffffff 2px solid;
+    border-radius: 42px;
+    overflow: hidden;
+}
+
+.pc-inset-figure .avatar img {
+    width: 100%;
+    height: 100%;
+}
+
+.pc-inset-figure .text {
+    padding: 0 30px;
+    margin-top: 5px;
+}
+
+.pc-inset-figure .text h4 {
+    font-size: large;
+}
+
+.pc-inset-figure .text .about {
+    max-width: 300px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.pc-inset-figure .text .line {
+    display: inline-block;
+    width: 30px;
+    height: 3px;
+    background-color: #fd7d8c;
+}
+
+.pc-inset-text-warp {
+    margin-top: -20px;
+    background: #faf6f6;
+    text-align: center;
+}
+
+
+.pc-inset-piclist {
+    padding: 0 10px 65px 10px;
+    overflow: hidden;
+}
+
+.pc-inset-piclist p {
+    margin-top: 5px;
+    font-size: large;
+    color: #fd7d8b;
+    text-align: center;
+}
+
+.pc-inset-piclist .pic {
+    display: block;
+    width: 100%;
+    margin-top: 15px;
+}
+
+.pc-inset-piclist .pic img {
+    display: block;
+    margin: 0 auto;
+}
+
+.pc-inset-btn {
+    position: fixed;
+    bottom: 10px;
+    max-width: 960px;
+    margin: 0 auto;
+    z-index: 99;
+    width: 100%;
+}
+
+.pc-inset-btn a {
+    display: block;
+    height: 45px;
+    line-height: 45px;
+    margin: 0 30px;
+    background-color: #fd7d8c;
+    border-radius: 4px;
+    color: #fff;
+    text-align: center;
+}
+
+.pc-inset-btn a strong {
+    font-size:x-large;
+}
+
+.pc-inset-btn a i {
+    display: inline-block;
+    width: 40px;
+    height: 13px;
+    margin-right: 5px;
+    background: url(http://itianpin1.qiniudn.com/static/activity/pc-inset-btntxt.png) no-repeat;
+    background-size: 40px 13px;
+    vertical-align: middle;
+}
+
+body,
+html {
+    height: 100%;
+}
+
+.postcard-last-main {
+    width: 100%;
+    height: 100%;
+    padding-bottom: 50px;
+    position: relative;
+    background: -webkit-gradient(linear, 0 0, 0 100%, from(#173f8c), to(#4aa4d9));
+}
+
+.moon {
+    position: absolute;
+    top: -10px;
+    right: 15px;
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    background: #fffbd9;
+    box-shadow: 1px -1px 20px rgba(255, 255, 255, .8);
+}
+
+.reindeer {
+    position: absolute;
+    top: 20px;
+    right: 28px;
+    width: 144px;
+    height: 65px;
+    background: url('/static/webapp/webapp-img/activities/back_01.png') no-repeat;
+    background-size: 144px 65px;
+}
+
+.three {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 150px;
+    background: url('/static/webapp/webapp-img/activities/back_02.png') no-repeat;
+    background-size: 100% 150px;
+}
+
+#background-snow {
+    font-family: Androgyne;
+    position: absolute;
+    z-index: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    -webkit-animation: snow 10s linear infinite;
+    -moz-animation: snow 10s linear infinite;
+    -ms-animation: snow 10s linear infinite;
+    animation: snow 10s linear infinite;
+    background: none;
+    background-image: url('/static/webapp/webapp-img/activities/flake1.png'), url('/static/webapp/webapp-img/activities/flake2.png'), url('/static/webapp/webapp-img/activities/flake3.png');
+}
+
+@keyframes snow {
+    0% {
+        background-position: 0 0, 0 0, 0 0;
+    }
+    50% {
+        background-position: 500px 500px, 100px 200px, -100px 150px;
+    }
+    100% {
+        background-position: 500px 1000px, 200px 400px, -100px 300px;
+    }
+}
+
+@-moz-keyframes snow {
+    0% {
+        background-position: 0 0, 0 0, 0 0;
+    }
+    50% {
+        background-position: 500px 500px, 100px 200px, -100px 150px;
+    }
+    100% {
+        background-position: 400px 1000px, 200px 400px, 100px 300px;
+    }
+}
+
+@-webkit-keyframes snow {
+    0% {
+        background-position: 0 0, 0 0, 0 0;
+    }
+    50% {
+        background-position: 500px 500px, 100px 200px, -100px 150px;
+    }
+    100% {
+        background-position: 500px 1000px, 200px 400px, -100px 300px;
+    }
+}
+
+@-ms-keyframes snow {
+    0% {
+        background-position: 0 0, 0 0, 0 0;
+    }
+    50% {
+        background-position: 500px 500px, 100px 200px, -100px 150px;
+    }
+    100% {
+        background-position: 500px 1000px, 200px 400px, -100px 300px;
+    }
+}
+
+.postcard-text {
+    width: 80%;
+    margin: 0 auto;
+    -webkit-transform: translate(0, 27%);
+    transform: translate(0, 27%);
+    text-align: center
+}
+
+.postcard-text h4 {
+    color: #fff;
+    font-size: 1.2em;
+}
+
+.user-info {
+    background: #fffbd9;
+    margin: 15px auto;
+    padding-top: 10px;
+    text-align: left;
+    height: 80px;
+}
+
+.user-info p {
+    font-size: 1.2em;
+    padding: 5px 0;
+    color: #5e5e5e;
+    -webkit-transform: translate(5%, 0);
+    transform: translate(5%, 0)
+}
+
+.post-card-btn {
+    font-size: 1.3em;
+    margin: 15px auto 0 auto;
+    height: 50px;
+    line-height: 50px;
+    display: block;
+    text-align: center;
+    border-radius: 5px;
+    color: #fff;
+    background: #fe5568;
+}
+
+.activities-notice-main{
+    width: 100%;
+    position: relative;
+    background: #fffae9;
+}
+
+.activities-notice-main img{
+    width: 100%;
+}
+
+.loveWrapper {
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    max-width: 960px;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+#loveContainer {
+    position: absolute;
+    width: 100%;
+    height: 480px;
+    left: 0;
+    top: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 12;
+    -webkit-transition-property: all;
+    -webkit-transition-duration: 0.8s;
+    -webkit-transition-delay: 0;
+    -webkit-transition-timing-function: ease;
+}
+#loveContainer>div {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    padding: 10px;
+    overflow: hidden;
+    -webkit-animation-iteration-count: infinite, infinite;
+    -webkit-animation-direction: normal, normal;
+    -webkit-animation-timing-function: linear, ease-in;
+}
+#loveContainer>div>img {
+    display: block;
+    position: absolute;
+    border-radius: 50%;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-direction: alternate;
+    -webkit-animation-timing-function: ease-in-out;
+    -webkit-transform-origin: 50% -100%;
+}
+@-webkit-keyframes fade {
+    0% {
+        opacity: 1;
+    }
+    95% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+@-webkit-keyframes drop {
+    0% {
+        -webkit-transform: translate(-10px, -100px);
+    }
+    90% {
+        -webkit-transform: translate(30px, 480px);
+    }
+    100% {
+        -webkit-transform: translate(30px, 480px);
+    }
+}
+@-webkit-keyframes clockwiseSpin {
+    0% {
+        -webkit-transform: rotate(-50deg);
+    }
+    100% {
+        -webkit-transform: rotate(50deg);
+    }
+}
+@-webkit-keyframes counterclockwiseSpinAndFlip {
+    0% {
+        -webkit-transform: scale(-1, 1) rotate(50deg);
+    }
+    100% {
+        -webkit-transform: scale(-1, 1) rotate(-50deg);
+    }
+}
+
+.pc-form-text {
+    padding:20px 20px 0 20px;
+    font-size: x-small;
+    color: #9a9a9a;
+}
+
+#postcard-register-wrap,.activities-notice-main,.postcard-last-main,#postcard-zhc,#postcard-xyy{
+    max-width: 960px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.postcard-mobile{
+    width: 300px ;
+    height: 220px;
+}
+
+.postcard-pc{
+    width: 960px;
+    height: 720px;
+}
+
+.pc-inset-text{
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+}
+
+.mobile-inset-text{
+    width: 320px;
+    height: 320px;
+    margin: 0 auto;
+}
+#notice-btn-wrap{
+    width: 320px;
+    height: 200px;
+    position: relative;
+    bottom: 80px;
+    margin: 0 auto;
+    text-align: center;
+}
+.activities-notice-main .notice-btn{
+    width: 100px;
+    padding: 10px;
+    height: 26px;
+    line-height: 26px;
+    color: #fefcec;
+    text-align: center;
+    border: 1px solid #f17f8c;
+    border-radius: 40px;
+    font-size: 15px;
+    left: 30px;
+    background: #f17f8c;
+}
+
+@media screen and (min-width: 960px) {
+    .activities-notice-main .notice-btn{
+        padding: 18px;
+    }
+
+    #notice-btn-wrap{
+        bottom: 180px;
+
+    }
+}
+
+#ie{
+    background: #faf6f6;
+    width: 100%;
+    position: fixed;
+    height: 50px;
+    z-index: 999;
+}
+
+#ie h5{
+    width: 300px;
+    height: 50px;
+    font-size: 17px;
+    margin: 0px auto;
+}

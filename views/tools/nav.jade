@@ -1,0 +1,7 @@
+ul.nav.nav-pills
+  each tool in tools
+    li(class="#{tool.id==t.id?'active':''}")
+      if tool.link
+        a.title(href="#{tool.link}",target="_blank") #{tool.title}
+      else
+        a.title(href="/tools/#{tool.name}") #{tool.title}

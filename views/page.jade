@@ -1,0 +1,40 @@
+.pagination.clearfix(style="margin-top:20px")
+  - pageList = []
+  - page = page*1
+  - totalPage = totalPage*1
+  if page-1>4
+    - pageList = pageList.concat([1,2,3,"...",page-1])
+  else
+    - i = 0
+    while ++i < page
+      - pageList.push (i)
+  - pageList.push (page)
+  if page+1<totalPage-3
+    - pageList = pageList.concat([page+1,"...",totalPage-2,totalPage-1,totalPage])
+  else
+    - i = page
+    while ++i < totalPage*1+1
+      - pageList.push (i)
+  ul.pagination.clearfix
+    if page==1
+      li.disabled.page-item
+        a.page-link Prev
+    else
+      li.page-item
+        a.page-link(href="?page=#{page-1}") Prev
+    - var i=0
+    for p in pageList
+      if p =="..."
+        li.page-item
+          a.page-link(href="javascript:void(0);") ...
+      else
+        li(class="#{p==page?'active':''}").page-item
+          a.page-link(href="?page=#{p}") #{p}
+    if page==totalPage
+      li.disabled.page-item
+        a Next
+    else
+      li.page-item
+        a.page-link(href="?page=#{page+1}") Next
+
+  .total.label(style="line-height:40px;margin-left:10px;") 共 #{total} 

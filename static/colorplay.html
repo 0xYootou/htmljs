@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script src="http://www.html-js.com/assets//js/jquery.js"></script>
+    <script src="http://www.html-js.com/assets//js/jquery.easing.1.3.js"></script>
+    <style>
+    html,body{
+      height:100%;
+      margin:0;
+      padding:0;
+    }
+    #main{
+      width:100%;
+      height:100%;
+    }
+      #screen{
+        width:100%;
+      height:100%;
+      overflow: hidden;
+      }
+      .color-item{
+        width:100%;
+        height:100%;
+ -webkit-transform:skewY(10deg);
+      }
+      .color-item .inner-text{
+        font-size: 50px;
+        font-weight: 2000;
+        text-align: center;
+        width:100%;
+        vertical-align: middle;
+        display: inline-block;
+        color: #fff;
+         -webkit-text-stroke: 3px #444;
+         font-family: "cooper black";
+         -webkit-transform:skewY(-10deg);
+   color: white;
+   text-shadow:
+       3px 3px 0 #666,
+     -1px -1px 0 #666,  
+      1px -1px 0 #666,
+      -1px 1px 0 #666,
+       1px 1px 0 #666;
+      }
+      #controls{
+        position: fixed;
+        bottom:30px;
+        margin-left:0;
+        text-align: center;
+        width:100%;
+      }
+      .control-item{
+        width:50px;
+        height:50px;
+        border:5px solid #fff;
+        display: inline-block;
+        margin: 0 10px;
+        border-radius: 15px;
+      }
+    </style>
+
+  </head>
+  <body>
+    <div id="main">
+      <div id="screen">
+      </div>
+      <div id="controls">
+      </div>
+    </div>
+    <script>
+      var colors = [
+        {
+          name:"yellow",
+          hex:"e3e851"
+        },
+        {
+          name:"blue",
+          hex:"4db1de"
+        },
+        {
+          name:"red",
+          hex:"ff6459"
+        },
+        {
+          name:"green",
+          hex:"4dde69"
+        }
+      ];
+      var Game = (function(){
+        var bgColorList = [];
+        var nowColorList = [];
+        var displayNameList = [];
+        var isNotList = [];
+        var length = 20;
+        var nowIndex=0;
+        var itemHeight;
+        return {
+          init:function(){
+            var self = this;
+            this.createData();
+            this.createHtml();
+            this.createControl();
+            $("#screen").scrollTop(50)
+            // $(document.body).click(function(){
+            //   self.next();
+            // })
+          },
+          createControl:function(){
+            var self = this;
+            for(var i=0;i<colors.length;i++){
+              var color = colors[i];
+              $("<div class=control-item></div>").css({
+                background:"#"+color.hex
+
+              }).appendTo($("#controls")).on("click",function(){
+                self.next();
+              })
+            }
+          },
+          createData:function(){
+            for(var i=0;i<length;i++){
+              
+              var nowColor = colors[Math.floor(Math.random()*colors.length)]
+              var nowIsNot = Math.random()>0.5?true:false;
+              var nowDisplayText = nowIsNot?("not "+nowColor.name):nowColor.name;
+              nowColorList.push(nowColor)
+              bgColorList.push(colors[Math.floor(Math.random()*colors.length)]);
+              isNotList.push(nowIsNot);
+              displayNameList.push(nowDisplayText);
+            }
+          },
+          createHtml:function(){
+            nowColorList.forEach(function(color,i){
+              $("<div class=color-item></div>").html("<span class=inner-text>"+displayNameList[i]+"</span>").css({
+                background:"#"+bgColorList[i].hex
+              }).appendTo($("#screen"))
+            })
+            $(".inner-text").css({
+              marginTop:$(window).height()/2-60
+            })
+            itemHeight = $(".color-item").height();
+          },
+          next:function(){
+            nowIndex++;
+            $("#screen").animate({
+              scrollTop:nowIndex*itemHeight+50
+            },{easing:"easeInOutBack",duration:600})
+
+          },
+          chooseRight:function(colorName){
+            var isRight = false;
+            if(nowIsNot){
+              if(colorName!=nowColor.name){
+                isRight = true;
+              }
+            }else{
+              if(colorName==nowColor.name){
+                isRight = true;
+              }
+            }
+            return isRight;
+          }
+        }
+      })();
+
+      Game.init();
+    </script>
+  </body>
+</html>

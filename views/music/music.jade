@@ -1,0 +1,143 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    link(rel="Shortcut Icon",href="http://img.souche.com/test/00c36d2fe715caf38260bd9a82b8fb4b.png")
+    |<link rel="apple-touch-icon" href="http://img.souche.com/test/00c36d2fe715caf38260bd9a82b8fb4b.png" />
+    link(rel="stylesheet",href="#{assets_head}/css/bootstrap.css?dddddddd",type="text/css")
+    link(href="#{assets_head}/css/music.css?1221",rel="stylesheet",type="text/css")
+    title 喵老师绘本故事 第#{music.index}期《#{music.title}》#{music.zip?'[带在线绘本]':''}
+    |<meta name="Description" content="喵老师绘本故事 第#{music.index}期《#{music.title}》" />
+    |<meta name="apple-itunes-app" content="app-id=998079819" />
+    style.
+      #app-header{height:80px;background:#eee;display:block;color:#333;}
+      .app-icon{margin:10px;margin-left:20px;width:60px;float:left;}
+      .app-desc{margin-top:15px;float:left;font-size:16px;}
+      .app-use{font-size:12px;margin-top:8px;}
+      .app-download{position:absolute;right:10px;top:30px;height:25px;line-height:25px;
+        background: #0088CC;
+        background-image: -webkit-linear-gradient(top, #00a3f5 0%, #0088CC 100%);
+        background-image: linear-gradient(to bottom, #00a3f5 0%, #0088CC 100%);
+        color:#fff;
+        padding:0 10px;
+        font-size:12px;
+        border-radius:5px;
+      }
+      .hidden{display:none !important;}
+      .app-open{position:fixed;width:100%;top:0;left:0;}
+      .cccc{background:#fff;opacity:0.7;position:fixed;width:100%;top:0;left:0;height:10000px;}
+      .app-open img{position:fixed;width:100%;top:0;left:0;}
+    |<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  body#music-new
+
+    img.backblur(src="#{music.cover}")
+    .backcover
+    a#app-header(href="https://itunes.apple.com/cn/app/er-shi-yi-dian-shui-qian-gu-shi/id998079819")
+        img.app-icon(src="http://img.souche.com/test/00c36d2fe715caf38260bd9a82b8fb4b.png")
+        .app-desc
+            .app-title 喵老师绘本故事
+            .app-use 卓老师&芋头 夫妇联合开发出品
+        .app-download 下载APP
+    .app-open.hidden
+      .cccc
+      img(src="http://img.souche.com/test/e48dd084722f142c5a61d1fd751ddbb0.png")
+    #header
+      .left
+        a.home(href="/music/") 首页
+        //.share 分享
+      if locals.next
+        .right
+            a.next(href="/music/#{next.id}") 上一期：#{next.title}
+    #content
+      article.am-article
+        .title(style="margin-top:20px;font-size:30px;") #{music.index}期 #{music.title}
+        img.cover(src="#{music.cover}!/both/200x200",style="height:100px;margin-bottom:10px;")
+
+        .desc !{music.desc}
+        .controls(style="margin-top:0;padding:10px;")
+          .play.playing
+          .process
+            .times.clearfix
+              .left#left_time 00:00
+              .right#right_time 00:00
+            .line
+              .line-inner(style="width:0%;")
+                .line-circle
+        audio#audio.hidden(src="#{music.audio}")
+        if music.zip
+            .other(style="font-size:14px;") 此故事带有在线绘本，下载 app，可以享受此功能。
+        .other(style="font-size:14px;") 喵老师绘本故事是由"杭州喵老师绘本馆"的卓老师和她的程序员老公共同开发的产品。<br/><br/>目前已经有 app 版和小程序版（分别在 appstore 或者微信中搜索"喵老师"即可找到）<br/><br/>故事会不定时更新，欢迎关注、转发支持。
+    script(src='#{assets_head}/js/jquery.js')
+    script.
+        var _hmt = _hmt || [];
+        (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?2fc2fae0509f820259c1760fce28d7d2";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+        })();
+    script.
+      var isWeixin = (/MicroMessenger/i).test(window.navigator.userAgent);
+      $("#app-header").on("click",function(e) {
+          e.preventDefault();
+          if(isWeixin) {
+              $(".app-open").removeClass("hidden")
+          } else if(navigator.userAgent.toLowerCase().indexOf('android')!=-1){
+              window.location.href = "http://assets.html-js.com/static/miao.apk?t=1";
+            }else{
+          window.location.href=$(this).attr("href");
+        }
+        })
+      $(".app-open").on("click",function(){
+        $(".app-open").addClass("hidden")
+        })
+      var audio = document.getElementById("audio");
+      var url = "#{music.audio}";
+      audio.src = url;
+      var isPlay = false;
+      $(".play").on("click",function(){
+        if(isPlay){
+            audio.pause();
+            isPlay = false;
+            $(".play").removeClass("pause")
+        }else{
+            audio.play();
+            isPlay = true;
+            $(".play").addClass("pause")
+        }
+
+      })
+
+      var timeString = function(time){
+      time = parseInt(time)
+         var minute = 0;
+         var sec = 0;
+         sec = time%60
+         if(sec<10){
+            sec="0"+sec;
+         }
+         minute = Math.floor(time/60)
+         if(minute<10){
+            minute="0"+minute;
+         }
+         return minute+":"+sec
+      }
+      var handler = function() {
+          $("#left_time").html(timeString(this.currentTime))
+          $("#right_time").html(timeString(this.duration.toFixed(0)))
+          $(".line-inner").css({
+            width:this.currentTime*100/this.duration+"%"
+          })
+      };
+      audio.addEventListener('timeupdate', handler, false);
+            audio.addEventListener('durationchange', function(){
+            $("#right_time").html(timeString(this.duration.toFixed(0)))
+                $.ajax({
+                    type:"post",
+                    url:"/music/updateDuration",
+                    data:{
+                        id:#{music.id},
+                        duration:this.duration.toFixed(0),
+                    }
+                })
+            }, false);

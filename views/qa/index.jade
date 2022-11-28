@@ -1,0 +1,222 @@
+doctype html
+html
+  head
+    include ./../head
+    title #{locals.who?(who.nick+"的"):""}问答 - 前端乱炖
+    |<meta name="description" content="问答：如其名，用于提问专业问题，然后会有很多人来解答问题。">
+    script(src='#{assets_head}/js/bootstrap/bootstrap-tooltip.js')
+    style.
+      #act{
+        background:url(http://htmljs.b0.upaiyun.com/images/act1-bg.jpg) no-repeat center top;
+        background-attachment:fixed;
+      }
+  body#qas
+    - locals.pageId=7;
+    include ./../header
+    #content.clearfix
+      ul.breadcrumb
+        li
+          a(href="/") 首页
+          span.divider /
+        li
+          a(href="/qa") 问答
+          span.divider /
+        li.active
+          span #{locals.who?(who.nick+"的"):""}问答
+      .content
+        .head.mod-white
+          if !locals.channel
+              if locals.channels
+                .channels
+                  //- a(href="/topic",class="#{!locals.tag_id?'active':''}") 全部
+                  each channel in channels
+                    .channel(class="#{channel.important?'important':''}")
+                      a.name(href="/qa?channel_id=#{channel.id}") #{channel.name}
+                      .others
+                        span.views.item
+                          span.index 问题数：
+                          a.value #{channel.qa_count}
+                        span.views.item
+                          span.index 浏览：
+                          a.value #{channel.visit_count}
+                      .desc #{channel.desc}
+                  .channel(class="")
+                    a.name(href="http://www.imooc.com/wenda?from=luandun") 慕课问答
+                    .others
+
+                    .desc 感谢慕课网提供的问答内容
+
+                .publish-tip.alert 如要发表问题，请点击【分类】进入之后，再发表到此分类。(问题被回答会邮件通知您)
+
+          else
+              .simple-channels
+                - var colors = ['ec898e','efad8b','efc48b','b67fdb','89dc80','7fd5db','7faadb'];
+
+                each c,i in  channels
+                  - var color = colors[i];
+                  a.item(href="/qa?channel_id=#{c.id}",class="#{channel.id==c.id?'active':''}",style="background:##{color}") #{c.name}
+              .now-channel.clearfix
+                .channel_info
+                  a.name(href="/qa?channel_id=#{channel.id}") #{channel.name}
+                  .others
+                    span.views.item
+                      span.index 问题数：
+                      a.value #{channel.qa_count}
+                    span.views.item
+                      span.index 浏览：
+                      a.value #{channel.visit_count}
+                  .desc #{channel.desc}
+
+                  .actions
+                    a.btn.small-btn(href="/qa/add#{locals.channel_id?('?channel_id='+locals.channel_id):''}") 在此提问
+                .pros
+                  .hd 本栏目专家组
+                    .alert 提问的时候会默认邮件邀请专家回答
+                    .users
+                      if channel.users&&channel.users.length
+                        - var prouses = []
+                        each user in channel.users
+                          if user.is_publish
+                            a.user(href="/user/#{user.user.id}") #{user.user.nick}
+                          else if locals.user
+                            if locals.user.is_admin
+                              a.user(href="/user/#{user.user.id}") #{user.user.nick}（审核中）
+                            else if locals.user.id == user.user.id
+                              a.user(href="/user/#{user.user.id}") #{user.user.nick}（审核中）
+
+
+                      else
+                        .no 暂无
+                  .join
+                    .btn.gray.small-btn#join-pro(data-id="#{channel.id}",href="/qa/channel/#{channel.id}/join") 加入专家组
+          //- .actions
+          //-   a.btn(href="/qa/add") <i class="icon-plus icon-white"></i> 我要提问
+          //-   .right-actions
+          //-     a(class="#{(locals.filter_answer_count===undefined&&locals.filter_user_id==undefined)?'active':''}",href="/qa") 全部问题
+          //-     a(class="#{locals.filter_answer_count==='0'?'active':''}",href="/qa?filter=answer_count|0") 未回答
+          //-     if locals.user
+          //-       a(class="#{locals.filter_user_id==user.id?'active':''}",href="?filter=user_id|#{user.id}") 我的提问
+        if locals.questions
+          a.ad-blank(href="http://www.jiankongbao.com",style="display: block;")
+            img(src="http://htmljs.b0.upaiyun.com/uploads/1461145522216-11f81ceccd6bdc6c380b1d6d9f968413.jpg",style="width:1000px;")
+          .qa-list.mod-white
+            each question,i in questions
+              .qa-item(class="#{i%2==1?'yooo':''} #{question.answer_count==0?'new':''}")
+
+
+                .entry-title
+                  h2.title
+                    if question.is_jing
+                      img(src="#{assets_head}/images/jing.png",width="18px",height="18px")
+                    a(href='/qa/#{question.pinyin?question.pinyin:question.id}', title='#{question.title}', rel='bookmark')
+                      |#{question.title}
+                    if question.answer_count == 0
+                      span.label.tip.new 求回答
+                    else if question.answer_count >=7 || question.is_hot
+                      span.label.tip.hot HOT
+                    else if question.sort == 10000
+                      span.label.tip.top 置顶
+                    if question.is_admin
+                      span.label.tip.admin 官方
+                    if question.is_closed
+                      span.label.tip.closed 关闭
+                  div.others
+
+                    span.views.item
+                      span.index 浏览
+                      a.value #{question.visit_count}
+                    span.views.item
+                      span.index 回答
+                      a.value #{question.answer_count}
+                    span.time.item
+                      a.value #{moment(question.createdAt).fromNow()}
+                    if question.tagNames
+                      - var tags = question.tagNames.split(",")
+                      span.tags.item
+                        each tag in tags
+                          a.value(href="/tag/n/#{tag}") #{tag}
+
+                    if locals.user&&locals.user.is_admin
+                      span.actions.item
+                        span.index 操作：
+                        if question.sort ==10000
+                          a(href="/qa/#{question.id}/update?sort=#{question.id}") 取消置顶
+                        else
+                          a(href="/qa/#{question.id}/update?sort=10000") 置顶
+                        a(href="/qa/#{question.id}/update?is_hot=1") hot
+                        a(href="/qa/#{question.id}/update?is_hot=0") nohot
+                        a(href="/qa/#{question.id}/move_to_topic") 变话题
+                        if question.is_jing
+                          a(href="/qa/#{question.id}/update?is_jing=0") 去精
+                        elseqa
+                          a(href="/qa/#{question.id}/update?is_jing=1") 变精
+                  div.user
+                    a(data-original-title="#{question.user_nick}",href="/user/#{question.user_id}")
+                      img(src="#{question.user_headpic}")
+
+                      if question.user&&question.user.sex
+                        if question.user.sex == '男'
+                          .sex.nan
+                        else
+                          .sex.nv
+                  if question.answer&&question.answer.id
+                    div.answer.clearfix
+                      .answer-user
+                        a(data-original-title="#{question.answer.user_nick}")
+                          img(src="#{question.answer.user_headpic}")
+                      .answer-con !{question.answer.html.replace(/<[^>]*>/g,"").substr(0,100)}
+                        |<a href="/qa/#{question.id}#answer-#{question.answer.id}">阅读更多</a>
+          include ../page
+        include ../google970
+      //- .right
+      //-   .module
+      //-     .bd
+      //-       p 2013年9月出生。
+      //-       p 致力于为您解决各类技术问题。
+      //-       p 给人玫瑰，手留余香。
+      //-   .module.recent_answers
+      //-     .hd 最新回答
+      //-     .bd
+      //-       if locals.recent_answers
+      //-         each ans in recent_answers
+      //-           div.item
+      //-             span #{ans.user_nick}：
+      //-             a(href="/qa/#{ans.question_id}#answer-#{ans.id}",style="word-break:break-all;") #{ans.html.replace(/<[^>]*?>/g,"").substr(0,50)+"..."}
+
+      //-   .module.hot_questions
+      //-     .hd 热门问题
+      //-     .bd
+      //-       if locals.hot_questions
+      //-         each q in hot_questions
+      //-           div.item
+      //-             a(href="/qa/#{q.id}") #{q.title}
+      //-             // span (浏览：#{q.visit_count} 回答：#{q.answer_count})
+
+    script.
+      $('.user a').tooltip({
+          placement:"bottom"
+      })
+      $("#join-pro").click(function(){
+        var self = this;
+        HtmlJS.util.ajax("/qa/channel/"+$(self).attr("data-id")+"/join",{},"post",function(data){
+              if(data.success){
+                alert("加入成功，等待审核中。")
+              }else{
+                alert(data.info)
+              }
+        },function(){
+
+        },null,function(){
+          HtmlJS.util.ajax("/qa/channel/"+$(self).attr("data-id")+"/join",{},"post",function(data){
+                if(data.success){
+                  alert("加入成功，等待审核中。")
+                }else{
+                  alert(data.info)
+                }
+          },function(){
+
+          })
+        })
+        })
+
+    include ../footer

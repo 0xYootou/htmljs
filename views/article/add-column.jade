@@ -1,0 +1,84 @@
+doctype html
+html
+  head
+    include ../head
+    link(href='#{assets_head}/css/Markdown.Editor.css?ddd2', type='text/css', rel='stylesheet', charset='utf-8')
+    script(src='#{assets_head}/js/jquery.js')
+    include ../editor_head
+    title 添加专栏
+    style.
+      #content input[type="text"]{
+        width:90%;
+      }
+      #content textarea{
+      height:200px;
+      }
+  body#qa-add
+    - locals.pageId=1;
+    include ../header
+    #content.clearfix
+      .content
+        .left
+          .module
+            form.form-horizontal#form(method='post')
+              fieldset
+                if locals.column
+                  legend 编辑专栏
+                else
+                  legend 添加专栏
+                if locals.column
+                  input(type='hidden', value = "#{column.id}",name='id')
+                .control-group
+                  input#title(type='text', value = "#{locals.column?locals.column.name:''}",name='name', placeholder='专栏名称,使用尽量少的字描述',required)
+                .control-group#wmd-editor-parent
+                  .wmd-panel#wmd-editor-con
+                    .padding
+                      #wmd-bar-parent
+                        #wmd-button-bar
+                    textarea.wmd-input#wmd-input(name="desc_md",placeholder='专栏描述',required,style="height:300px;") #{locals.column?locals.column.desc_md:''}
+
+                .control-group
+                  label.radio
+                    input(type='radio', value = "1",name='is_tuan')
+                    | 团队专栏
+                  label.radio
+                    input(type='radio', value = "0",name='is_tuan',checked)
+                    | 个人专栏
+                .control-group#wmd-preview-parent
+                  .wmd-panel.wmd-preview#wmd-preview-con
+                    .padding
+                      #wmd-preview
+                .control-group
+                  button.btn(type='submit') 添加
+
+      .right
+        .module
+          .hd 提示
+          .bd
+            //- div 提交专栏添加申请后，需要管理员审核后方能使用。
+            //- div 专栏可以设置私有和共有。
+            div 标题和描述，请尽量清晰。
+      #fullscreen-editor.hidden
+      #fullscreen-exit.hidden
+        a.btn
+          i.icon-resize-small
+    include ../footer
+    script(src='#{assets_head}/js/ajaxfileupload.js')
+    script(src='#{assets_head}/js/loadingTip.js')
+    script(src='#{assets_head}/js/messageTip.js')
+    script.
+
+      var converter1 = Markdown.getSanitizingConverter();
+      var editor1 = new Markdown.Editor(converter1);
+      editor1.run();
+      var converter2 = new Markdown.Converter();
+
+      converter2.hooks.chain("preConversion", function (text) {
+          return text.replace(/\b(a\w*)/gi, "*$1*");
+      });
+
+      converter2.hooks.chain("plainLinkText", function (url) {
+          return "This is a link to " + url.replace(/^https?:\/\//, "");
+      });
+
+      

@@ -1,0 +1,14 @@
+html,body{margin:0;padding:0;font-family:"Lucida Grande","Lucida Sans Unicode","Helvetica","Arial","Verdana","sans-serif";}
+#content .wrapper{width:1000px;margin:0 auto;position:relative;}
+.mod{height:700px;width:100%;}
+.mod-1{background:#ef6f67;}.mod-1 .wrapper img{width:100%;}
+.mod-1 .links{position:absolute;top:600px;right:80px;font-size:12px;}.mod-1 .links a{border-right:1px solid #eee;line-height:30px;padding:0 10px;color:#eee;text-decoration:none;}
+.mod-1 .links a:last-child{border:none;}
+.mod-1 .links a:hover{color:#fff;text-decoration:underline;}
+.mod-2{background:#424a56;height:500px;}
+.mod-2 .desc{padding-top:50px;font-size:16px;line-height:30px;color:#ccc;text-align:center;}.mod-2 .desc img{width:100px;border:5px solid #ccc;border-radius:100px;margin-bottom:20px;}
+.mod-2 .desc a{color:#aaa;}
+.mod-2 .desc a:hover{color:#fff;}
+.mod-3{background:#eee;height:270px;}.mod-3 .partner-hd{font-size:20px;color:#444;line-height:30px;padding-top:50px;text-align:center;}
+.mod-3 .partner-bd{text-align:center;padding-top:30px;}.mod-3 .partner-bd a{text-align:center;line-height:30px;color:#666;font-size:14px;display:inline-block;width:90px;text-decoration:none;}.mod-3 .partner-bd a img{width:50px;display:block;margin:0 auto;border-radius:10px;}
+@media (max-width:600px){#content .wrapper{width:100%;} #content .mod-1{height:auto;}#content .mod-1 .links{position:relative;right:auto;top:auto;line-height:50px;text-align:center;} #content .mod-2 p{padding:0 10px;}}

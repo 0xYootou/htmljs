@@ -1,0 +1,38 @@
+doctype html
+html
+  head
+    include head
+    title 前端乱炖-免费送书
+    script(src='#{assets_head}/js/lazyload.js')
+  body#cards
+    - locals.pageId=6;
+    include header
+    #content.clearfix
+      .main.clearfix
+        .left
+          include page
+          ul.book-list
+            each book in books
+              li
+                div.head_pic
+                  img.lazy(data-original='#{book.pic}', width='50')
+                div.infos
+                  div
+
+        .right
+
+          .module.fix-ad
+              .hd 广告位
+              .bd
+                .item
+                  | <a href="http://www.aliyun.com/cps/rebate?from_uid=z5Ie3yFvk5Q=" target="_blank"><img src="http://pic.yupoo.com/sinaweibo597038041/CTnk0XIM/medish.jpg" width="100"></a>
+    include footer
+
+    script.
+      $("img.lazy").lazyload();
+      $("#gotop").click(function(){
+      $('html,body').animate({
+      scrollTop:0
+      })
+      })
+

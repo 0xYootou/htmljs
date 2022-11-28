@@ -1,0 +1,165 @@
+doctype html
+html
+  head
+    include ../head
+    link(href='#{assets_head}/css/Markdown.Editor.css?33', type='text/css', rel='stylesheet', charset='utf-8')
+    script(src='#{assets_head}/js/jquery.js')
+    include ../editor_head
+    title 编辑问题-前端乱炖
+    style.
+      #content textarea{height:300px !important;}
+
+  body#qa-add
+    - locals.pageId=7;
+    include ../header
+    #content.clearfix
+      .content
+        .left
+          .module
+            form.form-horizontal#form(method='post')
+              fieldset
+                legend 编辑问题
+                .control-group
+                  input(type="hidden",name="id",value="#{question.id}")
+                  input#title(type='text', name='title', placeholder='简单描述',value="#{question.title}")
+                .control-group
+                  .wmd-panel
+                    #wmd-button-bar
+                    textarea.wmd-input#wmd-input(name="md",placeholder='详细问题') #{question.md}
+                .control-group
+                  input.reason(type="text",name="reason",required,placeholder="编辑原因")
+                if locals.channels
+                  .control-group
+                    .channels
+                      input#channel_id(type="hidden",name="channel_id",value="#{question.channel_id?question.channel_id:''}")
+                      .channels-hd 所属分类
+                      .channels-bd
+                        each channel,i in channels
+                          span.channel(data-id="#{channel.id}",class="#{question.channel_id?(question.channel_id==channel.id?'active':''):''}",data-original-title="#{channel.desc.substr(0,100)}",title="#{channel.desc.substr(0,100)}") #{channel.name}
+
+                if locals.tags
+                  .control-group
+                    .tags
+                      input#tags(type="hidden",name="tags",value="")
+                      input#tagNames(type="hidden",name="tagNames",value="#{question.tagNames}")
+                      .tags-hd 问题标签：
+                      - if(question.tagNames){var tagNames = question.tagNames.split(",");}else{var tagNames=[]}
+                      .tags-bd
+                        each tag,i in tags
+                          span(class="label #{tagNames.indexOf(tag.name)==-1?'':'label-success'}",data-id="#{tag.id}",data-original-title="#{tag.desc_md.substr(0,100)}",title="#{tag.desc_md.substr(0,100)}") #{tag.name}
+                        a(href="/tag/add",target="_blank",style="padding-left:10px;font-size:12px;") 添加新标签
+                .control-group
+                  button.btn(type='submit') 发表
+                .wmd-panel.wmd-preview
+                  div 预览
+                  #wmd-preview
+
+
+            #myModal.modal.hide.fade.
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabel">插入图片</h3>
+              </div>
+              <div class="modal-body">
+                  <input type="file" name="pic" id="file" />
+              </div>
+              <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
+                <button class="btn btn-primary">插入</button>
+              </div>
+      .right
+        .module
+          .hd 提示
+          .bd
+            div 标题中需带有问号和疑问语气。
+            div 可以使用markdown语法，可以插入图片。
+            div 分享到微博可以让更多人关注并回答问题。
+            div 提问前请阅读：<a href="/qa/7" target="_blank">问答系统指南</a>
+    include ../footer
+    script(src='#{assets_head}/js/ajaxfileupload.js')
+    script(src='#{assets_head}/js/loadingTip.js')
+    script(src='#{assets_head}/js/messageTip.js')
+    script.
+      $(".channels .channel").click(function(){
+        $(".channels .channel").removeClass("active");
+        $(this).addClass("active");
+        $("#channel_id").val($(this).attr("data-id"))
+        })
+      var selectedTags = []
+        var selectedTagNames=[]
+        $(".tags .label").each(function(i,tag){
+          if($(tag).hasClass("label-success")){
+            selectedTags.push($(tag).attr("data-id"))
+              selectedTagNames.push($(tag).html())
+          }
+          })
+        $("#tags").val(selectedTags.join(","))
+        $("#tagNames").val(selectedTagNames.join(","))
+      $(".tags .label").click(function(){
+        $(this).toggleClass("label-success");
+        var selectedTags = []
+        var selectedTagNames=[]
+        $(".tags .label").each(function(i,tag){
+          if($(tag).hasClass("label-success")){
+            selectedTags.push($(tag).attr("data-id"))
+              selectedTagNames.push($(tag).html())
+          }
+          })
+        $("#tags").val(selectedTags.join(","))
+        $("#tagNames").val(selectedTagNames.join(","))
+        })
+      $('.tags .label').tooltip({
+          placement:"bottom"
+      })
+      var converter1 =new  Markdown.Converter();
+      Markdown.Extra.init(converter1);
+      var editor1 = new Markdown.Editor(converter1);
+
+      editor1.run();
+
+      //- $("#form").submit(function(e){
+      //-   e.preventDefault()
+      //-   $.ajax({
+      //-     url:"",
+      //-     type:"post",
+      //-     data:$("#form").serialize(),
+      //-     success:function(data){
+      //-       if(data.success){
+      //-         alert("发布成功")
+      //-         window.location.href="/qa"
+      //-       }else{
+      //-         alert(data.info)
+      //-       }
+      //-     },
+      //-     error:function(){
+
+      //-     }
+      //-   })
+      //- })
+      editor1.hooks.set('insertImageDialog', function(callback) {
+        $("#myModal").modal("show");
+        $("#file")[0].onchange=function(){
+          $.ajaxFileUpload({
+            url:"/upload",
+            secureuri:false,
+            fileElementId:'file',
+            dataType: 'json',
+            success: function (data, status)
+            {
+              if(data.success){
+                callback(data.data.filename)
+                $("#myModal").modal("hide");
+              }else{
+                messageTip.show(data.info)
+
+              }
+              loadingTip.hide()
+            },
+            error:function(){
+
+              loadingTip.hide()
+            }
+          })
+        };
+        return true; // tell the editor that we'll take care of getting the image url
+      });

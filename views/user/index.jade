@@ -1,0 +1,40 @@
+doctype html
+html
+  head
+    include ./../head
+    title 前端乱炖-我
+    script(src='#{assets_head}/js/bootstrap/bootstrap-tooltip.js')
+
+  body#user
+    - locals.pageId=8;
+    - locals.user_page_id = 1;
+    include ./../header
+    #content
+      include topinfo
+      include ../google970
+      .main.clearfix
+
+          include left
+
+          .infos.module
+            .bd
+              if !locals.infos
+                p 暂无动态
+              else
+                each info in infos
+                  .info-item(class="#{info.is_read?'':'noread'}")
+                    .t
+                      a(href="/user/#{info.source_user_id}") #{info.source_user_nick}
+                      |  #{info.action_name}：
+                      a(href="#{info.target_path}") #{info.target_path_name}
+                      span.time  #{moment(info.createdAt).fromNow()}
+                    if info.content
+                      .con !{info.content}
+              include ../page
+
+    include ../footer
+
+    script.
+      $("#more_info").click(function(){
+        $(".my_card").toggleClass("hidden")
+        })

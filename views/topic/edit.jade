@@ -1,0 +1,132 @@
+doctype html
+html
+  head
+    include ../head
+    link(href='#{assets_head}/css/Markdown.Editor.css?dd2', type='text/css', rel='stylesheet', charset='utf-8')
+    script(src='#{assets_head}/js/jquery.js')
+    title 编辑话题
+    include ../editor_head
+  body#topic-add
+    - locals.pageId=10;
+    include ../header
+    #content.clearfix
+      .content
+        .left
+          .module
+            form.form-horizontal#form(method='post')
+              fieldset
+                legend 编辑话题
+                .control-group
+                  input#title(type='hidden', name='id', placeholder='标题',value="#{topic.id}")
+                  input#title(type='text', name='title', placeholder='标题',value="#{topic.title}")
+                .control-group
+                  .wmd-panel
+                    #wmd-button-bar
+                    textarea.expand.wmd-input#wmd-input(name="md",placeholder='话题内容') #{topic.md}
+                if locals.tags
+                  .control-group
+                    .tags
+                      input#tags(type="hidden",name="tag_id",value="#{topic.tag_id}")
+                      span.tags-hd 选个标签吧：
+                      span.tags-bd
+                        each tag,i in tags
+                          span.label(data-id="#{tag.id}",title="#{tag.name}",class="#{topic.tag_id==tag.id?'label-success':''}") #{tag.name}
+                .control-group
+                  button.btn#submit(type='submit') 发表
+                .wmd-panel.wmd-preview
+                  div 预览
+                  #wmd-preview
+                //- .control-group
+                //-   label.checkbox
+                //-     input(type="checkbox",name="to_weibo",checked="false")
+                //-     |分享到微博
+
+            #myModal.modal.hide.fade.
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabel">插入图片</h3>
+              </div>
+              <div class="modal-body">
+                  <input type="file" name="pic" id="file" />
+              </div>
+              <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
+                <button class="btn btn-primary">插入</button>
+              </div>
+
+
+      .right
+        .module
+          .hd 提示
+          .bd
+            div.item 话题用于闲散轻松的讨论，无太多限制。
+            div.item 如果是专业型比较强的问题，请发布到【问答】栏目。如果是专业文章，发布到【专栏】栏目
+            div.item 可以发布技术话题，也可以发布和技术人有关的方方面面的话题。
+
+    include ../footer
+    script(src='#{assets_head}/js/ajaxfileupload.js')
+    script(src='#{assets_head}/js/loadingTip.js')
+    script(src='#{assets_head}/js/messageTip.js')
+
+    script.
+      $(".tags .label").click(function(){
+        $(".tags .label").removeClass("label-success");
+        $(this).addClass("label-success");
+        $("#tags").val($(this).attr("data-id"))
+        })
+      $('.tags .label').tooltip({
+          placement:"bottom"
+      })
+      var converter1 =new  Markdown.Converter();
+      Markdown.Extra.init(converter1);
+      var editor1 = new Markdown.Editor(converter1);
+
+      editor1.run();
+
+      $("#form").submit(function(e){
+        e.preventDefault()
+          HtmlJS.util.ajax("/topic/update",$("#form").serialize(),"post",function(data){
+            if(data.success){
+              window.location.href="/topic/#{topic.id}"
+            }else{
+              alert(data.info)
+            }
+          },function(){
+            HtmlJS.util.ajax("/topic/#{topic.id}/edit",$("#form").serialize(),"post",function(data){
+              if(data.success){
+                window.location.href="/topic/#{topic.id}"
+              }else{
+                alert(data.info)
+              }
+            },function(){
+
+            },$("#submit"))
+          },$("#submit"))
+      })
+      editor1.hooks.set('insertImageDialog', function(callback) {
+        $("#myModal").modal("show");
+        $("#file")[0].onchange=function(){
+          $.ajaxFileUpload({
+            url:"/upload",
+            secureuri:false,
+            fileElementId:'file',
+            dataType: 'json',
+            success: function (data, status)
+            {
+              if(data.success){
+                callback(data.data.filename)
+                $("#myModal").modal("hide");
+              }else{
+                messageTip.show(data.info)
+
+              }
+              loadingTip.hide()
+            },
+            error:function(){
+
+              loadingTip.hide()
+            }
+          })
+        };
+        return true; // tell the editor that we'll take care of getting the image url
+      });

@@ -1,0 +1,60 @@
+!!!
+html
+  head
+    title 我要让TA上头条！
+    include ./../head
+    style.
+      .star-list{
+
+      }
+      .star-list li{
+        float:left;
+        list-style:none;
+        margin:20px;
+      }
+      .star-list li img{
+        width:150px;
+        height:150px;
+      }
+      #toutiao  .btn{
+
+        margin:20px auto;
+        display:block;
+        width:200px;
+        font-size:20px;
+        height:40px;
+        line-height:40px;
+      }
+      h1{
+      line-height:60px;
+        text-align:center;
+      }
+  body#toutiao
+    #content
+      h1 md，烦死了，谁上头条我来定！<br/>选择一个明星，帮TA上头条！
+      .module(style="margin-top:100px;")
+        ul.star-list.clearfix
+          li
+            img(src="http://data.yule.sohu.com/star/pic/star/1/1449/default.jpg")
+          li
+            img(src="http://data.yule.sohu.com/star/pic/star/1/1449/default.jpg")
+        div(style="clear:both;")
+        div(style="margin-top:50px;")
+          a#submit.btn() 我要让TA上头条！
+        div(style="margin-top:30px;")
+          img(src="http://www.9991.com/about/images/06-1-11.jpg")
+    script.
+      $("#submit").click(function(){
+        HtmlJS.util.ajax("/toutiao",{
+
+            },"post",function(data){
+                if(data.success){
+
+                }else{
+                  alert(data.info)
+                }
+            },function(){
+
+
+          })
+        })

@@ -1,0 +1,396 @@
+doctype html
+html
+  head
+    include ./../head
+    include ./../editor_head
+    title #{job.title} - 招聘 - 前端乱炖
+    |<meta name="description" content="html,js,css,nodejs,前端开发,前端招聘,jquery,qianduan">
+    if locals.is_clear
+      style.
+        html,body{
+        background:#fff;
+        }
+        #content{
+        background:#fff;
+        }
+        #content .module{margin:0 !important;padding:0 !important;}
+        #content{
+        margin:0;
+        }
+        #content .actions{display:none;}
+        .main .adsbygoogle iframe {width:670px !important;}
+  body#job
+    - locals.pageId=50;
+    if !locals.is_clear
+      include ./../header
+    #content.clearfix
+      if !locals.is_clear
+        ul.breadcrumb
+          li
+            a(href="/") 首页
+            span.divider /
+          li
+            a(href="/job") 招聘求职
+            span.divider /
+          li.active
+            span #{job.title}
+      .content
+        .left
+          .module.main
+            .topic-title
+              h2.title
+                |#{job.title}
+            //- include ../320ad
+            .topic-content
+              h3.con-title 基本信息
+              .job-base-info
+                .item
+                  span.key 公司：
+                  span.value #{job.company_name}
+                .item
+                  span.key 公司规模：
+                  span.value #{job.company_personcount}
+                .item
+                  span.key 招聘职位：
+                  span.value #{job.zhiwei}
+                .item
+                  span.key 薪水范围：
+                  span.value #{job.min_price} - #{job.max_price}
+                .item
+                  span.key 所在城市：
+                  span.value #{job.company_country} #{job.company_city}
+                .item
+                  span.key 招聘人数：
+                  span.value #{job.zhaopin_personcount}
+                .item
+                  span.key 工作经验要求：
+                  span.value #{job.zhaopin_jingyan}
+              h3.con-title 职位要求
+              .job-require !{job.zhaopin_desc}
+              h3.con-title 公司简介
+              .job-company-desc !{job.company_desc}
+              h3.con-title 联系方式
+              .job-email
+                a(href="mailto:#{job.email}") #{job.email}
+                if locals.user && locals.user.is_admin
+                  form(action="/job/#{job.id}/create_mail")
+                    input(type="hidden",name="job_id",value="#{job.id}")
+                    input(type="hidden",name="user_id",value="#{job.user_id}")
+                    input(type="hidden",name="source",value="#{job.email}")
+                    input(type="text",name="target",value="")
+                    button(type="submit") 提交
+            .topic-user.clearfix
+              .zans.clearfix
+                a.zan.action(href="javascript:void(0);")
+                    i.icon-heart
+                    if locals.has_zan
+                      |<em>已感兴趣</em> <span>#{job.zan_count}</span>
+                    else
+                      |<em>感兴趣</em> <span>#{job.zan_count}</span>
+                  if locals.user && locals.user.id==job.user_id
+                    if locals.zan_logs
+                      span.zanlogs
+                        each zan in zan_logs
+                          a.tooltip-trigger(href="/user/#{zan.user.id}",data-original-title="#{zan.user.desc}")
+                            img(src='#{zan.user.head_pic}')
+                  else
+                    .alert.alert-warning 只有发布者能看到谁表示了感兴趣！
+
+              .actions
+
+                  if locals.user && (user.is_admin||user.id==job.user_id)
+                    a.action(href="/job/#{job.id}/edit") <i class="icon-pencil icon-gray"></i>编辑
+                  a.action(target="_blank",href="http://service.weibo.com/share/share.php?url=#{encodeURIComponent("http://www.html-js.com/job/"+job.id)}&title=分享一则@前端乱炖 招聘频道的招聘信息【#{job.title}】公司：#{job.company_name} 职位：#{job.zhiwei} 所在城市：#{job.company_country} #{job.company_city} 薪资范围：#{job.min_price} - #{job.max_price} 详情见：&appkey=659341943") 分享
+            //-       a.action#add_fav(href="javascript:void(0);")
+            //-         i.icon-heart
+            //-         span 收藏 #{locals.favs?locals.favs.length:0}
+            //-       a.action#bdshare.bdshare_t.bds_tools.get-codes-bdshare(style="float:none;")
+            //-         i.icon-new-window
+            //-         span.bds_more(style="background:none !important;float:none;display:inline;padding:0;") 分享
+            //-       span 浏览 #{topic.visit_count}
+            //-   .user
+            //-     img(src="#{topic.user_headpic}")
+            //-     .nick
+            //-       a(href="/user/#{topic.user_id}") #{topic.user_nick}
+            //-       em(title="经验值") #{topic.user.coin||0}
+            //-     .time #{moment(topic.createdAt).fromNow()}
+          //- div.module(style="margin-top:20px;padding:0px;").
+          //-   <script type="text/javascript">
+          //-       /*728*90，创建于2013-12-16*/
+          //-       var cpro_id = "u1636372";
+          //-   </script>
+          //-   <script src="http://cpro.baidustatic.com/cpro/ui/c.js" type="text/javascript"></script>
+
+          .topic-comments.module(class="#{locals.is_clear?'hidden':''}")
+            .hd 跟帖
+            .bd
+              if !comments.length
+                div 暂无
+              else
+                .comment-list
+                  each ans,i in comments
+                    if !ans.is_unused && ans.md
+                      .comment-item.clearfix(id="comment-#{ans.id}")
+                        .ans-user.clearfix
+                          a.user(href="/user/#{ans.user_id}",data-original-title="#{ans.user_nick}")
+                            img(src="#{ans.user_headpic}")
+                            if ans.user&&ans.user.sex
+                              if ans.user.sex == '男'
+                                .sex.nan
+                              else
+                                .sex.nv
+                            //.nick #{ans.user_nick}
+                            //.time #{moment(ans.createdAt).fromNow()}
+
+                        .ans-con
+                          .con-hd
+                            a(href="/user/#{ans.user_id}") #{ans.user_nick}
+                            .hd-time #{moment(ans.createdAt).fromNow()}
+                          .con-bd !{ans.html.replace(/<code>/g,"<code class='language-javascript'>")}
+                          .con-action
+                            a.at(href="",data-nick="#{ans.user_nick}") <i class="icon-new-window icon-gray"></i>回复
+                            a.reply(href="",data-md="#{ans.md}",data-nick="#{ans.user_nick}") <i class="icon-retweet icon-gray"></i>引用
+                            a(target="_blank",href="http://service.weibo.com/share/share.php?url=#{encodeURIComponent("http://www.html-js.com/job/"+job.id+"#comment-"+ans.id)}&title=分享自@前端乱炖 的精彩跟帖【#{job.title}】#{ans.user_nick}：#{ans.md.replace(/>/g,'').substr(0,100)}&appkey=659341943") 分享
+                            //- a.zan(href="",data-id="#{ans.id}") <i class="icon-thumbs-up"></i>赞 <em>#{ans.zan_count}</em>
+                        if i==0 && locals.page==1
+                          .ans-lou 沙发
+                        else if i==1&& locals.page==1
+                          .ans-lou 板凳
+                        else if i==2&& locals.page==1
+                          .ans-lou 地板
+                        else
+                          .ans-lou #{(locals.page-1)*30+i+1} 楼
+                          //- if topic.id ==3
+                          //-   - var shulie = [ 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66, 78, 91, 105, 120, 136, 153, 171, 190, 210, 231, 253, 276, 300, 325, 351, 378, 406, 435, 465, 496, 528, 561, 595, 630, 666, 703, 741, 780, 820, 861, 903, 946, 990];
+                          //-   - if(shulie.indexOf((locals.page-1)*30+i+1)!=-1)
+                          //-     |  中奖
+                include ../page
+          .add-comment.module(class="#{locals.is_clear?'hidden':''}")
+            .hd 说几句
+            .publish.bd
+              form.form-horizontal#form(method='post')
+                fieldset
+                  .fake-form
+                    textarea(placeholder="支持markdown语法")
+                  .real-form.hidden
+                    .control-group
+                      .wmd-panel
+                        #wmd-button-bar
+                        textarea.wmd-input#wmd-input(name="md",placeholder='杜绝无意义的回复。',style="height:200px;")
+                        .wmd-panel.wmd-preview
+                          #wmd-preview
+                    .control-group
+                      label.checkbox
+                        input(type="checkbox",name="to_weibo")
+                        |分享到微博
+                    .control-group
+                      button.btn#submit(type='submit') 发表
+              #myModal.modal.hide.fade.
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                  <h3 id="myModalLabel">插入图片</h3>
+                </div>
+                <div class="modal-body">
+                    <input type="file" name="pic" id="file" />
+                </div>
+                <div class="modal-footer">
+                  <button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
+                  <button class="btn btn-primary">插入</button>
+                </div>
+      .right(class="#{locals.is_clear?'hidden':''}")
+          if locals.user_jobs
+            .module.sametag_topics
+              .hd TA发布的其他职位
+              .bd
+                each jj in user_jobs
+                  if jj.id != job.id
+                    div.item <a href="/job/#{jj.id}">#{jj.title}</a>
+          if locals.city_jobs
+            .module.sametag_topics
+              .hd 同城市的其他职位
+              .bd
+                each jjj in city_jobs
+                  if jjj.id != job.id
+                    div.item <a href="/job/#{jjj.id}">#{jjj.title}</a>
+          a.ad-blank(href="http://www.html-js.com/topic/827",style="width:280px;height:280px;")
+            .ad-inner 广告位 点击查看投放指南
+    script#comment-tpl(type="text/template")
+      .comment-item.clearfix
+        div.con
+          span.author.vcard.item
+            a.value.url.fn(rel='author', href='/user/{{user.id}}') {{user.nick}}：
+          span.content {{{content}}}
+          span.time {{createdAt}}
+          span.action
+            a.reply(data-nick="{{user.nick}}") 回复
+    script#comment-tpl-q(type="text/template")
+      .comment-item.clearfix
+        a.headpic
+          img(src="{{user_headpic}}",width=70,height=70)
+        .comment-right
+          div.con
+            span.author.vcard.item
+              a.value.url.fn(rel='author', href='/user/{{user_id}}') {{user_nick}}：
+            | {{{html}}}
+          .time {{createdAt}}
+            a.reply(data-nick="{{user_nick}}") 回复
+    if locals.is_clear
+      .wx-mp.module
+        .hd 更多信息欢迎关注“前端乱炖”公众号
+        .bd
+          img(src="http://htmljs.b0.upaiyun.com/uploads/1393252270532-qrcode_for_gh_fa421f002680_258.jpg",style="width:100%;")
+
+    script(src='#{assets_head}/js/ajaxfileupload.js')
+    script(src='#{assets_head}/js/loadingTip.js')
+    script(src='#{assets_head}/js/messageTip.js')
+    script(src='#{assets_head}/js/mustache.js')
+    script(src='#{assets_head}/js/moment.js')
+    script.
+      $(".zans .zan").click(function(){
+          var self = this;
+        HtmlJS.util.ajax("/job/#{job.id}/zan",{
+          score:$(self).attr("data-index")
+        },"post",function(data){
+          loadingTip.hide()
+            if(data.success){
+
+              messageTip.show("成功！")
+                $("em",self).html("已赞")
+                $("span",self).html($("span",self).html()*1+1)
+            }else{
+              alert(data.info)
+            }
+        },function(){
+
+        },null,function(){
+        HtmlJS.util.ajax("/job/#{job.id}/zan",{
+          score:$(self).attr("data-index")
+        },"post",function(data){
+          loadingTip.hide()
+            if(data.success){
+              messageTip.show("成功！")
+                $("em",self).html("已赞")
+                $("span",self).html($("span",self).html()*1+1)
+            }else{
+              alert(data.info)
+            }
+        },function(){
+
+        },null,function(){
+
+      })
+      })
+      })
+      $('.user').tooltip({
+          placement:"bottom"
+      })
+      var comment_tpl = $("#comment-tpl").html()
+      var comment_tpl_1 = $("#comment-tpl-q").html()
+      moment.lang('zh-cn')
+      $(".reply").click(function(e){
+        e.preventDefault();
+        var md = $(this).attr("data-md");
+        var nick = $(this).attr("data-nick");
+        $(".real-form textarea").val("引用自：@"+nick+" ：\n"+"> "+md.replace(/\n/g,"\n> ")+"\n\n")
+        editor1.refreshPreview();
+        $(".fake-form").addClass("hidden")
+        $(".real-form").removeClass("hidden")
+        $(".real-form textarea").focus();
+        $(".real-form textarea")[0].setSelectionRange($(".real-form textarea")[0].value.length, $(".real-form textarea")[0].value.length)
+        })
+      $(".at").click(function(e){
+        e.preventDefault();
+        var nick = $(this).attr("data-nick");
+        $(".real-form textarea").val("@"+nick+" ")
+        editor1.refreshPreview();
+        $(".fake-form").addClass("hidden")
+        $(".real-form").removeClass("hidden")
+        $(".real-form textarea").focus();
+        $(".real-form textarea")[0].setSelectionRange($(".real-form textarea")[0].value.length, $(".real-form textarea")[0].value.length)
+        })
+      $(".con-comments").click(function(e){
+        if($(e.target).hasClass("reply")){
+          $("textarea",this).val("@"+$(e.target).attr("data-nick")+" ").focus()
+          $("textarea",this)[0].setSelectionRange($("textarea",this)[0].value.length, $("textarea",this)[0].value.length)
+        }
+        })
+      $(".fake-form textarea").click(function(){
+        $(".fake-form").addClass("hidden")
+        $(".real-form").removeClass("hidden")
+        $(".real-form textarea").focus();
+        })
+      if(localStorage.getItem("textarea_topic_#{job.id}")){
+      $(".fake-form").addClass("hidden")
+        $(".real-form").removeClass("hidden")
+        $(".real-form textarea").focus();
+      }
+      var converter1 = Markdown.getSanitizingConverter();
+      var editor1 = new Markdown.Editor(converter1);
+      editor1.run();
+      var converter2 = new Markdown.Converter();
+
+      converter2.hooks.chain("preConversion", function (text) {
+          return text.replace(/\b(a\w*)/gi, "*$1*");
+      });
+
+      converter2.hooks.chain("plainLinkText", function (url) {
+          return "This is a link to " + url.replace(/^https?:\/\//, "");
+      });
+
+      editor1.hooks.set('insertImageDialog', function(callback) {
+        $("#myModal").modal("show");
+        $("#file")[0].onchange=function(){
+          $.ajaxFileUpload({
+            url:"/upload",
+            secureuri:false,
+            fileElementId:'file',
+            dataType: 'json',
+            success: function (data, status)
+            {
+              if(data.success){
+                callback(data.data.filename)
+                $("#myModal").modal("hide");
+              }else{
+                messageTip.show(data.info)
+
+              }
+              loadingTip.hide()
+            },
+            error:function(){
+
+              loadingTip.hide()
+            }
+          })
+        };
+        return true; // tell the editor that we'll take care of getting the image url
+      });
+      $("#form").submit(function(e){
+        e.preventDefault()
+          HtmlJS.util.ajax("/job/#{job.id}/add",$("#form").serialize(),"post",function(data){
+            if(data.success){
+              localStorage.setItem("textarea_topic_#{job.id}","")
+              window.location.href="/job/#{job.id}"
+            }else{
+              alert(data.info)
+            }
+          },function(){
+
+          },$("#submit"),function(){
+            HtmlJS.util.ajax("/job/#{job.id}/add",$("#form").serialize(),"post",function(data){
+              if(data.success){
+                localStorage.setItem("textarea_topic_#{job.id}","")
+                window.location.href="/job/#{job.id}"
+              }else{
+                alert(data.info)
+              }
+            },function(){
+
+            },$("#submit"),function(){
+
+            })
+          })
+
+      })
+    if !locals.is_clear
+      include ../footer
+      include ../googlead

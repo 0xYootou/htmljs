@@ -1,0 +1,128 @@
+doctype html
+html
+  head
+    include head
+    title #{locals.q} 的搜索结果
+    |<meta name="description" content="前端乱炖，这里是最专业的前端知识平台，汇集国内大部分前端开发人员的前端花名册，最精彩的原创文章专栏，最专业的问答平台，最火热的话题频道，最丰富的线下线上活动。html,js,css,nodejs,前端开发,前端招聘,jquery">
+    style.
+      #bdshare a{}
+      #content .left .module .bd{
+        width:700px;
+      }
+      #content .search input{height:22px;width:490px;}
+      #content .search button{height:32px;width:80px;}
+      .results .title{font-size:14px;color:#444;line-height:30px;margin:0;}
+      .results .con{font-size:12px;color:#999;line-height:20px;}
+      .results em{color:#f27369;font-weight:bold;font-style:normal;}
+      .result{margin:10px 0;border-bottom:1px solid #eee;}
+      .results .title a{color:#2288cf;}
+      .hot a{padding:0 10px;color:#666;background:#eee;border-radius:10px;line-height:20px;display:inline-block;margin-top:5px;margin-right:5px;text-decoration:none;}
+      .hot a:hover{background:#5bb793;color:#fff;}
+    script(src='#{assets_head}/js/bootstrap/bootstrap-tooltip.js')
+    script(src='#{assets_head}/js/lazyload.js')
+  body#index
+    - locals.pageId=0;
+    include header
+
+    #content.clearfix
+      .content
+        .left
+          .module.search
+            .bd(style="margin:0;")
+              form(action="",method="get",style="margin:0;")
+                fieldset
+                  .input-append(style="margin:0;")
+                    input#keyword.span2.input-large(type="text",name="q",placeholder="请输入关键词查询")
+                    button.btn 搜索
+              if locals.relative_words&&relative_words.length
+                span 推荐搜索：
+                  for w,i in relative_words
+                    a(href="/search?q=#{w}",style="margin-right:10px;") #{w}
+          if locals.results
+            if !locals.results.length
+              p 暂无搜索结果
+            else
+              .module.mod.results
+                .hd #{locals.q} 的搜索结果
+                .bd
+                  each result,i in results
+                    .result
+                      if result.type == 'answer'
+                        - var link = "/qa/"+result.parent_id+"#answer-"+result.id;
+                      else
+                        - var link = "/"+result.type+"/"+result.id;
+                      h2.title
+                        a(href="#{link}",target="_blank")
+                          if result.type == 'article'
+                            |「专栏」
+                          else if result.type == 'card'
+                            |「花名册」
+                          else if result.type == 'qa'
+                            |「问题」
+                          else if result.type == 'topic'
+                            |「话题」
+                          else if result.type == 'answer'
+                            |「回答」
+                          else if result.type == 'blog'
+                            |「站外博客」
+                          | !{result.title}
+                      div
+                        a(href="#{link}",style="color:#5bb793;") http://www.html-js.com#{link}
+                      p.con !{result.html}
+              .pagination.clearfix
+                pageList = []
+                page = page*1
+                totalPage = totalPage*1
+                if page-1>4
+                  pageList = pageList.concat([1,2,3,"...",page-1])
+                else
+                  i = 0
+                  while ++i < page
+                    - pageList.push (i)
+                - pageList.push (page)
+                if page+1<totalPage-3
+                  pageList = pageList.concat([page+1,"...",totalPage-2,totalPage-1,totalPage])
+                else
+                  i = page
+                  while ++i < totalPage*1+1
+                    - pageList.push (i)
+                ul
+                  if page==1
+                    li.disabled
+                      a Prev
+                  else
+                    li
+                      a(href="?q=#{locals.q}&page=#{page-1}") Prev
+                  - var i=0
+                  for p in pageList
+                    if p =="..."
+                      li
+                        a(href="javascript:void(0);") ...
+                    else
+                      li(class="#{p==page?'active':''}")
+                        a(href="?q=#{locals.q}&page=#{p}") #{p}
+                  if page==totalPage
+                    li.disabled
+                      a Next
+                  else
+                    li
+                      a(href="?q=#{locals.q}&page=#{page+1}") Next
+
+                .total.label 共 #{total}
+      .right
+        .module.hot
+          .hd 热门搜索
+          .bd
+            if locals.hot_words
+              each w in hot_words
+                a(href="/search?q=#{w.word}") #{w.word}(#{w.count})
+        .module.hot
+          .hd 大家在搜索
+          .bd
+            if locals.recent_words
+              each w in recent_words
+                a(href="/search?q=#{w.word}") #{w.word}
+    include footer
+    script.
+      $("#keyword").focus()
+    

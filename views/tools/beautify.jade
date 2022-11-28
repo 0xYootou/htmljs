@@ -1,0 +1,121 @@
+doctype html
+html
+  head
+    include ../head
+    title #{t.title}
+    |<meta name="description" content="JS,HTML代码格式化 JS代码压缩 JS代码文件压缩">
+    style.
+      #content{
+      width:940px;
+      margin:0 auto;
+      }
+      body{
+        background:#efefef;
+        font-size:12px;
+      }
+      textarea{
+        width:880px;
+        height:300px;
+        font-size:12px;
+      }
+      .left{
+        width:420px;
+        display:inline-block;
+      }
+      .center{
+      width:50px;
+      margin-left:20px;
+        display:inline-block;
+      }
+      .center button{width:60px;}
+      .right{
+      width:420px;
+      margin-left:20px;
+      display:inline-block;
+      }
+      h2{
+      margin-top:30px;
+      font-size:15px;
+      }
+      h1{
+      text-align:center;
+      font-size:20px;
+      }
+      .module .bd{
+      padding:20px 0;
+      }
+    script(src="#{assets_head}/js/beautify.js")
+    script(src="#{assets_head}/js/beautify-html.js")
+    script(src="#{assets_head}/js/bootstrap/bootstrap-tab.js")
+  body#tools
+    - locals.pageId = 9;
+    include ../header
+    #content
+      include nav
+      .module
+        ul.nav.nav-tabs#myTab
+          li.active
+            a(href="#tab1",data-toggle="tab") JS,HTML代码格式化
+          li
+            a(href="#tab2",data-toggle="tab") JS代码压缩
+          li
+            a(href="#tab3",data-toggle="tab") JS文件压缩
+        .tab-content
+          .bd#tab1.tab-pane.active
+            .content
+              textarea#source(placeholder="输入 JS 或者 HTML 代码，然后点击格式化，即可获得格式良好的代码")
+            .action
+              a.btn#bit 格式化代码
+          .bd#tab2.tab-pane
+            .content
+              textarea#source2(placeholder="输入代码，然后点击格式化，即可获得格式良好的代码")
+            .action
+              a.btn#bit2 压缩代码
+          .bd#tab3.tab-pane
+            form#form(method="post",enctype="multipart/form-data")
+              input#file(type="file",name="jsfile")
+              p.alert 选择后会立即让您下载一个压缩过代码的JS文件
+    script.
+      opts={}
+      function looks_like_html(source) {
+            // <foo> - looks like html
+            // <!--\nalert('foo!');\n--> - doesn't look like html
+
+            var trimmed = source.replace(/^[ \t\n\r]+/, '');
+            var comment_mark = '<' + '!-' + '-';
+            return (trimmed && (trimmed.substring(0, 1) === '<' && trimmed.substring(0, 4) !== comment_mark));
+        }
+      $("#bit").click(function(){
+        var source = $("#source").val();
+         if (looks_like_html(source)) {
+                output = html_beautify(source, opts);
+            } else {
+                if ($('#detect-packers').prop('checked')) {
+                    source = unpacker_filter(source);
+                }
+                output = js_beautify(source, opts);
+            }
+        $("#source").val(output)
+        })
+      $("#bit2").click(function(){
+        var source = $("#source2").val();
+        $.ajax({
+          url:"",
+          dataType:"json",
+          data:{
+            text:source
+          },
+          type:"post",
+          success:function(data){
+          if(!data.success){
+          alert(data.info);
+          }else{
+          $("#source2").val(data.data.code)
+          }
+          }
+          })
+        })
+
+      $("#file").change(function(){
+        $("#form").submit()
+        })

@@ -1,0 +1,39 @@
+doctype html
+html
+    head
+        include ../head
+        link(href='#{assets_head}/css/Markdown.Editor.css?ddd2', type='text/css', rel='stylesheet', charset='utf-8')
+        script(src='#{assets_head}/js/jquery.js')
+        script(src='#{assets_head}/js/pcaunzip.js')
+        include ../editor_head
+        title 喵
+        style.
+            #content textarea {
+                height: 200px;
+            }
+            #content{width:1200px;}
+    body#job
+        include ../music_header
+        #content.clearfix
+            .content
+                include ../page
+                div
+                    a.btn(href="/music/message/add") 添加消息
+                table
+                    tr
+                        th(style="width:100px;") 标题
+                        th(style="width:150px;") 内容
+                        th(style="width:50px;") 时间
+                        th(style="width:150px;") 链接
+                        th(style="width:50px;") 故事id
+                        th(style="width:50px;") 点击数
+                    if messages && messages.length
+                        each m,i in messages
+                            tr
+                                td #{m.title}
+                                td #{m.content}
+                                td #{m.createdAt}
+                                td(style="word-break:break-all;") #{m.link}
+                                td #{m.story_id}
+                                td #{m.click_count}
+                include ../page

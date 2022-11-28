@@ -1,0 +1,67 @@
+doctype html
+html
+  head
+    include ../head
+    title #{locals.article&&article.title} - 专栏 - 前端乱炖
+    |<meta name="description" content="#{locals.article?article.html.replace(/<[^>]*>/g,'').replace(/\s/g,'').substr(0,100):""}">
+    style.
+      html,body{
+      margin:0;
+      background:#fff;
+      }
+      #content{
+      margin:0;
+      background:#fff;
+      }
+      #bdshare a{}
+      #article #content{
+      width:430px;
+      }
+      #article .module{
+      margin:0;
+      border:none;
+      margin-bottom:5px;
+      }
+      #article #content .column{
+      width:auto;
+      display:block;
+      }
+      #article .title{background:none;padding-top:20px;}
+      #article article{padding:5px;}
+      #article #content .post .entry-content p{font-size:16px;line-height:30px;}
+      #article #content .post .entry-content li{font-size:16px;line-height:30px;}
+      #article #content .post .entry-content div{font-size:16px;line-height:30px;}
+      #article #content .post .entry-content pre{font-size:16px;line-height:30px;}
+      #article #content .post .entry-content code{font-size:16px;line-height:30px;}
+      #article .module{background: #fff;}
+  body#article.clear-article
+    - locals.pageId=1;
+    #content.clearfix.right.left
+
+
+      article.post.module(id="post-#{article.id}")
+        .entry-title
+
+          h2.title(href='http://p.html-js.com/article/#{article.id}', title='#{article.title}', rel='bookmark') #{article.title}
+          div.info
+            div.author.vcard.item
+              span.index #{article.quote_url?"推荐者":"作者"}：
+              a.value.url.fn(rel='author', href='/user/#{article.user_id}') #{article.user_nick}
+
+            div.time.item
+              span.index 时间：
+              a.value #{moment(article.publish_time*1000).format("LLL")}
+        .entry-content !{article.html.replace(/([^>])\r\n\r\n([^<])/g,"$1<br/>$2").replace(/<code>/g,"<code class='language-javascript'>")}
+        .entry-meta
+          p 本站专栏文章皆为原创，转载请注明出处和本文链接(<a href="http://www.html-js.com/article/#{article.id}">http://www.html-js.com/article/#{article.id}</a>)，本站和作者保留随时要求删除文章的权利！
+        .wx-mp.module
+          .hd 更多信息欢迎关注“前端乱炖”公众号
+          .bd
+            img(src="http://htmljs.b0.upaiyun.com/uploads/1393252270532-qrcode_for_gh_fa421f002680_258.jpg",style="width:100%;")
+
+
+
+
+
+
+

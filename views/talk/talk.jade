@@ -1,0 +1,108 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    title 实时讨论 - 前端乱炖
+    include ../head
+    link(href='#{assets_head}/css/Markdown.Editor.css?ddd2', type='text/css', rel='stylesheet', charset='utf-8')
+    include ../editor_head
+    base(target="_blank")
+  body#talk
+    - locals.pageId = 20;
+    include ../header
+    #content.clearfix
+      .talk-main
+
+        .module.send.clearfix
+          p.alert 连接状态：<em id="status">初始化中</em>
+          .con#markdowneditor
+            .control-group#wmd-editor-parent
+              .wmd-panel#wmd-editor-con
+                .padding
+                  #wmd-bar-parent
+                    #wmd-button-bar
+                  textarea#wmd-input.expand.wmd-input(placeholder="请不要灌水，否则封号。ctrl+enter 可以提交消息。你可以at在线的用户，对方会收到弹窗提醒。")
+          .submit
+            a.btn#submit 发送
+        .module.messages
+          .hd 实时消息
+          .bd#message-list
+            each talk,i in talks
+              .message(class="#{i%2==0?'yooo':''} ")
+                .h
+                  a.user(data-original-title="#{talk.user_nick}",href="/user/#{talk.user_id}")
+                    img(src="#{talk.user_headpic}")
+                    span.nick #{talk.user_nick}：
+                  span.time #{moment(talk.time*1).format("MM-DD hh:mm")}
+                .c !{talk.html}
+            include ../desc_page
+      .talk-onlines
+        .module.onlines
+          .hd 当前在线
+          .bd#user-list 加载中
+    #myModal.modal.hide.fade.
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">插入图片</h3>
+      </div>
+      <div class="modal-body">
+          <input type="file" name="pic" id="file" />
+      </div>
+      <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
+        <button class="btn btn-primary">插入</button>
+      </div>
+    include ../footer
+    script#talk-tpl(type="text/template")
+      .message
+        .h
+          a.user(data-original-title="{{user_nick}}",href="/user/{{user_id}}")
+            {{#user_headpic}}
+            img(src="{{user_headpic}}")
+            {{/user_headpic}}
+            span.nick {{user_nick}}：
+          span.time {{time}}
+        .c {{{html}}}
+    script#user-tpl(type="text/template")
+      .user(data-nick="{{user_nick}}",href="/user/{{user_id}}")
+        img(src="{{user_headpic}}")
+        span.nick @{{user_nick}}
+    script(src="#{assets_head}/js/mustache.js")
+    script(src="#{assets_head}/js/messageTip.js")
+    script(src="#{assets_head}/js/loadingTip.js")
+    script(src="#{assets_head}/socket.io/socket.io.js")
+    script(src='#{assets_head}/js/ajaxfileupload.js')
+    script.
+      var user_id = #{locals.user?locals.user.id:0};
+      $.getScript("http://talk.html-js.com:8765/assets/js/talk.js?dd",function(){})
+      var converter1 =new  Markdown.Converter();
+      Markdown.Extra.init(converter1);
+      var editor1 = new Markdown.Editor(converter1);
+      editor1.run();
+      editor1.hooks.set('insertImageDialog', function(callback) {
+        $("#myModal").modal("show");
+        $("#file")[0].onchange=function(){
+          $.ajaxFileUpload({
+            url:"/upload",
+            secureuri:false,
+            fileElementId:'file',
+            dataType: 'json',
+            success: function (data, status)
+            {
+              if(data.success){
+                callback(data.data.filename)
+                $("#myModal").modal("hide");
+              }else{
+                messageTip.show(data.info)
+
+              }
+              loadingTip.hide()
+            },
+            error:function(){
+
+              loadingTip.hide()
+            }
+          })
+        };
+        return true; // tell the editor that we'll take care of getting the image url
+      });

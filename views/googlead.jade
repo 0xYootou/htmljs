@@ -1,0 +1,42 @@
+style.
+  #googlead{position:fixed;bottom:-220px;right:0px;}
+  .ad-tip{position:fixed;right:-185px;font-size:12px;top:20px;height:30px;line-height:30px;background:#fcb320;
+  box-shadow:0px 1px 3px #ccc;cursor:default;color:#fff;
+  border:1px solid #fff;padding:0 10px;border-top-left-radius:3px;border-bottom-left-radius:3px;}
+  .ad-tip span{display:inline-block;}
+div#googlead.hidden
+  a(href="")
+      //- img(src="http://htmljs.b0.upaiyun.com/uploads/1418870524674-前端乱炖%20广告图.jpg")
+
+
+
+script.
+  $(".ad-tip").on("mouseenter",function(e){
+      $(this).animate({
+      right:0
+      },400)
+    }).on("mouseleave",function(e){
+      $(this).animate({
+      right:-185
+      },400)
+    })
+  setTimeout(function(){
+    $("#googlead").removeClass("hidden").animate({bottom:0})
+    //- for(var i=0;i<13;i++){
+    //-   var shake = $("<div class='shake-arrow big shake shake-constant hover-stop'></div>");
+    //-   shake.css({
+    //-     right:260,
+    //-     bottom:i*20
+    //-     })
+    //-   $("body").append(shake)
+    //- }
+    //- for(var i=0;i<13;i++){
+    //-   var shake = $("<div class='shake-arrow-2 big shake shake-constant hover-stop'></div>");
+    //-   shake.css({
+    //-     bottom:260,
+    //-     right:i*20
+    //-     })
+    //-   $("body").append(shake)
+    //- }
+  },3000)
+

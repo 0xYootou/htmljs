@@ -1,0 +1,13 @@
+doctype html
+html
+  head
+    include ../head
+    title 招聘求职 - 前端乱炖
+    script(src='#{assets_head}/js/bootstrap/bootstrap-tooltip.js')
+  body#weeklys
+    - locals.pageId = 52
+    include ../header
+    #content
+      .items
+        a.item.module
+          span 乱炖周刊第9期

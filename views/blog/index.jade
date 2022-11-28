@@ -1,0 +1,53 @@
+doctype html
+html(xmlns:wb='http://open.weibo.com/wb')
+  head
+    include ../head
+    title 博集 - 前端乱炖
+    |<meta name="description" content="博集,一个博客集合平台，提供全文订阅和推送服务，订阅推送正在开发中，将支持rss,pocket,kindle推送,网易云阅读等各个平台。">
+    script(src='#{assets_head}/js/bootstrap/bootstrap-tooltip.js')
+  body#blogs
+    - locals.pageId=15;
+    include ../header
+    #content.clearfix
+      ul.breadcrumb
+        li
+          a(href="/") 首页
+          span.divider /
+        li.active
+          span 博集,精彩博文收集
+          a(href="javascript:var script = document.createElement('script');script.src='#{assets_head}/js/jquery.js';document.body.appendChild(script);setTimeout(function(){var script = document.createElement('script');script.src='#{assets_head}/js/blog-add.js';document.body.appendChild(script);},1000)") 收集工具
+      //- .blog-list.module
+      //-   .hd 收录博客列表
+      //-   .bd
+      //-     each blog in blogs
+      //-       .blog
+      //-         .others
+      //-           a.title(href="#{blog.url}",target="_blank")
+      //-             img(src="http://g.etfv.co/#{blog.url}",width="15",height="15",style="margin-right:5px;")
+      //-             | #{blog.name}(#{blog.article_count})
+      //-           .hidden.desc #{blog.desc.length>60?(blog.desc.substr(0,30)+"..."):blog.desc}
+      .article-list.module
+        .hd 最近更新的博文
+        .bd
+          each article in articles
+            .article
+              .title
+                if locals.user && locals.user.is_admin
+                  //- img(src="http://g.etfv.co/#{article.blogBlog.url}",width="15",height="15",style="margin-right:5px;")
+                  select.tags(style="height:20px;width:100px;",data-id="#{article.id}")
+                    option(value="0") 请选择
+                    each tag in locals.tags
+                      |<option value="#{tag.id}" #{tag.id==article.tag_id?"selected":""}>#{tag.name}</option>
+                a(href="/blog/#{article.id}",rel="nofollow") #{article.title}
+
+              .desc #{article.content.replace(/<[^>]*?>/g,"").substr(0,Math.floor(Math.random()*40+60))+"..."}
+              .time #{article.time?moment(article.time*1).format("YYYY-MM-DD"):''}
+          include ../page
+      script.
+        $(".tags").on("change",function(){
+            var name = this.options[this.selectedIndex].innerHTML;
+            var id = this.value;
+            window.location.href="/blog/"+$(this).attr("data-id")+"/update?tag_name="+name+"&tag_id="+id;
+        })
+    include ../simple-footer
+    

@@ -1,0 +1,573 @@
+doctype html
+html
+  head
+    include ./../head
+    title #{question.title} 问答 - 前端乱炖
+    include ../editor_head
+    |<meta name="description" content="#{question.html.replace(/<[^>]*>/g,"").replace(/\s/g,'').substr(0,140)} html,js,css,nodejs,前端开发,前端招聘,jquery,qianduan">
+  body#qa
+    - locals.pageId=7;
+    include ./../header
+    #content.clearfix
+      ul.breadcrumb
+        li
+          a(href="/") 首页
+          span.divider /
+        li
+          a(href="/qa") 问答
+          span.divider /
+        if locals.channel
+          li
+            a(href="/qa?channel_id=#{channel.id}") #{channel.name}
+            span.divider /
+        li.active
+          span #{question.title}
+      .content
+        .left
+          .module.main
+            .qa-title
+              h2.title
+                if locals.channel
+                  |「#{channel.name}」
+                |#{question.title}
+            .qa-content
+              .desc !{question.html.replace(/<code>/g,"<code class='language-javascript'>").replace(/(htmljs\.b0\.upaiyun\.com.*?(\.jpg|\.png))/g,"$1!bac")}
+            .qa-user.clearfix
+
+              .user
+                img(src="#{question.user_headpic}")
+                .nick
+                  a(href="/user/#{question.user_id}") #{question.user_nick}
+                  em(title="经验值") #{question.user.coin||0}
+                .time #{moment(question.createdAt).fromNow()}
+              .actions
+                  if locals.user
+                    a.action(href="/qa/#{question.id}/edit")
+                      i.icon-pencil
+                      span 编辑
+                  a.action#q_comment_add(href="#",data-t="所有和“问”“答”无关的讨论都应在此",data-question-id="#{question.id}")
+                    i.icon-comments
+                    span 评论 #{question.comment_count}
+                  a.action#add_fav(href="javascript:void(0);")
+                    i.icon-heart
+                    span 收藏 #{locals.favs?locals.favs.length:0}
+                  a.action#bdshare.bdshare_t.bds_tools.get-codes-bdshare(style="float:none;")
+                    i.icon-new-window
+                    span.bds_more(style="background:none !important;float:none;display:inline;padding:0;") 分享
+                  span 浏览 #{question.visit_count}
+
+            .con-comments.comment#q_comment_con(data-question-id="#{question.id}",class="#{(locals.question_comments&&question_comments.length>0)?'':'hidden'}")
+              .comment-hd 评论
+              .comment-list#q_comment_list(data-question-id="#{question.id}")
+                each comment in question_comments
+                  .comment-item.clearfix
+                    .comment-right
+                      div.con
+                        span.author.vcard.item
+                          a.value.url.fn(rel='author', href='/user/#{comment.user_id}') #{comment.user_nick}
+                          span.time #{moment(comment.createdAt).fromNow()}
+                        .html !{comment.html}
+                        a.reply(data-nick="#{comment.user_nick}")
+                          | 回复
+              .comment-publish
+                textarea#q_comment_content.input-block-level(placeholder="发表一些对此问题的看法，不是答案的讨论都应在此处进行。",data-question-id="#{question.id}")
+                .btn#q_comment_submit(data-question-id="#{question.id}") 提交评论
+          include ../recommend_books
+          .qa-answers.module
+            .hd 回答
+            .bd
+              if !answers.length
+                div 暂无回答
+              else
+                - if(question.good_answer_id){
+                - for (var i=0;i<locals.answers.length;i++){if(question.good_answer_id==answers[i].id){var abcd = locals.answers.splice(i,1);locals.answers.unshift(abcd[0]);break;}}
+
+                - }
+                .answer-list
+                  each ans,i in answers
+                    if !ans.is_unused
+                      .answer-item.clearfix(id="answer-#{ans.id}",style="opacity:#{(40-i)/40}")
+                        .ans-user.clearfix
+                          a.user(href="/user/#{ans.user_id}")
+                            img(src="#{ans.user_headpic}")
+                            if ans.user&&ans.user.sex
+                              if ans.user.sex == '男'
+                                .sex.nan
+                              else
+                                .sex.nv
+                            //.nick #{ans.user_nick}
+                            //.time #{moment(ans.createdAt).fromNow()}
+                          - var zanHistory = "";
+                          - if(ans.answerZanHistories){ans.answerZanHistories.forEach(function(his){if(his.user_nick) zanHistory+=(his.user_nick||"")+"，";})};
+                          - if(zanHistory.length>0){zanHistory=zanHistory.substr(0,zanHistory.length-1)}
+                          a.zan(href="#",data-id="#{ans.id}",data-original-title="此回答被 #{zanHistory} 赞过")
+                            |<i class=""></i>
+                            if ans.answerZanHistories
+                              em #{ans.answerZanHistories.length}
+                          if !question.good_answer_id
+                            if locals.user && (locals.user.id == question.user_id||user.is_admin)
+                              a.btn.good(href="/qa/#{question.id}/good/#{ans.id}") 采纳
+                          else if question.good_answer_id == ans.id
+                            span.good-answer
+                              i.icon-certificate
+                              div 最佳
+                          if ans.card&&ans.card.alipay&&ans.card.alipay!="null"
+                            a.btn.good(href="#{ans.card.alipay}") 小费
+
+                        .ans-con
+                          .con-hd
+                            a(href="/user/#{ans.user_id}") #{ans.user_nick}
+                            if ans.user
+                              span(style="color:#333;")  #{ans.user.desc?("，"+ans.user.desc.substr(0,30)):""}
+                          .con-bd !{ans.html.replace(/<code>/g,"<code class='language-javascript'>").replace(/(htmljs\.b0\.upaiyun\.com.*?(\.jpg|\.png))/g,"$1!bac")}
+                          .con-action
+                            |<span style="color:#999;margin-right:10px;">#{moment(ans.createdAt).fromNow()}</span>
+                            if locals.user && (locals.user.id == ans.user_id||locals.user.is_admin)
+                              a.edit(href="/qa/answer/#{ans.id}/edit") <i class="icon-pencil icon-gray"></i>编辑
+                            a.add_comment(href="#",data-answer-id="#{ans.id}") <i class="icon-comments icon-gray"></i>评论 #{ans.comment_count}
+                            a(target="_blank",href="http://service.weibo.com/share/share.php?url=#{encodeURIComponent("http://www.html-js.com/qa/"+question.id+"#answer-"+ans.id)}&title=分享自@前端乱炖 的精彩回答【#{question.title}】#{ans.user_nick}：#{ans.html.replace(/<[^>]*>/g,"").replace(/\s/g,'').substr(0,140)}&appkey=659341943") 分享
+                            if locals.user&&locals.user.is_admin
+                              a(href="/qa/answer/#{ans.id}/update?is_unused=1") 无用
+                          //- if ans.answerComment.length
+                          //-   .con-comments
+                          //-     .comment-list
+                          //-       each comment in ans.answerComment
+                          //-         if comment.user_nick
+                          //-           .comment-item.clearfix
+                          //-             div.con
+                          //-               span.author.vcard.item
+                          //-                 a.value.url.fn(rel='author', href='/user/#{comment.user_id}') #{comment.user_nick}：
+                          //-               span.content !{comment.content}
+                          //-               span.time #{moment(comment.createdAt).fromNow()}
+                          //-     a.more(href="#") 更多评论 (#{ans.answerComment.length})
+                          .con-comments.hidden(data-answer-id="#{ans.id}")
+                            .comment-list(data-answer-id="#{ans.id}")
+                            .comment-publish
+                              textarea.comment-content.input-block-level(placeholder="发表一些对此回答的看法",data-answer-id="#{ans.id}")
+                              .btn.comment-submit(data-answer-id="#{ans.id}") 提交评论
+
+          .add-answer.module#add_answer
+            .hd 我来回答
+            .publish.bd
+              if (!question.is_admin) || (locals.user&&locals.user.is_admin)
+                if question.is_closed
+                  p.alert 问题被关闭，不可回答。
+                else
+                  form.form-horizontal#form(method='post')
+                    fieldset
+                      .fake-form
+                        textarea(placeholder="我来回答,支持markdown语法")
+                      .real-form.hidden
+                        .control-group
+                          .wmd-panel
+                            #wmd-button-bar
+                            textarea.wmd-input#wmd-input(name="md",placeholder='请用心回答。')
+                            .wmd-panel.wmd-preview
+                              div 预览
+                              #wmd-preview
+                        .control-group
+                          button.btn#submit(type='submit') 发表
+                  #myModal.modal.hide.fade.
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                      <h3 id="myModalLabel">插入图片</h3>
+                    </div>
+                    <div class="modal-body">
+                        <input type="file" name="pic" id="file" />
+                    </div>
+                    <div class="modal-footer">
+                      <button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
+                      <button class="btn btn-primary">插入</button>
+                    </div>
+
+              else
+                p.alert 此问题是官方提问，只有管理员可以回答。
+          .qa-unused.module
+            .hd 无用回答
+            .bd
+              .answer-list
+                each ans in answers
+                  if ans.is_unused
+                    .answer-item.clearfix(id="answer-#{ans.id}")
+                      .ans-user.clearfix
+                        a.user(href="/user/#{ans.user_id}")
+                          img(src="#{ans.user_headpic}")
+                          //.nick #{ans.user_nick}
+                          //.time #{moment(ans.createdAt).fromNow()}
+
+                      .ans-con
+                        .con-hd
+                          a.nick(href="/user/#{ans.user_id}") #{ans.user_nick}
+                          |<span style="color:#999;">(#{moment(ans.createdAt).fromNow()})</span>
+                        .con-bd !{ans.html.replace(/<code>/g,"<code class='language-javascript'>")}
+                        .con-action
+                          if locals.user&&locals.user.is_admin
+                            a.add_comment(href="#",data-answer-id="#{ans.id}") <i class="icon-comment icon-gray"></i>评论 #{ans.comment_count}
+                            a(href="/qa/answer/#{ans.id}/update?is_unused=0") 有用
+                        .con-comments.hidden(data-answer-id="#{ans.id}")
+                          .comment-list(data-answer-id="#{ans.id}")
+                          .comment-publish
+                            textarea.comment-content.input-block-level(placeholder="发表一些对此回答的看法",data-answer-id="#{ans.id}")
+                            .btn.comment-submit(data-answer-id="#{ans.id}") 提交评论
+      .right
+        if question.tagNames
+          .module.tags
+            .hd 问题标签
+            .bd
+
+              - var tags = question.tagNames.split(",")
+              each tag in tags
+                a.label.value(href="/tag/n/#{tag}") #{tag}
+        //- .module.share
+        //-   .hd 分享
+        //-   .bd
+        //-     div#bdshare.bdshare_t.bds_tools.get-codes-bdshare.clearfix(style="width:300px;margin-top:10px;float:none;margin-left:0px;")
+        //-       a.bds_tsina
+        //-       a.bds_qzone
+        //-       a.bds_tqq
+        //-       a.bds_douban
+        //-       a.bds_renren
+        //-       a.shareCount
+
+        if locals.same_questions&&locals.same_questions.length
+          .module.same_questions
+            .hd 类似问题
+            .bd
+              each a in same_questions
+                if a.id != question.id
+                  div.item <a href="/qa/#{a.id}">#{a.title}</a>
+        if locals.ehis
+          .module.edithistory
+            .hd 问题修改记录
+            .bd
+              if locals.ehis.length
+                each eh in ehis
+                  .item
+                    span 此问题在 <em>#{moment(eh.createdAt).fromNow()}</em> 被 <em>#{eh['users.nick']}</em> 修改。<br/>理由：<em>#{eh.reason}</em>
+              else
+                .item 暂无修改记录
+        .module(style="padding:0")
+           a(href="http://www.html-js.com/static/htmljs-weekly-7.html",target="_blank")
+             img(src="http://htmljs.b0.upaiyun.com/uploads/1412042225138-%E6%9C%AA%E6%A0%87%E9%A2%98-2.png")
+        a.ad-blank(href="http://www.html-js.com/topic/827",style="width:280px;height:280px;")
+          .ad-inner 广告位 点击查看投放指南
+    script#comment-tpl(type="text/template")
+      .comment-item.clearfix
+        div.con
+          span.author.vcard.item
+            a.value.url.fn(rel='author', href='/user/{{user.id}}') {{user_nick}}：
+          span.content {{{content}}}
+          span.time {{createdAt}}
+          span.action
+            a.reply(data-nick="{{user_nick}}") 回复
+    script#comment-tpl-q(type="text/template")
+      .comment-item.clearfix
+        .comment-right
+          div.con
+            span.author.vcard.item
+              a.value.url.fn(rel='author', href='/user/{{user_id}}') {{user_nick}}
+              span.time {{createdAt}}
+            .html {{{html}}}
+
+            a.reply(data-nick="{{user_nick}}")
+              | 回复
+    script(src='#{assets_head}/js/ajaxfileupload.js')
+    script(src='#{assets_head}/js/loadingTip.js')
+    script(src='#{assets_head}/js/messageTip.js')
+    script(src='#{assets_head}/js/mustache.js')
+    script(src='#{assets_head}/js/moment.js')
+    script.
+      $('.zan').tooltip({
+          placement:"bottom"
+      })
+      var comment_tpl = $("#comment-tpl").html()
+      var comment_tpl_1 = $("#comment-tpl-q").html()
+      $(".zan").click(function(e){
+        e.preventDefault();
+        var self=this;
+        $.ajax({
+          url:"/qa/answer/"+$(this).attr("data-id")+"/zan",
+          type:"post",
+          dataType:"json",
+          success:function(data){
+          if(data.isnotlogin){
+              alert("请先登录")
+                window.location.href="/user/login"
+            }else if(data.success){
+              $("em",self).html(data.answer.zan_count)
+            }else{
+              alert(data.info)
+            }
+
+          }
+          })
+        })
+      moment.lang('zh-cn')
+      $(".add_comment").click(function(e){
+        e.preventDefault()
+        var con_comments= $(".con-comments[data-answer-id="+$(this).attr("data-answer-id")+"]")
+        if(con_comments.hasClass("hidden")){
+          loadingTip.show("努力加载中")
+          HtmlJS.util.ajax("/qa/answer/"+$(this).attr("data-answer-id")+"/comment",{},"get",function(data){
+              if(data.success){
+                if(data.comments.length>0){
+                $(".comment-list",con_comments).html("")
+                }else{
+                $(".comment-list",con_comments).html("暂无评论")
+                }
+                data.comments.forEach(function(comment){
+                  comment.createdAt=moment(comment.createdAt).fromNow();
+                  var html = Mustache.render(comment_tpl,comment);
+
+                  $(".comment-list",con_comments).append(html)
+                  })
+              }else{
+                alert(data.info)
+              }
+              con_comments.removeClass("hidden")
+                loadingTip.hide("努力加载中")
+            },function(){
+              loadingTip.hide("努力加载中")
+            })
+        }else{
+          con_comments.addClass("hidden")
+        }
+
+
+        })
+      $(".con-comments").click(function(e){
+        if($(e.target).hasClass("reply")){
+          $("textarea",this).val("@"+$(e.target).attr("data-nick")+" ").focus()
+          $("textarea",this)[0].setSelectionRange($("textarea",this)[0].value.length, $("textarea",this)[0].value.length)
+        }
+        })
+      $(".comment-submit").click(function(){
+        var con_comments= $(".con-comments[data-answer-id="+$(this).attr("data-answer-id")+"]")
+        loadingTip.show("努力提交中")
+          var self = this;
+        HtmlJS.util.ajax("/qa/answer/"+$(this).attr("data-answer-id")+"/comment",{content:$($(".comment-content[data-answer-id="+$(this).attr("data-answer-id")+"]")).val()},"post",function(data){
+            if(data.success){
+              if($(".comment-list .comment-item",con_comments).length==0){
+                $(".comment-list",con_comments).html("")
+              }
+              data.comment.createdAt=moment(data.comment.createdAt).fromNow();
+                var html = Mustache.render(comment_tpl,data.comment);
+
+                $(".comment-list",con_comments).append(html)
+                $("textarea",con_comments).val("")
+            }else{
+              alert(data.info)
+            }
+            loadingTip.hide("努力加载中")
+          },function(){
+            loadingTip.hide("努力加载中")
+          },$(this),function(){
+            HtmlJS.util.ajax("/qa/answer/"+$(self).attr("data-answer-id")+"/comment",{content:$($(".comment-content[data-answer-id="+$(self).attr("data-answer-id")+"]")).val()},"post",function(data){
+              if(data.success){
+                if($(".comment-list .comment-item",con_comments).length==0){
+                  $(".comment-list",con_comments).html("")
+                }
+                data.comment.createdAt=moment(data.comment.createdAt).fromNow();
+                  var html = Mustache.render(comment_tpl,data.comment);
+
+                  $(".comment-list",con_comments).append(html)
+                  $("textarea",con_comments).val("")
+              }else{
+                alert(data.info)
+              }
+              loadingTip.hide("努力加载中")
+            },function(){
+              loadingTip.hide("努力加载中")
+            },$(this),function(){
+
+            })
+          })
+        })
+      $(".fake-form textarea").click(function(){
+        $(".fake-form").addClass("hidden")
+        $(".real-form").removeClass("hidden")
+        $(".real-form textarea").focus();
+        })
+      if(localStorage.getItem("textarea_qa_#{question.id}")){
+      $(".fake-form").addClass("hidden")
+        $(".real-form").removeClass("hidden")
+        $(".real-form textarea").focus();
+      }
+      var converter1 =new  Markdown.Converter();
+      Markdown.Extra.init(converter1);
+      var editor1 = new Markdown.Editor(converter1);
+
+      editor1.run();
+
+      $("#wmd-input").val(localStorage.getItem("textarea_qa_#{question.id}"))
+      $("#wmd-input").keyup(function(){
+        localStorage.setItem("textarea_qa_#{question.id}",this.value)
+        })
+      $("#form").submit(function(e){
+        e.preventDefault()
+          HtmlJS.util.ajax("/qa/#{question.id}/add",$("#form").serialize(),"post",function(data){
+            if(data.success){
+              localStorage.setItem("textarea_qa_#{question.id}","")
+              window.location.href="/qa/#{question.id}"
+            }else{
+              alert(data.info)
+            }
+          },function(){
+
+          },$("#submit"),function(){
+            HtmlJS.util.ajax("/qa/#{question.id}/add",$("#form").serialize(),"post",function(data){
+              if(data.success){
+                localStorage.setItem("textarea_qa_#{question.id}","")
+                window.location.href="/qa/#{question.id}"
+              }else{
+                alert(data.info)
+              }
+            },function(){
+
+            },$("#submit"),function(){
+
+            })
+          })
+
+      })
+      editor1.hooks.set('insertImageDialog', function(callback) {
+        $("#myModal").modal("show");
+        $("#file")[0].onchange=function(){
+          $.ajaxFileUpload({
+            url:"/upload",
+            secureuri:false,
+            fileElementId:'file',
+            dataType: 'json',
+            success: function (data, status)
+            {
+              if(data.success){
+                callback(data.data.filename)
+                $("#myModal").modal("hide");
+              }else{
+                messageTip.show(data.info)
+
+              }
+              loadingTip.hide()
+            },
+            error:function(){
+
+              loadingTip.hide()
+            }
+          })
+        };
+        return true; // tell the editor that we'll take care of getting the image url
+      });
+      $("#q_comment_add").click(function(e){
+        e.preventDefault()
+        var con_comments= $("#q_comment_con")
+        if(con_comments.hasClass("hidden")){
+          loadingTip.show("努力加载中")
+          HtmlJS.util.ajax("/comment/question_"+$(this).attr("data-question-id")+"",{},"get",function(data){
+              if(data.success){
+                if(data.comments.length>0){
+                $(".comment-list",con_comments).html("")
+                }else{
+                $(".comment-list",con_comments).html("暂无评论")
+                }
+                data.comments.forEach(function(comment){
+                  comment.createdAt=moment(comment.createdAt).fromNow();
+                  var html = Mustache.render(comment_tpl_1,comment);
+
+                  $(".comment-list",con_comments).append(html)
+                  })
+              }else{
+                alert(data.info)
+              }
+              con_comments.removeClass("hidden")
+                loadingTip.hide("努力加载中")
+            },function(){
+              loadingTip.hide("努力加载中")
+            })
+        }else{
+          con_comments.addClass("hidden")
+        }
+
+
+        })
+      $("#q_comment_submit").click(function(){
+        loadingTip.show("努力提交中")
+          var self = this;
+        HtmlJS.util.ajax("/comment/add",{md:$("#q_comment_content").val(),target_id:"question_#{question.id}"},"post",function(data){
+            if(data.success){
+              if($("#q_comment_list .comment-item").length==0){
+                $("#q_comment_list").html("")
+              }
+              data.comment.createdAt=moment(data.comment.createdAt).fromNow();
+                var html = Mustache.render(comment_tpl_1,data.comment);
+
+                $("#q_comment_list").append(html)
+                $("#q_comment_content").val("")
+            }else{
+              alert(data.info)
+            }
+            loadingTip.hide("努力加载中")
+          },function(){
+            loadingTip.hide("努力加载中")
+          },$(this),function(){
+            HtmlJS.util.ajax("/comment/add",{md:$("#q_comment_content").val(),target_id:"question_#{question.id}"},"post",function(data){
+            if(data.success){
+              if($("#q_comment_list .comment-item").length==0){
+                $("#q_comment_list").html("")
+              }
+              data.comment.createdAt=moment(data.comment.createdAt).fromNow();
+                var html = Mustache.render(comment_tpl_1,data.comment);
+
+                $("#q_comment_list").append(html)
+                $("#q_comment_content").val("")
+            }else{
+              alert(data.info)
+            }
+            loadingTip.hide("努力加载中")
+          },function(){
+            loadingTip.hide("努力加载中")
+          },$(this),function(){
+
+        })
+        })
+        })
+          var offset = $('#fixed-modules').offset();
+          $(window).scroll(function(){
+            var scrollTop = $(window).scrollTop();
+            if (offset.top < scrollTop+40) $('#fixed-modules').addClass('fixed');
+            else $('#fixed-modules').removeClass('fixed');
+          });
+          $("#add_fav").click(function(){
+            HtmlJS.util.ajax("/user/fav",{
+              uuid:"#{question.uuid}"
+            },"post",function(data){
+                loadingTip.hide()
+                if(data.success){
+                  messageTip.show("收藏成功！")
+                }else{
+                  alert(data.info)
+                }
+            },function(){
+            HtmlJS.util.ajax("/user/fav",{
+              uuid:"#{question.uuid}"
+            },"post",function(data){
+                loadingTip.hide()
+                if(data.success){
+                  messageTip.show("收藏成功！")
+                }else{
+                  alert(data.info)
+                }
+            },function(){
+
+
+          })
+
+          })
+            })
+    p.
+      <script id="bdshare_js" data="type=tools&amp;uid=2555549" ></script>
+      <script type="text/javascript" id="bdshell_js"></script>
+      <script type="text/javascript">
+      var bds_config={"bdText":"【#{question.title}】分享自#前端乱炖#问答频道，弱弱求回答：#{question.html?question.html.replace(/\s/g,"").replace(/<[^>]*>/g,"").substr(0,130):""}","snsKey":{'tsina':'659341943','tqq':'','t163':'','tsohu':''}}
+      document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date()/3600000)
+      </script>
+    include ../footer

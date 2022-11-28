@@ -1,0 +1,101 @@
+#footer
+  .wrapper
+
+    .module.links
+      .hd 友情链接
+      .bd
+        ul.clearfix
+          li
+            a(href='http://segmentfault.com/', target='_blank',style="color:#f27369") Segmentfault
+          li
+            a(href='http://www.tuer.me', target='_blank') 兔耳日记
+          li
+            a(href='http://www.woween.com/', target='_blank') 小本堂
+          li
+            a(href='http://www.alexblair.org', target='_blank') aの碎碎念
+          li
+            a(href='http://hussion.me/', target='_blank') hussion
+          li
+            a(href='http://wenkm.com', target='_blank') kevin
+          li
+            a(href='http://www.w3cplus.com', title='W3CPlus | css3教程-css3实例-css3动画 | 记述前端那些事——引领Web前沿', target='_blank') W3CPlus
+          li
+            a(href='http://js8.in/', target='_blank') 三水清
+          li
+            a(href='http://blog.linxz.de/', target='_blank') 小志的博客
+          li
+            a(href='http://91gaoqing.com', target='_blank') Programer's Life
+          li
+            a(href='http://www.zmq.cc', target='_blank') Richard.z
+          li
+            a(href='http://blog.baiwand.com/', target='_blank') 成长脚印
+          li
+            a(href='http://ourai.ws/', target='_blank') 欧雷流
+          li
+            a(href='http://justjavac.com', target='_blank') justjavac
+          li
+            a(href='http://www.wangyingran.com', target='_blank') 王迎然的博客
+          li
+            a(href='http://huangyang.me', target='_blank') 黄杨
+          li
+            a(href='http://i.h-won.com', target='_blank') h-won之队
+          li
+            a(href='http://www.tinghaige.com/', target='_blank') 听海阁
+          li
+            a(href='http://www.uedsc.com/', target='_blank') uedsc设计分享
+          li
+            a(href='http://www.3d414.com/', target='_blank') 趣搭3D在线试衣
+          li
+            a(href='http://Blog.ZjzSys.Com', target='_blank') 天网博客
+          li
+            a(href='http://www.tuicool.com/', target='_blank') 推酷
+          li
+            a(href='http://www.k68.org', target='_blank') 可乐吧
+          li
+            a(href='http://www.qianduan.net/', target='_blank',style="color:#f27369") 前端观察
+          li
+            a(href='http://www.yinfan.org', target='_blank',title="前端技术小屋") ivan's blog
+          li
+            a(href='/search-his', target='_blank') 搜索历史
+    .module
+      div(style="font-size:12px;line-height:20px;") Power By NodeJS  浙ICP备12047043号
+      div.
+        <iframe src="http://ghbtns.com/github-btn.html?user=xinyu198736&repo=htmljs&type=watch" allowtransparency="true" frameborder="0" scrolling="0" width="62" height="20"></iframe>
+        <iframe src="http://ghbtns.com/github-btn.html?user=xinyu198736&type=follow" allowtransparency="true" frameborder="0" scrolling="0" width="150" height="20"></iframe>
+
+#coin-fixed
+  span#gotop
+    i.icon-airplane
+  if locals.user
+    span.coin-count.hidden
+      i.icon-coins
+      em #{user.bi}
+    span.history-trigger.hidden
+      |收支记录
+      i.icon-chevron-left
+      ul.history-list.hidden
+  span.my-favs
+    i.icon-heart
+    a(href="/user/fav")  我的收藏
+
+script.
+  try{
+    $('.tooltip-trigger').tooltip({
+          placement:"bottom"
+          });
+  }catch(e){}
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-36222024-3']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+  var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+  document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F2fc2fae0509f820259c1760fce28d7d2' type='text/javascript'%3E%3C/script%3E"));
+
+//- #gotop TOP
+  

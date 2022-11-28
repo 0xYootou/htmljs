@@ -1,0 +1,123 @@
+doctype html
+html
+  head
+    include ../head
+    include ../editor_head
+    title 编辑回答-前端乱炖
+
+  body#qa-add
+    - locals.pageId=7;
+    include ../header
+    #content.clearfix
+      .content
+        .left
+          .module
+            form.form-horizontal#form(method='post')
+              fieldset
+                legend 编辑回答
+                input(type="hidden",name="question_id",value="#{answer.question_id}")
+                .control-group
+                  .question-title 本答案用来回答问题：《<a href="/qa/#{answer.question_id}">#{answer.question.title}</a>》
+                .control-group#wmd-editor-parent
+                  .wmd-panel#wmd-editor-con
+                    .padding
+                      #wmd-bar-parent
+                        #wmd-button-bar
+                    textarea.wmd-input#wmd-input(name="md",placeholder='回答内容，请尽可能详细和准确。') #{answer.md}
+                .control-group
+                  button.btn(type='submit') 发表
+                .control-group#wmd-preview-parent
+                  .wmd-panel.wmd-preview#wmd-preview-con
+                    .padding
+                      #wmd-preview
+
+            #myModal.modal.hide.fade.
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabel">插入图片</h3>
+              </div>
+              <div class="modal-body">
+                  <input type="file" name="pic" id="file" />
+              </div>
+              <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
+                <button class="btn btn-primary">插入</button>
+              </div>
+      .right
+        .module
+          .hd 提示
+          .bd
+            div 可以使用markdown语法，可以插入图片。
+            div 分享到微博可以让更多人关注并回答问题。
+            div 回答前请阅读：<a href="/qa/7" target="_blank">问答系统指南</a>
+      #fullscreen-editor.hidden
+      #fullscreen-exit.hidden
+        a.btn
+          i.icon-resize-small
+    script(src='#{assets_head}/js/ajaxfileupload.js')
+    script(src='#{assets_head}/js/loadingTip.js')
+    script(src='#{assets_head}/js/messageTip.js')
+    script.
+      $("#layer").css({width:$(document.body).width(),height:$(document.body).height()})
+      $("#login_popup").css({left:$(window).width()/2-125})
+      var converter1 =new  Markdown.Converter();
+      Markdown.Extra.init(converter1);
+      var editor1 = new Markdown.Editor(converter1);
+
+      editor1.run();
+      var converter2 = new Markdown.Converter();
+
+      converter2.hooks.chain("preConversion", function (text) {
+          return text.replace(/\b(a\w*)/gi, "*$1*");
+      });
+
+      converter2.hooks.chain("plainLinkText", function (url) {
+          return "This is a link to " + url.replace(/^https?:\/\//, "");
+      });
+      //- $("#form").submit(function(e){
+      //-   e.preventDefault()
+      //-   $.ajax({
+      //-     url:"",
+      //-     type:"post",
+      //-     data:$("#form").serialize(),
+      //-     success:function(data){
+      //-       if(data.success){
+      //-         alert("发布成功")
+      //-         window.location.href="/qa"
+      //-       }else{
+      //-         alert(data.info)
+      //-       }
+      //-     },
+      //-     error:function(){
+
+      //-     }
+      //-   })
+      //- })
+      editor1.hooks.set('insertImageDialog', function(callback) {
+        $("#myModal").modal("show");
+        $("#file")[0].onchange=function(){
+          $.ajaxFileUpload({
+            url:"/upload",
+            secureuri:false,
+            fileElementId:'file',
+            dataType: 'json',
+            success: function (data, status)
+            {
+              if(data.success){
+                callback(data.data.filename)
+                $("#myModal").modal("hide");
+              }else{
+                messageTip.show(data.info)
+
+              }
+              loadingTip.hide()
+            },
+            error:function(){
+
+              loadingTip.hide()
+            }
+          })
+        };
+        return true; // tell the editor that we'll take care of getting the image url
+      });
+    include ../footer

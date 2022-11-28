@@ -1,0 +1,36 @@
+doctype html
+html
+  head
+    include ./../head
+    title 前端乱炖-我的经验值记录
+    script(src='#{assets_head}/js/bootstrap/bootstrap-tooltip.js')
+
+  body#user
+    - locals.pageId=8;
+    include ./../header
+    #content
+      include topinfo
+      .main.clearfix
+          - locals.user_page_id = 3;
+          include left
+
+          .infos.module
+            .bd
+              if !locals.coinhis
+                p 暂无记录，在网站活跃可以获得经验值，赶紧去活动下吧。
+              else
+                .info-item
+                  a(href="/qa/44") 如何获得经验值？经验值能干什么？特定动作能获得多少经验值？点我查看详情！
+                each his in coinhis
+                  .info-item
+                    .t
+                      span 因为 【#{his.reason}】 获得了 #{his.step} 个经验值
+                      span.time  #{moment(his.createdAt).fromNow()}
+              include ../page
+
+    include ../footer
+
+    script.
+      $("#more_info").click(function(){
+        $(".my_card").toggleClass("hidden")
+        })

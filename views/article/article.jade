@@ -1,0 +1,392 @@
+doctype html
+html
+  head
+    include ../head
+    title #{locals.article&&article.title} - #{column?column.name:''} - 前端乱炖
+    |<meta name="description" content="#{locals.article?article.html.replace(/<[^>]*?>/g,'').replace(/\s/g,'').substr(0,100):""}">
+    style.
+      #bdshare a{}
+      .ad-blank{opacity:0.6;}
+    script(src='#{assets_head}/js/bootstrap/bootstrap-tooltip.js')
+    script(src='#{assets_head}/js/bootstrap/bootstrap-scrollspy.js')
+    script(src='#{assets_head}/js/tips.js?dddddddd')
+    link(rel="stylesheet",href="#{assets_head}/css/tips.css?2dd2dddddddd",type="text/css")
+  body#article
+    - locals.pageId=1;
+    include ../header
+    #content.clearfix
+      .daen
+      ul.breadcrumb.hidden
+        li
+          a(href="/") 首页
+          span.divider /
+        if column
+          li
+            a(href="/article") 所有专栏
+            span.divider /
+          li
+            a(href="/article/column/#{column.id}") #{column.name}
+            span.divider /
+        else
+          li
+            a(href="/article/") 专栏
+            span.divider /
+        li.active
+          span #{article.title}
+      if !article
+        p.alert 不存在的阅读篇章
+      else
+          .title
+              .wrapper
+
+                  div(class="#{Math.floor(Math.random()*100)}",style="font-size: 30px;line-height:50px;",href='http://p.html-js.com/article/#{article.id}', title='#{article.title}', rel='bookmark') #{article.title}
+                  .info
+                      div.line
+                          span.author.vcard.item
+                              a.value.url.fn(rel='author', href='/user/#{article.user_id}') #{article.user_nick}
+                              |  发布在
+                              if locals.column
+                                  a.value(href="/article/column/#{column.id}") #{column.name}
+                          span.item #{moment(article.publish_time*1000).format("LL")}
+                          span.item
+                              span.index view：
+                              span.value #{article.visit_count}
+                          if locals.full_tags
+                              each t in full_tags
+                                  span.item(style="margin-right:10px;color:#999;") #{t.name}
+
+        .content-wapper
+          .content
+            .left
+                a(style="border-radius:5px;display:block;margin-top:20px;border:1px solid #ccc;",href="https://s.souche.com/_S5nA3",target="_blank")
+                  img(src="http://img.souche.com/test/9edf6abc08619a90cc82b3078c28f215.png")
+                .alert(style="margin-top:20px;") 在文章任何区域双击击即可给文章添加【评注】！浮到评注点上可以查看详情。<div class="checkbox" style="float:right;line-height:40px;color:#333;padding-top:3px;"><label><input type="checkbox" id="hide_tip">隐藏标注</label></div>
+                article.post(id="post-#{article.id}",style="overflow:hidden;")
+
+                  .wrapper
+                    include ../recommend_books
+                    .entry-content(style="padding-top:0;")
+
+
+                      //
+                        a.ad-blank(href="http://passport.lagou.com/landingPage.html?utm_source=AD__html-js&utm_medium=banner&utm_campaign=lp")
+                        img(src="http://htmljs.b0.upaiyun.com/uploads/1439192041460-7786e01e91744693f0cc2c15f7ce9ab3.png")
+
+                      if !(locals.user && locals.user.id==article.user_id)&&article.is_buy && !locals.can_read
+                        - var matches = article.html.match(/<p>.*?<\/p>/g);
+                        - var match_result = matches.splice(0,4);
+                        | !{match_result.join("").replace(/<code>/g,"<code class='language-javascript'>")}
+                        a.btn(href="/article/#{article.id}/pay") 本文长度：#{article.md.length} 字，点击付费1元
+                        br
+                        .more-but-pay 您好，这是一篇付费文章，您需要支付 1元 才能查看原文，所有费用都会支付给作者，谢谢您对社区作者的小小支持
+                        .module
+                          .hd 已付费用户
+                          .bd
+                            if locals.payers && locals.payers.length
+                              span.zanlogs
+                                each zan in payers
+                                  if zan.user&&zan.user.id
+                                    a.tooltip-trigger(href="/user/#{zan.user.id}",data-original-title="#{zan.user.desc}")
+                                      img(src='#{zan.user.head_pic}')
+                            else
+                              span 暂无付费用户
+                      else
+                        | !{article.html.replace(/([^>])\r\n\r\n([^<])/g,"$1<br/>$2").replace(/<code>/g,"<code class='language-javascript'>").replace(/(htmljs\.b0\.upaiyun\.com.*?(\.jpg|\.png))/g,"$1")}
+                      | <script src="#{assets_head}/js/tuiku.js"></script>
+
+
+                    .entry-meta
+                      p 本站专栏文章皆为原创，转载请注明出处（带有 前端乱炖 字样）和本文的显式链接(<a href="http://www.html-js.com/article/#{article.id}">http://www.html-js.com/article/#{article.id}</a>)，本站和作者保留随时要求删除文章的权利！
+
+                .comment.module#comment
+                  .hd 评论
+                  .bd
+                    .publish
+                      textarea.input-block-level#comment-text(placeholder="参与讨论。支持markdown语法")
+                      .btn.btn-primary.comment-submit#comment-submit 发表评论
+                    .comment-list
+                      if comments.length
+                        each comment in comments
+                          .comment-item.clearfix
+                            a.headpic
+                              img(data-original="#{comment.user_headpic}",width=70,height=70)
+                            .comment-right
+                              div.con
+                                span.author.vcard.item
+                                  a.value.url.fn(rel='author', href='/user/#{comment.user_id}') #{comment.user_nick}
+                                  .hd-time #{moment(comment.createdAt).fromNow()}
+                                .html !{comment.html}
+                              .time
+                                a.reply(data-nick="#{comment.user_nick}") 回复
+                      else
+                        div 暂无评论
+                    script#comment-tpl(type="text/template")
+                      .comment-item.clearfix
+                        a.headpic
+                          img(src="{{user_headpic}}",width=70,height=70)
+                        .comment-right
+                          div.con
+                            span.author.vcard.item
+                              a.value.url.fn(rel='author', href='/user/{{user_id}}') {{user_nick}}：
+                            .html {{{html}}}
+                          .time {{createdAt}}
+                            a.reply(data-nick="{{user_nick}}") 回复
+          .right
+
+            .writer-and-column.clearfix
+                .writer.module
+                  .hd WRITTEN BY
+                  //a.head-pic(href="/user/#{writer.id}")
+                  //  img(src='#{writer.head_pic}')
+                  .info
+                    a.nick(href="/user/#{writer.id}") #{writer.nick}
+                    .desc #{writer.desc}
+                    a.weibo(href="http://weibo.cn/#{writer.weibo_id}",target="_blank") TA的新浪微博
+                if locals.column
+                  .column.module
+                    .hd PUBLISHED IN
+                    .info
+                      a.name(href="/article/column/#{column.id}") #{column.name}
+                      .desc !{column.desc_html?column.desc_html:''}
+                      .action
+                        a.rssit.btn.small-btn(href="/article/column/1/rss")
+                          i.rss.social
+                          |  订阅
+            if locals.column_articles && column_articles.length
+              .other-articles.module
+                .hd 本专栏其他文章
+                .bd
+                  each article,i in column_articles
+                    div.item
+                      a(href="/article/#{article.id}") #{article.title}
+                      .others
+                        span.time 时间:#{moment(article.createdAt).format("YYYY-MM-DD")}
+                        span.visit_count 浏览:#{article.visit_count}
+                        span.zan_count 赞:#{article.zan_count}
+
+
+            .bottom-action.module
+              .wrapper
+                .actions
+                  a.zan.action(href="javascript:void(0);")
+                    i.icon-thumbs-up
+                    if locals.has_zan
+                      |<em>已赞</em> <span>#{article.zan_count}</span>
+                    else
+                      |<em>赞</em> <span>#{article.zan_count}</span>
+                  if locals.zan_logs
+                    span.zanlogs
+                      each zan in zan_logs
+                        if zan.user&&zan.user.id
+                          a.tooltip-trigger(href="/user/#{zan.user.id}",data-original-title="#{zan.user.desc}")
+                            img(data-original='#{zan.user.head_pic}')
+                .actions
+                  if locals.user && (user.is_admin||user.id==article.user_id)
+                    a.action(href="/article/#{article.id}/edit") 编辑
+                  a.add_fav.action(href="javascript:void(0);")
+                    //- i.icon-heart
+                    if locals.has_fav
+                      |<em>已收藏</em> <span>#{locals.favs?locals.favs.length:0}</span>
+                    else
+                      |<em>收藏</em> <span>#{locals.favs?locals.favs.length:0}</span>
+
+              //a.ad-blank(target="_blank",href="https://coding.net/marketing/codeinsight?hmsr=http%3A%2F%2Fwww.html-js.com%2F&hmmd=%E5%9B%BE%E7%89%87%E5%B9%BF%E5%91%8A&hmpl=CodeInsight&hmkw=&hmci=",style="width:280px;height:120px;display:block;")
+              //  img(src="http://htmljs.b0.upaiyun.com/uploads/1425371986895-coding.png")
+            //- p.
+            //-   <!-- UJian Button BEGIN -->
+            //-   <div class="ujian-hook" style="width:700px;margin:0 auto;"></div>
+            //-   <script type="text/javascript">var ujian_config = {num:10,showType:3};</script>
+            //-   <script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?uid=1757845"></script>
+            //-   <a href="http://www.ujian.cc" style="border:0;"><img src="http://img.ujian.cc/pixel.png" alt="友荐云推荐" style="border:0;padding:0;margin:0;" /></a>
+            //-   <!-- UJian Button END -->
+
+
+      - locals.shareImgs = article.html.match(/img\s*?src=["|'](.*?)["|']/);
+
+      p.
+        <script id="bdshare_js" data="type=tools&amp;uid=2555549" ></script>
+        <script type="text/javascript" id="bdshell_js"></script>
+        <script type="text/javascript">
+        var bds_config={"bdText":"分享一篇@#{article.user_nick} 的原创文章【#{article.title}】来自@前端乱炖 #{column?'专栏「'+(column?column.name:'')+'」':''} {{前端乱炖是国内最专业的前端知识原创内容社区}}","bdPic":"http://www.html-js.com/uploads/article_thumb/#{article.id}.png","snsKey":{'tsina':'659341943','tqq':'','t163':'','tsohu':''}}
+        document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date()/3600000)
+        </script>
+      script#tip_tpl(type="text/template").
+        {{#tips}}
+          <li class="ng-scope single-comment pin-comment">
+            <div class="comment-body ng-binding" >{{content}}</div>
+            <div class="comment-meta">
+              <span class="author-name ng-binding">— {{user_nick}} </span>
+              <time class="create-time" >{{time}}</time>
+            </div>
+          </li>
+          {{/tips}}
+    script(src="#{assets_head}/js/mustache.js")
+    script(src="#{assets_head}/js/messageTip.js")
+    script(src="#{assets_head}/js/loadingTip.js")
+    script(src='#{assets_head}/js/lazyload.js?12')
+    script.
+      $(window).scroll(function(){
+        if($(window).scrollTop()+$(window).height()>=$(".comment").offset().top){
+          $(".comment-layer").addClass("hidden")
+        }else{
+        $(".comment-layer").removeClass("hidden")
+        }
+        })
+      $(".comment-layer").click(function(){
+        $("html,body").animate({
+          scrollTop:$(".comment").offset().top-200
+          })
+        $(".comment textarea").focus()
+        })
+      var comment_tpl = $("#comment-tpl").html()
+      //- loadingTip.show("评论加载中")
+      //- $.ajax({
+      //-   url:"/comment/article_#{article.id}",
+      //-   type:"get",
+      //-   dataType:"json",
+      //-   success:function(data){
+      //-     loadingTip.hide("正在提交中")
+      //-       if(data.success){
+      //-       for(var i=0;i<data.comments.length;i++){
+      //-       var comment = data.comments[i]
+      //-         var html = Mustache.render(comment_tpl,comment);
+      //-         $(".comment-list").append(html)
+      //-         $(".reply").click(function(){
+      //-   $("#comment-text").val("@"+$(this).attr("data-nick")+" ").focus()
+      //-    $("#comment-text")[0].setSelectionRange($("#comment-text")[0].value.length, $("#comment-text")[0].value.length)
+      //-   })
+      //-       }
+      //-       }else{
+      //-       alert(data.info)
+      //-       }
+
+      //-   }
+      //-   })
+      $(".headpic img").lazyload();
+      $(".tooltip-trigger img").lazyload();
+      $(".reply").click(function(){
+        $("#comment-text").val("@"+$(this).attr("data-nick")+" ").focus()
+         $("#comment-text")[0].setSelectionRange($("#comment-text")[0].value.length, $("#comment-text")[0].value.length)
+        })
+      $("#comment-submit").click(function(){
+        var text = $("#comment-text").val();
+        if(!text){
+          messageTip.show("请输入评论内容");
+        }else{
+          loadingTip.show("正在提交中")
+           HtmlJS.util.ajax("/comment/add",{
+              md:text,
+              target_id:"article_#{article.id}"
+            },"post",function(data){
+              loadingTip.hide()
+                if(data.success){
+                $("#comment-text").val("")
+                var html = Mustache.render(comment_tpl,data.comment);
+                  $(".comment-list").prepend(html)
+                }else{
+                  alert(data.info)
+                }
+            },function(){
+
+            },null,function(){
+            HtmlJS.util.ajax("/comment/add",{
+              md:text,
+              target_id:"article_#{article.id}"
+            },"post",function(data){
+              loadingTip.hide()
+                if(data.success){
+                $("#comment-text").val("")
+                var html = Mustache.render(comment_tpl,data.comment);
+                  $(".comment-list").prepend(html)
+                }else{
+                  alert(data.info)
+                }
+            },function(){
+
+            },null,function(){
+
+          })
+          })
+        }
+        })
+
+        $(".zan").click(function(){
+          var self = this;
+            HtmlJS.util.ajax("/article/#{article.id}/zan",{
+              score:$(self).attr("data-index")
+            },"post",function(data){
+              loadingTip.hide()
+                if(data.success){
+
+                  messageTip.show("成功！")
+                    $("em",self).html("已赞")
+                    $("span",self).html($("span",self).html()*1+1)
+                }else{
+                  alert(data.info)
+                }
+            },function(){
+
+            },null,function(){
+            HtmlJS.util.ajax("/article/#{article.id}/zan",{
+              score:$(self).attr("data-index")
+            },"post",function(data){
+              loadingTip.hide()
+                if(data.success){
+                  messageTip.show("成功！")
+                    $("em",self).html("已赞")
+                    $("span",self).html($("span",self).html()*1+1)
+                }else{
+                  alert(data.info)
+                }
+            },function(){
+
+            },null,function(){
+
+          })
+          })
+          })
+          $('.user').tooltip({
+          placement:"bottom"
+          });
+          $(".add_fav").click(function(){
+            var self=this;
+            HtmlJS.util.ajax("/user/fav",{
+              uuid:"#{article.uuid}"
+            },"post",function(data){
+                loadingTip.hide()
+                if(data.success){
+                  messageTip.show("收藏成功！")
+                    $("em",self).html("已收藏")
+                     $("span",self).html($("span",self).html()*1+1)
+                }else{
+                  alert(data.info)
+                }
+            },function(){},null,function(){
+                HtmlJS.util.ajax("/user/fav",{
+                  uuid:"#{article.uuid}"
+                },"post",function(data){
+                    loadingTip.hide()
+                    if(data.success){
+                      messageTip.show("收藏成功！")
+                         $("em",self).html("已收藏")
+                          $("span",self).html($("span",self).html()*1+1)
+                    }else{
+                      alert(data.info)
+                    }
+                },function(){
+                })
+            })
+            });
+            $(document).ready(function(){
+                if($(window).width()>600){
+                  new Tip().init({
+                      selector:".post",
+                      url:"/tip/add",
+                      uuid:"#{article.id}"
+                  })
+                }
+
+            })
+
+    include ../footer
+    include ../320ad

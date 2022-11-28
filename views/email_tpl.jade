@@ -1,0 +1,45 @@
+p(style="margin:0;padding-top:0;border-bottom:1px dotted #ccc;padding-bottom:6px;text-align:center;font-size:18px;font-family:arial,sans-serif;margin-top:20px;line-height:30px;")
+  | 前端乱炖 2015年最受欢迎的20篇[原创]文章 强捏推荐阅读
+p(style=" text-align:center;margin-bottom:24px;font-size:14px;font-family:arial,sans-serif;line-height:14px;")
+  | @前端乱炖 是一个提供高质量原创内容的技术社区
+div(style="margin-bottom:24px;border:1px solid #ccc;font-size:14px;font-family:arial,sans-serif;margin-top:20px;")
+  p(style="padding:0 16px") 周精选
+  each article in locals.weekly_articles
+    div(style="border-top:1px dotted #ccc;padding:0 16px")
+      p
+        span #{article&&article.title}
+        span 【#{article.column?article.column.name:''}】
+        a(href="http://www.html-js.com/article/#{article.pinyin}") 点此访问
+      p(style="color:#999;font-size:12px;")
+        span #{article.user_nick}
+        span(style="margin-right:10px;")  #{moment(article.createdAt).format("YYYY-MM-DD")}
+        span(style="margin-right:10px;")  访问量 #{article.visit_count}
+        span(style="margin-right:10px;")  点赞数 #{article.zan_count+article.comment_count}
+
+div(style="margin-bottom:24px;border:1px solid #ccc;font-size:14px;")
+  p(style="padding:0 16px") 月精选
+  each article in locals.month_articles
+    div(style="border-top:1px dotted #ccc;padding:0 16px")
+      p
+        span #{article&&article.title}
+        span 【#{article.column?article.column.name:''}】
+        a(href="http://www.html-js.com/article/#{article.pinyin}") 点此访问
+      p(style="color:#999;")
+        span(style="margin-right:10px;",href="http://www.html-js.com/user/#{article.user_id}") #{article.user_nick}
+        span(style="margin-right:10px;")  #{moment(article.createdAt).format("YYYY-MM-DD")}
+        span(style="margin-right:10px;")  访问量 #{article.visit_count}
+        span(style="margin-right:10px;")  点赞数 #{article.zan_count+article.comment_count}
+
+div(style="margin-bottom:24px;border:1px solid #ccc;font-size:14px;")
+  p(style="padding:0 16px") 年度精选
+  each article in locals.year_articles
+    div(style="border-top:1px dotted #ccc;padding:0 16px")
+      p
+        span #{article&&article.title}
+        span 【#{article.column?article.column.name:''}】
+        a(href="http://www.html-js.com/article/#{article.pinyin}") 点此访问
+      p(style="color:#999;")
+        span(style="margin-right:10px;",href="http://www.html-js.com/user/#{article.user_id}") #{article.user_nick}
+        span(style="margin-right:10px;")  #{moment(article.createdAt).format("YYYY-MM-DD")}
+        span(style="margin-right:10px;")  访问量 #{article.visit_count}
+        span(style="margin-right:10px;")  点赞数 #{article.zan_count+article.comment_count}

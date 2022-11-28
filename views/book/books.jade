@@ -1,0 +1,142 @@
+doctype html
+html
+  head
+    include ./../head
+    title 前端乱炖-免费送书
+    script(src='#{assets_head}/js/lazyload.js')
+  body#books
+    - locals.pageId=6;
+    include ./../header
+    #content.clearfix
+      .main.clearfix
+        ul.alert
+          li 送书活动（目前收录#{books.length}本，陆续增加中）
+          li 博主因为要搬家，所以将所有的技术书籍都免费送给各位同仁，再不送出去，这些技术都要过时了！！希望拿到书的同学能够用心学习，发挥书的最大价值。
+          li 送书免费，每人最多三本，邮费自付，我会发顺丰到付。默认接受此条件，不能接受的同学请勿参与！另，博主有权利结束任何条件不符合者的请求。
+          li 把此活动分享给朋友：
+            .share#bdshare.bdshare_t.bds_tools.get-codes-bdshare.clearfix(style="width:300px;margin-top:10px;float:none;margin-left:70px;")
+              a.bds_tsina
+              a.bds_qzone
+              a.bds_tqq
+              a.bds_douban
+              a.bds_renren
+              a.shareCount
+        p.alert
+          if !locals.user
+            | 请先登录再操作，<a href="/user/login">点此登录</a>
+          else if !locals.card
+            | 您还没有加入花名册，不能操作，<a href="/cards">点此领取或者创建花名册</a>
+          else if !(locals.card.address&&locals.card.tel)
+            | 必须填写收货地址和手机号才能领取，<a href="/edit-card">点此修改信息</a>
+          else
+            | 您的手机号：<em>#{card.tel} </em>
+            | 收货地址：<em>#{card.address} </em>
+            | 如有不符，<a href="/edit-card">点此修改信息</a>
+        .left
+
+          .module.mybooks
+            .hd 我已经索取的书籍
+            ul.bd
+              if locals.mybooks&&locals.mybooks.length
+                each book in locals.mybooks
+                  li
+                    div.pic
+                      img.lazy(data-original='#{book.pic}', width='100')
+                    div.infos
+                      div
+                        a(href="#{book.url}",target="_blank") 《#{book.title}》
+                      div 发布者：<a href="/user/#{book.pub_user_id}" target="_blank"/>#{book.pub_user_nick}</a>
+              else
+                div 暂无
+          .module.mybooks.my-pub-books
+            .hd 我发布的书籍
+              a(href="/book/add",style="font-size:12px;padding-left:10px;") （发布免费书籍）
+              a.show_control(href="") 切换显示
+            ul.bd.hidden
+              if locals.myPubBooks&&locals.myPubBooks.length
+                each book in locals.myPubBooks
+                  li
+                    div.pic
+                      img.lazy(data-original='#{book.pic}', width='100')
+                    div.infos
+                      div
+                        a(href="#{book.url}",target="_blank") 《#{book.title}》
+                      if book.user_id
+                        div 被 <a href="/user/#{book.user_id}" target="_blank"/>#{book.user_nick}</a> 领取
+                      else
+                        div
+                          a.del(href="/book/#{book.id}/del") 删除
+              else
+                div 暂无
+
+          div.book-list.clearfix.module
+            .hd 所有书籍列表
+            .bd
+              include ./../page
+              ul
+                each book in books
+                  li.item
+                    div.pic
+                      img.lazy(data-original='#{book.pic}', width='100')
+                    div.infos
+                      div
+                        a(href="#{book.url}",target="_blank") 《#{book.title}》
+                      div 作者：#{book.author}
+                      div 原价：#{book.price.toFixed(2)}
+                      div 发布者：<a href="/user/#{book.pub_user_id}" target="_blank"/>#{book.pub_user_nick}</a>
+                      div.action
+                        if book.is_selled
+                          span(style="color:#aaa;") 已被 <a href="/user/#{book.user_id}" target="_blank"/>#{book.user_nick}</a> 领取
+                        else
+                          a.buy.btn(href="/book/#{book.id}/buy") 我要这本书
+              include ./../page
+          .module.comment
+            script.
+              (function(){
+              var url = "http://widget.weibo.com/distribution/comments.php?width=0&url=auto&border=1&brandline=y&fontsize=12&ralateuid=1711694513&appkey=659341943&dpc=1";
+              url = url.replace("url=auto", "url=" + document.URL);
+              document.write('<iframe id="WBCommentFrame" src="' + url + '" scrolling="no" frameborder="0" style="width:100%"></iframe>');
+              })();
+              </script>
+              <script src="http://tjs.sjs.sinajs.cn/open/widget/js/widget/comment.js" type="text/javascript" charset="utf-8"></script>
+              <script type="text/javascript">
+              window.WBComment.init({
+                "id": "WBCommentFrame"
+              });
+        .right
+
+          .module.fix-ad
+              .hd 广告位
+              .bd.clearfix
+
+    include ./../footer
+    p.
+      <script id="bdshare_js" data="type=tools&amp;uid=2555549" ></script>
+      <script type="text/javascript" id="bdshell_js"></script>
+      <script type="text/javascript">
+      var bds_config={"bdText":"@前端乱炖 博主免费送书啦，让自己那已经落灰的技术书籍们重新散发其无限的价值，详情关注：",'bdPic':'http://htmljs.b0.upaiyun.com/uploads/fsdfdjslkjfsldkfjsdf.jpg',"snsKey":{'tsina':'659341943','tqq':'','t163':'','tsohu':''}}
+      document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date()/3600000)
+      </script>
+    script.
+      $("img.lazy").lazyload();
+      $("#gotop").click(function(){
+      $('html,body').animate({
+      scrollTop:0
+      })
+      })
+      $(".buy").click(function(e){
+        e.preventDefault();
+        if(confirm("领取后不能取消，而且每人只能领取3本书，确定领取？")){
+          window.location.href=$(this).attr("href")
+        }
+        })
+      $(".del").click(function(e){
+        e.preventDefault();
+        if(confirm("将删除书籍，确定？")){
+          window.location.href=$(this).attr("href")
+        }
+        })
+      $(".show_control").click(function(e){
+        e.preventDefault();
+        $(".my-pub-books .bd").toggleClass("hidden")
+        })

@@ -1,0 +1,40 @@
+doctype html
+html(xmlns:wb='http://open.weibo.com/wb')
+  head
+    include ../head
+    title #{blog.title} 博集 - 前端乱炖
+    |<meta name="description" content="#{blog.title}。html,js,css,nodejs,前端开发,前端招聘,jquery,qianduan">
+    script(src='#{assets_head}/js/bootstrap/bootstrap-tooltip.js')
+  body#blog
+    //- .jump(style="text-align:center;font-size:14px;margin-top:50px;")
+    //-   |您即将访问的是站外链接
+    //-   a(href="#{blog.url}") 《#{blog.title}》
+    //-   |，正在为您跳转，请稍候。。。
+    //- h1.title.hidden #{blog.title}
+    #content.hidden !{blog.content}
+
+    //- script.
+    //-   setTimeout(function(){
+    //-     window.location.href="#{blog.url}"
+    //-     },1000)
+    #tan-container
+      a.toindex(href="/") 乱炖首页
+      input.input-text(type="text",placeholder="填写要发送的弹幕内容")
+      button.send.btn(type="button") 弹你~~
+    iframe(src="#{blog.url}",style="width:100%;height:100%;", frameborder="no",border="0" ,marginwidth="0" ,marginheight="0" ,allowtransparency="yes")
+    script.
+      $("iframe").css({height:$(window).height()-10})
+    script.
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-36222024-3']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    .hidden
+      script.
+        var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+        document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F2fc2fae0509f820259c1760fce28d7d2' type='text/javascript'%3E%3C/script%3E"));

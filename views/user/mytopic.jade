@@ -1,0 +1,50 @@
+doctype html
+html
+  head
+    include ./../head
+    title 前端乱炖-我的专栏
+    script(src='#{assets_head}/js/bootstrap/bootstrap-tooltip.js')
+
+  body#user
+    - locals.pageId=8;
+    include ./../header
+    #content
+      include topinfo
+      .main.clearfix
+          - locals.user_page_id = 6;
+          include left
+
+          .infos.module
+            .bd
+              if !locals.topics
+                p 暂无记录。
+              else
+                each article in topics
+                  .info-item
+                    .t
+                      .entry-title
+                        h1.title
+                          if article.sort == 100000
+                              span.label.tip.top 置顶
+                          a(href='/topic/#{article.id}', title='#{article.title}', rel='bookmark') #{article.title}
+                      .entry-foot
+                        span.item
+                          span.index 时间：
+                          a.value #{moment(article.createdAt*1000).format("LLL")}
+                        span.views.item
+                          span.index View：
+                          a.value #{article.visit_count}
+                        span.views.item
+                          span.index 评论：
+                          a.value #{article.comment_count}
+                        if locals.user && (user.is_admin||user.id==article.user_id)
+                          span.views.item
+                            a.value(href="/topic/#{article.id}/edit") 编辑
+              include ../page
+
+    include ../footer
+
+    script.
+      $("#more_info").click(function(){
+        $(".my_card").toggleClass("hidden")
+        })

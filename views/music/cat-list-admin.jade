@@ -1,0 +1,108 @@
+doctype html
+html
+    head
+        include ../head
+        link(href='#{assets_head}/css/Markdown.Editor.css?ddd2', type='text/css', rel='stylesheet', charset='utf-8')
+        script(src='#{assets_head}/js/jquery.js')
+        script(src='#{assets_head}/js/pcaunzip.js')
+        include ../editor_head
+        title 分类列表
+        style.
+            #content textarea {
+                height: 200px;
+            }
+            .actions a{margin-right:15px;}
+            #content table{display:table;}
+    body#job
+        include ../music_header
+        #content.clearfix
+            .content
+                div
+                    a.btn(href="/music/cat/add") 添加分类
+                table(style="margin-top:30px;width:100%;")
+                    thead
+                        tr
+                            th(style="width:100px;") 标题
+                            th(style="width:200px;") 简介
+                            th(style="width:400px;") 故事
+                            th 操作
+                    tbody
+                        if cats && cats.length
+                            each cat,i in cats
+                                tr
+                                    td(style="opacity:#{cat.is_show?'1':'0.4'}")
+                                        a(href="/music/#{cat.id}") #{cat.name}
+                                    td(style="opacity:#{cat.is_show?'1':'0.4'}") #{cat.desc}
+                                    td
+                                        each music,i in cat.musics
+                                            div
+                                                a(href="/music/#{music.id}") 第#{music.index}期 #{music.title}
+                                                a.delete_story(style="color:#666;font-size:12px;margin-left:10px;",data-catid="#{cat.id}",data-musicid="#{music.id}") 删除
+                                        div(style="margin-top:20px;")
+                                            input.story_id(type="text",placeholder="输入故事的id")
+                                            a.btn.add_story(data-catid="#{cat.id}") 添加故事
+                                    td
+                                        .actions
+                                            a(href="/music/cat/add?id=#{cat.id}") 编辑
+                                            if !cat.is_show
+                                                a.toggle_show(data-catid="#{cat.id}") 显示
+                                            else
+                                                a.toggle_hide(data-catid="#{cat.id}") 隐藏
+        script(src='#{assets_head}/js/ajaxfileupload.js')
+        script(src='#{assets_head}/js/loadingTip.js')
+        script(src='#{assets_head}/js/messageTip.js')
+        script.
+            $(".toggle_show").on("click", function () {
+                $.ajax({
+                    url: '/music/cat/add',
+                    type: 'post',
+                    data: {
+                        id: $(this).attr('data-catid'),
+                        is_show: 1
+                    },
+                    success: function () {
+                        window.location.reload()
+                    }
+                })
+            });
+            $(".toggle_hide").on("click", function () {
+                $.ajax({
+                    url: '/music/cat/add',
+                    type: 'post',
+                    data: {
+                        id: $(this).attr('data-catid'),
+                        is_show: 0
+                    },
+                    success: function () {
+                        window.location.reload()
+                    }
+                })
+            });
+            $(".add_story").on("click",function(){
+                var story_id = $(this).parent().find('.story_id').val();
+                $.ajax({
+                    url: '/music/cat/music',
+                    type: 'post',
+                    data: {
+                        music_id: story_id,
+                        cat_id:$(this).attr('data-catid')
+                    },
+                    success:function(){
+                        window.location.reload()
+                    }
+                })
+            });
+            $(".delete_story").on("click", function () {
+                $.ajax({
+                    url: '/music/cat/music',
+                    type: 'delete',
+                    data: {
+                        music_id: $(this).attr('data-musicid'),
+                        cat_id: $(this).attr('data-catid')
+                    },
+                    success: function () {
+                        window.location.reload()
+                    }
+                })
+            });
+

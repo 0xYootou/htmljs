@@ -1,0 +1,106 @@
+if locals.card
+  .top-info.clearfix
+    .left
+      .baseinfo.module.clearfix
+        h1.hd #{card.nick} 的名片
+        .bd
+
+        .main-info.clearfix
+          .head-pic
+            img(src="#{card.head_pic}",width="80",height="80")
+          .base-info
+            .my_card
+              if locals.card
+                p.line
+                  .item
+                    if card.blog || card.github || card.weibo
+                      span.key 个人网站：
+                      span.sns
+                        if card.blog
+                          a.blog(href='#{card.blog}', target='_blank',title="博客地址") blog
+                        if card.github
+                          a.github(href='#{card.github}', target='_blank',title="github地址") github
+                        if card.weibo
+                          a.weibo(href='#{card.weibo}', target='_blank',title="微博地址") weibo
+                p.line
+                  if locals.user && locals.user.is_admin
+                    span.item
+                      span.key 真名
+                      span.value #{card.name}
+                  span.item
+                    span.key 昵称
+                    span.value #{card.nick}
+                  span.item
+                    span.key 性别
+                    span.value #{card.sex?card.sex:"无！"}
+                  span.item
+                    span.key 感情状况
+                    span.value #{card.is_dan?card.is_dan:"不明"}
+
+                p.line
+                  span.item
+                    span.key 城市
+                    span.value #{card.city}
+                  span.item
+                    span.key 职位
+                    span.value #{card.zhiwei}
+                  span.item
+                    span.key 公司
+                    span.value #{card.gongsi}
+                  span.item
+                    span.key 每天工作时长
+                    span.value #{card.shijian?card.shijian:"无"}
+                p.line
+                  span.item
+                    span.key email
+                    if locals.user && locals.user.is_admin
+                      span.value #{card.email}
+                    else
+                      span.value #{card.email?card.email.replace(/^.*@/,"****@"):"*********"}
+                  span.item
+                    span.key QQ
+                    if locals.user && locals.user.is_admin
+                      span.value #{card.qq}
+                    else
+                      span.value #{card.qq?card.qq.substr(0,4)+"******":"*********"}
+                  span.item
+                    span.key 手机号
+                    if locals.user && locals.user.is_admin
+                      span.value #{card.tel}
+                    else
+                      span.value #{card.tel?card.tel.substr(0,4)+"*******":"***********"}
+                // p.line
+                //   span.item
+                //     span.key 特长
+                //     span.value #{card.techang}
+                p.line
+                  span.item
+                    span.key 介绍下自己
+                    span.value #{card.desc}
+                if locals.user && locals.user.is_admin && card.alipay
+                  p.line
+                    span.item
+                      span.key 支付宝
+                      a.value(href="#{card.alipay}") #{card.alipay}
+          p.actions
+            span.item
+              i.icon-heart
+              a.zan(data-id="#{card.id}") 赞TA一个（#{card.zan_count||0}）
+              if locals.zans
+                each zan in zans
+                  if zan&&zan.user
+                    a.user(style="display:inline-block;",href="/user/#{zan.user.id}",data-original-title="#{zan.user.nick}")
+                      img(src="#{zan.user.head_pic}",width="20")
+            span.item
+              i.icon-message-lock
+              a(href="/talk/#{card.uuid}") 私信联系
+    .right
+      .visit-info.module
+        .hd 最近访问（#{locals.card&&card.visit_count||1}）
+        .bd.clearfix
+          div
+            if locals.visitors
+              each visitor in locals.visitors
+                div.visitor
+                  a(href="/user/#{visitor.user_id}",title="#{visitor.user_nick}",data-original-title="#{visitor.user_nick}")
+                    img(src="#{visitor.user_headpic}")

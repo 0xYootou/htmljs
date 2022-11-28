@@ -1,0 +1,50 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    title #{locals.card?card.nick:""} - 花名册 - 前端乱炖
+    |<meta name="description" content="#{locals.card?card.nick:""} 特长：#{locals.card?card.techang:""} 介绍：#{locals.card?card.desc:""}">
+    |<link rel="Shortcut Icon" href="/assets/images/logo.ico?123"><link href="/assets/images/logo.ico?123" rel="shortcut icon" type="image/x-icon"><link rel="stylesheet" href="/assets/css/bootstrap.css?ddddd" type="text/css"><link rel="stylesheet" href="/assets/css/main.css?1d2fddddjjd21" type="text/css"><link rel="stylesheet" href="/assets/css/prettify.css?22" type="text/css"><link rel="stylesheet" href="/assets/css/glyphicons.css?2d2ddddddd" type="text/css">
+    style.
+      html,body{
+      width:440px;
+      margin:0;padding:0;
+      }
+      #content{margin:0;width:440px;}
+      #content .left-info{width:440px;}
+      #card .item{width:auto;}
+  body#card
+    #content.clearfix
+
+        if !locals.card
+          p.alert.alert-warnint 此用户还没有创建名片
+        else
+          .left-info
+
+            .base-info
+              .my_card
+                if locals.card
+                  .top.clearfix
+                    .head-pic.user
+                      img(src="#{card.head_pic}",width="80",height="80")
+                      if card.sex == '男'
+                        .sex.nan
+                      else
+                        .sex.nv
+                    .nick #{card.nick}
+                    .coin 经验值：#{locals.card_user?card_user.coin:""}
+
+                  hr
+                  .desc #{card.desc}
+                  .item
+                    if card.blog || card.github || card.weibo
+                      span.key 个人网站：
+                      span.sns
+                        if card.blog
+                          a.blog(href='#{card.blog}', target='_blank',title="博客地址") blog
+                        if card.github
+                          a.github(href='#{card.github}', target='_blank',title="github地址") github
+                        if card.weibo
+                          a.weibo(href='#{card.weibo}', target='_blank',title="微博地址") weibo
+
+          

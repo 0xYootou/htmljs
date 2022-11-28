@@ -1,0 +1,268 @@
+doctype html
+html
+  head
+    include head
+    title 前端乱炖
+    |<meta name="description" content="前端乱炖，这里是最专业的前端知识平台，汇集国内大部分前端开发人员的前端花名册，最精彩的原创文章专栏，最专业的问答平台，最火热的话题频道，最丰富的线下线上活动。html,js,css,nodejs,前端开发,前端招聘,jquery,qianduan">
+    style.
+      #bdshare a{}
+      .textwidget div{float:left;line-height: 30px;font-size:14px;margin-right: 20px;}
+      .textwidget div em{font-style:normal;color:#999;font-weight: bold;}
+      .tags-mod{
+         overflow:hidden;
+         height:35px;
+         padding:4px;
+         margin:20px 0;
+         margin-bottom:0;
+         border:1px solid #ddd;
+         background:#fff;
+         border-bottom:0;
+      }
+       .tags-mod .tag{
+        display:inline-block;
+        padding:0px 20px;
+        line-height:35px;
+        font-size:13px;
+        background:#fff;
+        color:#444;
+      }
+      .tags-mod .tag:hover{
+      background:#ef6f67;
+      text-decoration:none;
+      color:#fff;
+      }
+      #content .article-mod{
+      border-top:1px solid #efefef;
+      }
+    script(src='#{assets_head}/js/bootstrap/bootstrap-tooltip.js')
+    script(src='#{assets_head}/js/lazyload.js')
+
+  body#index
+    - locals.pageId=0;
+    include header
+
+    #content.clearfix
+      .content
+          .top.clearfix
+            div(style="margin-bottom:0px;padding-top:0px;")
+              //- var rnd = Math.random();
+              //- if rnd >0.5
+              //-   a(href="http://www.html-js.com/topic/827",target="_blank")
+              //-     img(src="http://htmljs.b0.upaiyun.com/uploads/1407342491684-banner1.png",width="750")
+              //- else
+              //a(href="https://cn.100offer.com/how-it-works/?utm_source=dun&utm_medium=display&utm_campaign=dun_20170210&utm_content=find_new_job&campaign_code=dun",style="display:block;float:left;")
+              //  img(src="http://htmljs.b0.upaiyun.com/uploads/1486712447991-036e087412b5c6275e5da07076331e9a.jpeg",width="690")
+              //img.wxqcode(style="width:240px;margin-top:0px;float:right;",src="http://htmljs.b0.upaiyun.com/uploads/1412563549964-1393256038450-fff.png")
+              //
+                a.wxqcode(href="http://www.apicloud.com/")
+                img(style="width:180px;margin-top:0px;float:right;",src="http://htmljs.b0.upaiyun.com/uploads/1442397074985-e283f06a4d5db652dff7e7ba81ecb73b.jpg")
+
+
+          if locals.index_tags
+            .tags-mod
+              each tag in index_tags
+                a.tag(href="/tag/#{tag.id}/articles") #{tag.name}
+          if locals.articles
+            .module.article-mod.mod
+              .lft
+                .mod.recent_articles
+                  .hd
+                    a(href="/article") 最新的专栏文章（#{locals.all_count?all_count.article:0}）
+                  .bd(role="list")
+                    each article,i in articles
+                      .item(class="#{article.visit_count<60?'new':''} #{Math.floor(i%2)==1?'yooo':''}",role="listitem")
+                        a.title(href="/article/#{article.pinyin?article.pinyin:article.id}") #{article.title}
+                          a.u(href="/user/#{article.user_id}") #{article.user_nick}
+                          span.infos #{article.visit_count}读/#{article.zan_count}赞
+                        .desc.hidden
+                          a.user(href="/user/#{article.user_id}") #{article.user_nick}
+                          span.time #{moment(article.createdAt).fromNow()}
+                          span.desc-item
+                            span.index 浏览
+                            a.value #{article.visit_count}
+                          span.desc-item
+                            span.index 赞
+                            a.value #{article.zan_count}
+              .rht
+                .top-user.rht-mod
+                  .hd 高产大大
+                  .bd.clearfix
+                    each u in article_top_users
+                      .user
+                        a.p(href="/user/#{u.user_id}",data-original-title="#{u.user_nick}")
+                          img(src="#{u.user_headpic}")
+                        a.t(href="/user/#{u.user_id}",data-original-title="#{u.user_nick}") #{u.user_nick}
+                        span #{u.article_count}篇文章
+                .columns
+                  .hd
+                    a(href="/article/column") 最近更新的专栏（#{locals.all_count?all_count.column:0}）
+                  .bd
+                    each column in columns
+                      if column.user.id
+                        .column
+                          a.tooltip-trigger(href="/user/#{column.user_id}",data-original-title="#{column.user.nick}")
+                            img(src="#{column.user.head_pic}")
+                          a.t.tooltip-trigger(href="/article/column/#{column.id}",data-original-title="#{column.name}  #{moment(column.last_article_time*1).fromNow()}") #{column.name.substr(0,16)}
+                          span #{moment(column.last_article_time*1).format("MM/DD")}
+
+          .module.tuanColumn
+            .hd 乱炖周刊（每周二更新）
+            .bd
+              .column-list
+                a.column(style="background:#ef6f67;",href="/static/htmljs-weekly-9.html")
+                  .title 乱炖周刊 · 第9期
+                  .user
+                    span 发布时间：2014-10-28
+                  .actions
+                a.column(style="background:#46afe4;",href="/static/htmljs-weekly-8.html")
+                  .title 乱炖周刊 · 第8期
+                  .user
+                    span 发布时间：2014-10-21
+                  .actions
+                a.column(style="background:#81cc7a;",href="/static/htmljs-weekly-7.html")
+                  .title 乱炖周刊 · 第7期
+                  .user
+                    span 发布时间：2014-10-14
+                  .actions
+                a.column(style="background:#00cbbd;",href="/static/htmljs-weekly-6.html")
+                  .title 乱炖周刊 · 第6期
+                  .user
+                    span 发布时间：2014-10-7
+                  .actions
+
+          if locals.questions
+            .module.mod
+              .lft
+                .new-qa
+                  .hd
+                    a(href="/qa") 最新的问题（#{locals.all_count?all_count.question:0}）
+                  .bd
+                    each question,i in questions
+                      .item(class="#{question.answer_count<1?'new':''}  #{Math.floor(i%2)==1?'yooo':''}")
+                        a.title(href="/qa/#{question.pinyin?question.pinyin:question.id}") #{question.title.substr(0,40)}
+                        a.u(href="/user/#{question.user_id}") #{question.user_nick}
+                        span.infos #{question.visit_count}读/#{question.answer_count}回答
+              .rht
+                .top-user.rht-mod
+                  .hd 回答问题最多的大大
+                  .bd.clearfix
+                    each u in answer_top_users
+                      .user
+                        a.p(href="/user/#{u.user_id}",data-original-title="#{u.user_nick}")
+                          img(src="#{u.user_headpic}")
+                        a.t(href="/user/#{u.user_id}",data-original-title="#{u.user_nick}") #{u.user_nick}
+                        span #{u.answer_count}次回答
+                .tags
+                  a.hd(href="/tag") 问题分类
+                  .bd.clearfix
+                    each tag,i in tags
+                      a.tag(href="/tag/#{tag.id}") #{tag.name}
+                        span #{tag.qa_count}
+          if locals.topics
+            .module.mod
+              .lft
+                .new-topics
+                  .hd
+                    a(href="/topic") 最新的话题（#{locals.all_count?all_count.topic:0}）
+                  .bd
+                    each topic,i in topics
+                      .item(class="#{topic.visit_count<30?'new':''}  #{Math.floor(i%2)==1?'yooo':''}")
+                        a.title(href="/topic/#{topic.id}") #{topic.title}
+                        if topic.last_comment_user_id
+                          | <a class="u" href="/user/#{topic.last_comment_user_id}">#{topic.last_comment_user_nick}</a>
+                        span.infos #{topic.visit_count}阅/#{topic.comment_count}回
+              .rht
+                .top-user.rht-mod
+                  .hd 积极参与讨论的大大
+                  .bd.clearfix
+                    each u in topic_top_users
+                      .user
+                        a.p(href="/user/#{u.user_id}",data-original-title="#{u.user_nick}")
+                          img(src="#{u.user_headpic}")
+                        a.t(href="/user/#{u.user_id}",data-original-title="#{u.user_nick}") #{u.user_nick}
+                        span #{u.topic_comment_count}次回复
+                .topic_tags
+                  .hd 话题类型
+                  each tag in topic_tags
+                    a.tag(href="/topic?tag_id=#{tag.id}",class="#{tag.important?'important':''}") #{tag.name}
+          if locals.cards
+            .module.mod.recent_cards
+              .hd
+                a(href="/cards") 花名册新人
+              .bd
+                if !locals.user || !locals.user.card_id
+                  .card.user(class="nan-user")
+                    .pic
+                      a.tooltip-trigger(href="/edit-card",data-original-title="加入花名册")
+                        img(src="http://htmljs.b0.upaiyun.com/uploads/1388023439858-ce.png")
+                    .name
+                      a(href="/edit-card")  我也加入
+                each card,i in cards
+                  .card.user(class="#{card.sex=='男'?'nan-user':'nv-user'}")
+                    .pic
+                      a.tooltip-trigger(href="/card/#{card.id}",data-original-title="#{card.desc}")
+                        img(src="#{card.head_pic}")
+                        if card.sex == '男'
+                          .sex.nan
+                        else
+                          .sex.nv
+                    .name
+                      a(href="/card/#{card.id}")  #{card.nick}
+
+
+
+        .module.
+            <div class="textwidget">
+              <div>乱炖情感群:<em style=";"> 46532005</em></div>
+              <div>乱炖技术群：<em style=";"> 227896607</em></div>
+              <div>NodeJS乱炖: <em style=";"> 95323225</em></div>
+              <div>自由职业者: <em style=";"> 275182059</em></div>
+              <div>IOS 乱炖: <em style=";"> 292062123</em></div>
+              <div>求职招聘群: <em style=";"> 12892863</em></div>
+              <div>站长的QQ: <em style=";"> 676588498</em></div>
+            </div>
+
+
+      .module.support
+        .hd 赞助商
+        .bd
+          ul.clearfix(style="margin-left:0;")
+            li
+              a(href="http://www.imooc.com/course/list?c=fe",target="_blank",title="免费的IT技能学习平台")
+                img(src="http://htmljs.b0.upaiyun.com/uploads/1419232355686-未标题-1.png")
+                .desc 免费的IT技能学习平台
+
+            li.hidden
+              a(href="https://www.upyun.com",target="_blank")
+                img(src="http://htmljs.b0.upaiyun.com/uploads/1385469219452-Snip20131126_10.png")
+                .desc 高速稳定的存储服务
+            li
+              a(href="http://oneapm.com/",target="_blank",title="优秀的性能分析工具")
+                img(src="http://htmljs.b0.upaiyun.com/uploads/1461145246085-01db76d06153cac4578ef04abf05dc05.jpg")
+                .desc 优秀的性能分析工具
+            li
+              a(href="http://www.jiankongbao.com/")
+                img(src="http://htmljs.b0.upaiyun.com/uploads/1413168456981-%E6%9C%AA%E6%A0%87%E9%A2%98-1.png")
+                .desc 端到端应用性能管理专家
+            li
+              a(href="http://appcan.cn/")
+                img(src="http://htmljs.b0.upaiyun.com/uploads/1423040565748-AppCan-logo蓝色.png")
+                .desc 一站式移动开发服务平台
+            li.hidden
+              a(href="http://apicloud.com/")
+                img(src="http://htmljs.b0.upaiyun.com/uploads/1423880680956-小logo.png")
+                .desc 重新定义移动应用开发
+            li
+              a(href="https://www.upyun.com/")
+                img(src="http://img.souche.com/test/55a718a661d796fd31d924ed2a64e4ce.jpg")
+                .desc 领先企业级云服务商
+          .add
+            a(href="http://www.html-js.com/topic/827") 我也要赞助
+
+    script(src="#{assets_head}/js/messageTip.js")
+    script(src="#{assets_head}/js/loadingTip.js")
+    include footer
+
+
+
+

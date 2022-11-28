@@ -1,0 +1,62 @@
+doctype html
+html
+  head
+    include ./../head
+    title 前端乱炖-我的专栏
+    script(src='#{assets_head}/js/bootstrap/bootstrap-tooltip.js')
+
+  body#user
+    - locals.pageId=8;
+    include ./../header
+    #content
+      include topinfo
+      .main.clearfix
+          - locals.user_page_id = 5;
+          include left
+
+          .infos.module
+            .bd
+              if !locals.questions
+                p 暂无记录。
+              else
+                each question in questions
+                  .info-item
+                    .t
+                      .entry-title
+                        h2.title
+                          if question.answer_count == 0
+                            span.label.tip.new New
+                          else if question.answer_count >=7 || question.is_hot
+                            span.label.tip.hot HOT
+                          else if question.sort == 10000
+                            span.label.tip.top 置顶
+                          a(href='/qa/#{question.id}', title='#{question.title}', rel='bookmark')
+                            |#{question.title}
+                      .entry-foot
+                        //
+                          span.author.vcard.item
+                            span.index 提问者：
+                            a.value.url.fn(rel='author', href='/user/#{question.user_id}') #{question.user_nick}
+
+                        span.views.item
+                          span.index View：
+                          a.value #{question.visit_count}
+                        span.views.item
+                          span.index 回答：
+                          a.value #{question.answer_count}
+                        span.time.item
+                          a.value #{moment(question.createdAt).fromNow()}
+                        if question.tagNames
+                          - var tags = question.tagNames.split(",")
+                          span.tags.item
+                            each tag in tags
+                              a.value(href="/tag/n/#{tag}") #{tag}
+
+              include ../page
+
+    include ../footer
+
+    script.
+      $("#more_info").click(function(){
+        $(".my_card").toggleClass("hidden")
+        })

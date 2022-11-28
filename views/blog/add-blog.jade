@@ -1,0 +1,47 @@
+doctype html
+html
+  head
+    include ../head
+    link(href='#{assets_head}/css/Markdown.Editor.css?ddd2', type='text/css', rel='stylesheet', charset='utf-8')
+    script(src='#{assets_head}/js/jquery.js')
+    include ../editor_head
+    title 添加专栏
+    style.
+      #content input[type="text"]{
+        width:400px;
+      }
+      #content textarea{
+      height:200px;
+      }
+  body#qa-add
+    - locals.pageId=1;
+    include ../header
+    #content.clearfix
+      .content
+        .left
+          .module
+            form.form-horizontal#form(method='post')
+              fieldset
+                legend 添加blog
+                .control-group
+                  input#title(type='text', value = "",name='name', placeholder='blog名称,使用尽量少的字描述',required)
+                .control-group
+                  input(type='text', value = "",name='url', placeholder='url地址',required)
+                .control-group
+                  input(type='text', value = "",name='user_id', placeholder='作者id')
+                .control-group#wmd-editor-parent
+                    textarea(name="desc",placeholder='描述',required,style="width:98%")
+                .control-group
+                  button.btn(type='submit') 添加
+
+      .right
+        .module
+          .hd 提示
+          .bd
+            div
+      #fullscreen-editor.hidden
+      #fullscreen-exit.hidden
+        a.btn
+          i.icon-resize-small
+    include ../footer
+    

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>“颜文字输入法App”的程序员干爹 520 要出嫁啦，求祝福！</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+    <link rel="shortcut icon" href="http://cheniu-openapi.qiniudn.com/activities/img/marry/heart.png"  type="image/x-icon"/>
+
+ <link rel="apple-touch-icon-precomposed" sizes="57x57" href="http://cheniu-openapi.qiniudn.com/activities/img/marry/heart.png?fdsddf">
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href=http://cheniu-openapi.qiniudn.com/activities/img/marry/heart.png?fdsddf>
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="http://cheniu-openapi.qiniudn.com/activities/img/marry/heart.png?fdsddf">
+
+
+    <link rel="stylesheet" href="http://cheniu-h5.qiniudn.com/activities/animate.css">
+    <style>
+      html,body{margin:0;padding:0;}
+      html{background: #eee;}
+      body{
+      max-width:430px;
+      background: #fff;
+      margin:0 auto;}
+      #iSlider {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        background: #fff;
+        max-width:430px;
+        overflow: hidden;
+      } 
+      .islider-pic {
+        position: absolute;
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-box-pack: center;
+        -webkit-box-align: center;
+        list-style: none;
+      }
+      @-webkit-keyframes heart {
+          0% {
+              opacity: 1;
+              -webkit-transform: scale(1,1);
+              transform: scale(1,1);
+          }
+          50% {
+              opacity: 0.5;
+      	  
+              -webkit-transform: scale(1.3,1.3) translate3d(-15px, -15px, 0);
+              transform: scale(1.3,1.3)  translate3d(-15px, -15px, 0);
+          }
+          100% {
+              opacity: 1;
+               -webkit-transform: scale(1,1);
+              transform: scale(1,1);
+          }
+      }
+      @-webkit-keyframes heart2 {
+          0% {
+              opacity: 1;
+              -webkit-transform: scale(1,1);
+              transform: scale(1,1);
+          }
+          50% {
+              opacity: 0.5;
+              -webkit-transform: scale(1.1,1.1) translate3d(0px, 0px, 0);
+              transform: scale(1.1,1.1)  translate3d(0px, 0px, 0);
+          }
+          100% {
+              opacity: 1;
+               -webkit-transform: scale(1,1);
+              transform: scale(1,1);
+          }
+      }
+      @-webkit-keyframes arrowMove {
+          0% {
+              opacity: 1;
+              -webkit-transform: translate3d(0, 0, 0);
+              transform: translate3d(0, 0, 0);
+          }
+          50% {
+              opacity: 0;
+              -webkit-transform: translate3d(0, -5px, 0);
+              transform: translate3d(0, -5px, 0);
+          }
+          100% {
+              opacity: 1;
+              -webkit-transform: translate3d(0, 0, 0);
+              transform: translate3d(0, 0, 0);
+          }
+      }
+      
+      
+      .head{
+      max-width:430px;
+      margin:0 auto;
+      position:fixed;
+      top:0;left:0;width:100%;display:block;z-index:1002220;}
+      .heart{
+      width:100px;
+      left:50%;
+      margin-left:-50px;
+      z-index:1002220;
+      display:block;
+      position:fixed;
+      top:280px;
+      line-height:80px;
+      font-size:16px;
+      color:rgba(255,255,255,0.8);
+      text-align:center;
+      background:url(http://cheniu-h5.qiniudn.com/activities/img/marry/heart.png) no-repeat center center;
+      background-size:auto 100%;
+      	  -webkit-animation: heart 1200ms ease-in-out infinite;
+      	  animation: heart 1200ms ease-in-out infinite;
+      	  -webkit-transform: translate3d(0,0,0);
+      	  transform: translate3d(0,0,0);
+      }
+      .count{position:fixed;top:320px;left:0;width:100%;
+      display:block;text-align:center;color:#999;
+      font-size:15px;z-index:10000000;
+      }
+      .share{position:fixed;top:350px;left:0;width:100%;
+      display:block;text-align:center;z-index:10000000;}
+      .inapp{
+        color:#fff;
+        background: #ff0000;
+        border-radius: 5px;
+        width:120px;
+        left:50%;
+        margin-left:-60px;
+        height:30px;
+        font-size:16px;
+        line-height:30px;
+        text-align: center;
+
+      }
+      .arrow {
+        z-index: 1002220;
+        display: inline-block;
+        width: 50px;
+        height: 48px;
+        position: fixed;
+        bottom: 5%;
+        left: 50%;
+        margin-left: -25px;
+        background: url(http://cheniu-h5.qiniudn.com/everydaycar/img/arrow.png);
+        background-size: 100%;
+         -webkit-animation: arrowMove 1200ms ease-in-out infinite;
+      	  animation: arrowMove 1200ms ease-in-out infinite;
+      }
+      .tip{
+      position:fixed;
+      top:200px;
+      width:100px;
+      height:30px;
+      font-size:14px;
+      background:rgba(80,80,80,0.8);color:#fff;
+      text-align:center;
+      margin-left:-50px;
+      left:50%;
+      border-radius:4px;
+      line-height:30px;
+      box-shadow:1px 1px 1px #333;
+      -webkit-transform: translate3d(0, -3000px, 0);
+      transform: translate3d(0, -3000px, 0);
+      z-index: 100222000;
+      }
+      .talk{
+        position: fixed;
+        top:0;
+        left:0;
+        width:100%;
+        z-index:200000000000000;
+        background: #fff;
+          box-sizing: border-box;
+          padding:10px;
+          height:100%;
+          overflow: scroll;
+      }
+      @media screen and (min-width:430px)  {
+      	.head{
+      	width:430px;
+      		margin-left:-215px;
+      		left:50%;
+      	}
+      }
+      .close{z-index:200000000000001;position: fixed;top:10px;right:10px;background: url(http://cheniu-openapi.qiniudn.com/activities/img/marry/close.png) no-repeat center center;background-size:80%;width:40px;height:40px;opacity: 0.7;}
+      .chat{z-index:1002221;position: fixed;top:5px;right:10px;background: url(http://cheniu-openapi.qiniudn.com/activities/img/marry/chat.png) no-repeat center center;background-size:70%;width:40px;height:40px;
+        -webkit-animation: heart2 1200ms ease-in-out infinite;
+          animation: heart2 1200ms ease-in-out infinite;
+
+          opacity: 0.7;}
+      body .bdshare-button-style1-32 a{display:inline-block;float:none;}
+      body #bdshare_weixin_qrcode_dialog{z-index:1000000000000;}
+    </style>
+  </head>
+  <body> 
+    <div  style="display:none;"><img src="http://cheniu-openapi.qiniudn.com/activities/img/marry/heart-300.png?fdsddf"/></div>
+    <img src="http://cheniu-h5.qiniudn.com/activities/img/marry/head.png" class="head">
+    <div class="chat"></div>
+    <div id="iSlider"></div>
+    <div src="" style="display:none;" class="heart">点我</div>
+    <div style="display:none;" class="count">已经收到<span id="count">100</span>个祝福</div>
+    <div style="display:none;" class="share">
+      <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a><a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a><a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a><a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a></div>
+      <script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"“颜文字输入法App”的程序员干爹 520 要出嫁啦，求祝福！@Eleeeeeven @小芋头君","bdMini":"2","bdMiniList":false,"bdPic":"http://cheniu-openapi.qiniudn.com/activities/img/marry/heart-300.png?fdsddf","bdStyle":"1","bdSize":"32"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+    </div>
+    <div class="arrow"></div>
+    <div class="tip">感谢祝福</div>
+    
+    <div class="talk" style="display:none;">
+      
+<!-- 多说评论框 start -->
+  <div class="ds-thread" data-thread-key="fdsfsdf" data-title="“颜文字输入法App”的程序员干爹 520 要出嫁啦，求祝福！@Eleeeeeven @小芋头君" data-url="http://www.html-js.com/static/marry.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+
+var duoshuoQuery = {short_name:"htmljs"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共JS代码 end -->
+    </div>
+    <div class="close" style="display:none;" ></div>
+    <script src="http://cheniu-h5.qiniudn.com/common/js/zepto.min.js"></script>
+    <script src="http://cheniu-h5.qiniudn.com/everydaycar/js/islider.js"></script>
+    <script>
+      if($(window).width()>430){
+        $(".chat").css({right:$(window).width()/2-430/2+10})
+      }
+      $(".close").on("click",function(){
+        $(".close").hide()
+        $(".talk").hide();
+      })
+      $(".chat").on("click",function(){
+        $(".close").show()
+        $(".talk").show();
+      })
+      $(".heart").css({
+      top:$(window).height()*0.4
+      })
+      $(".count").css({
+      top:$(window).height()*0.4+80+30
+      })
+      $(".share").css({
+      top:$(window).height()*0.4+80+60
+      })
+      var showTip = function(txt){
+      $(".tip").addClass("bounceInDown animated").html(txt)
+      setTimeout(hideTip,2000) 
+      }
+      var hideTip = function(txt){
+      $(".tip").addClass("bounceOutDown")
+      }
+       var list = [{
+      'content': 'http://cheniu-openapi.qiniudn.com/activities/img/marry/0.png'
+      },{
+      'content': 'http://cheniu-openapi.qiniudn.com/activities/img/marry/1.png'
+      }, {
+      'content': 'http://cheniu-openapi.qiniudn.com/activities/img/marry/2.png?ddd'
+      }, {
+      'content': 'http://cheniu-openapi.qiniudn.com/activities/img/marry/3.png?fdsf'
+      }, {
+      'content': 'http://cheniu-openapi.qiniudn.com/activities/img/marry/4.jpg?dddsf'
+      }, {
+      'content': 'http://cheniu-openapi.qiniudn.com/activities/img/marry/5.png?dfd'
+      }];
+      		var islider = new iSlider({
+      data: list,
+      type: 'pic',
+      dom: document.getElementById("iSlider"),
+      duration: 1000,
+      animateType: 'card',
+      isVertical: true,
+      onslideend: function() {
+      	if(this.slideIndex==5){
+      		$(".heart").show(400)
+      		$(".count").show(400)
+      		$(".share").show(400)
+      	}else{
+      		$(".heart").hide(400)
+      		$(".share").hide(400)
+      		$(".count").hide(400)
+      	}
+      }
+      });
+      $.ajax({
+      url:"http://www.html-js.com/act/marry/count",
+      success:function(data){
+      	$("#count").html(data.visit_count)
+      }})
+      var hasClick = false;
+      $(".heart").on("click",function(){
+      	if(hasClick){
+      	showTip("祝福已经送达，感谢")
+      	return;
+      	}
+      	showTip("感谢祝福")
+      	hasClick=true;
+      	$("#count").html($("#count").html()*1+1)
+      	$.ajax({
+      	url:"http://www.html-js.com/act/marry/count",
+      	type:"post",
+      	success:function(data){
+      		
+      	}})
+      })
+      var isInApp = false;
+      function connectWebViewJavascriptBridge(callback) {
+          if (window.WebViewJavascriptBridge) {
+              callback(WebViewJavascriptBridge)
+          } else {
+              document.addEventListener('WebViewJavascriptBridgeReady', function() {
+                  callback(WebViewJavascriptBridge)
+              }, false)
+          }
+      }
+      
+      connectWebViewJavascriptBridge(function(bridge) {
+        isInApp = true;
+        $(".share").html("分享给好友").addClass("inapp")
+              $(".share").on("click",function(){
+                share();
+              })
+          /* Init your app here */
+      
+          bridge.init(function(message, responseCallback) {
+              alert('Received message: ' + message)   
+              if (responseCallback) {
+                  responseCallback("Right back atcha")
+              }
+              
+          })
+          bridge.send('Hello from the javascript')
+          bridge.send('Please respond to this', function responseCallback(responseData) {
+              console.log("Javascript got its response", responseData)
+          })
+      })
+      var showLogin = function(){
+        WebViewJavascriptBridge.send('yan:showLogin')
+      }
+      var showUUID = function(){
+        WebViewJavascriptBridge.send('yan:getUserName', function responseCallback(responseData) {
+              alert(responseData)
+          })
+      }
+    var share = function(){
+      WebViewJavascriptBridge.send({
+        key:'yan:share',
+        text:"“颜文字输入法App”的程序员干爹 520 要出嫁啦，求祝福！http://www.html-js.com/static/marry.html",
+        image:"http://cheniu-openapi.qiniudn.com/activities/img/marry/heart.png"
+      })
+    }
+
+    </script>
+    <div class="hidden">
+      <script>
+        var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+        document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F2fc2fae0509f820259c1760fce28d7d2' type='text/javascript'%3E%3C/script%3E"));
+        
+      </script>
+    </div>
+  </body>
+</html>

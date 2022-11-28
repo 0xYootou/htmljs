@@ -1,0 +1,17 @@
+config.coffee
+alipay_config.js
+node_modules
+.DS_Store
+node_modules/
+uploads
+sftp-config.json
+lib/uploads/
+lib/card-*.png
+route_static/
+.idea/encodings.xml
+.idea/htmljs.iml
+.idea/misc.xml
+.idea/modules.xml
+.idea/workspace.xml
+alipay_config.js
+config.coffee

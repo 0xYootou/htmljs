@@ -1,0 +1,51 @@
+doctype html
+html
+  head
+    include ../head
+    title 工具集 - 前端乱炖
+    style.
+      #content{
+      width:940px;
+      margin:0 auto;
+      }
+      body{
+        background:#efefef;
+      }
+      .item{
+        display:inline-block;
+        vertical-align:top;
+        width:260px;
+        background:#fff;
+        margin-right:20px;
+        margin-bottom:20px;
+      }
+      #content .module{
+      padding:15px;
+      }
+      .title{
+        font-size:16px;
+        color:#5bb793;
+        font-weight:bold;
+      }
+      .desc{
+        font-size:12px;
+        color:#666;
+        margin-top:5px;
+      }
+      .others{
+      color:#aaa;
+      line-height:25px;
+      font-size:12px;
+      }
+  body#tools
+    - locals.pageId = 9;
+    include ../header
+    #content
+      each tool in tools
+        .item.module
+          if tool.link
+            a.title(href="#{tool.link}",target="_blank") #{tool.title}
+          else
+            a.title(href="/tools/#{tool.name}") #{tool.title}
+          .desc #{tool.desc}
+          .others 被使用过#{tool.visit_count}次

@@ -1,0 +1,155 @@
+doctype html
+html(xmlns:wb='http://open.weibo.com/wb')
+  head
+    include head
+    title 前端乱炖-随阅
+    script(src='#{assets_head}/js/bootstrap/bootstrap-transition.js')
+    script(src='#{assets_head}/js/bootstrap/bootstrap-modal.js')
+    script(src='#{assets_head}/js/bootstrap/bootstrap-tooltip.js')
+    style.
+  body#reads
+    - locals.pageId=4;
+    include header
+    #content.clearfix
+      ul.breadcrumb
+        li
+          a(href="/") 首页
+          span.divider /
+        li.active
+          span 阅读
+      //- .my-reads
+      //-   .hd 我的阅读
+      //-   .bd
+      //-     ul.article-list
+      //-       if all_reads.length
+      //-         each article in all_reads
+      //-           article.post(id="post-#{article.id}")
+      //-             .entry-title
+      //-               h3.title
+      //-                 a(href='/read/#{article.id}', title='#{article.title}', rel='bookmark')
+      //-                   |#{article.title}
+      //-             .entry-content
+      //-               div !{article.desc||article.html.replace(/<p>(.*?)<\/p>/g,"$1\n").replace(/<[^>]*?>/g,"").substr(0,300)}
+      //-             .entry-others
+      //-               if article.quote_url
+      //-                 span.views.item
+      //-                   a.value(href="#{article.quote_url}",target="_blank") 原文链接
+      //-               span.views.item
+      //-                   span.index View：
+      //-                   a.value #{article.visit_count}
+      //-               span.views.item
+      //-                 span.index 评论：
+      //-                 a.value #{article.comment_count}
+      //-       else
+      //-         li(style="text-align:center;") 还没有文章耶，赶紧去收藏新文章吧！！
+      //-           a(href="/read/add/recommend") 去收藏
+
+      //-   include page
+      .actions.clearfix
+        ul.nav.nav-pills.left-actions
+          li
+            a(href="/read") 大家的收藏
+          li.active
+            a(href="/read/me") 我的收藏
+        .right-actions
+          a.btn(href="/read/add/recommend")
+            i.icon-plus.icon-white
+            |添加收藏
+      .all-reads.clearfix
+        ul.article-list
+          if my_reads.length
+            each article,index in my_reads
+                article.post(id="post-#{article.id}",class="#{index%2==1?'left-post':'right-post'}")
+                  .entry-title
+                    h3.title
+                      a(href='/read/#{article.id}', title='#{article.title}', rel='bookmark')
+                        |#{article.title}
+                  .entry-content
+                    div !{article.desc||article.html.replace(/<p>(.*?)<\/p>/g,"$1\n").replace(/<[^>]*?>/g,"").substr(0,300)}
+                  .entry-others
+                    if article.quote_url
+                      span.views.item
+                        a.value(href="#{article.quote_url}",target="_blank")
+                          i.icon-link
+                          | 原文链接
+                    span.views.item
+                        span.index View：
+                        span.value #{article.visit_count}
+                    span.views.item
+                      span.index 评论：
+                      span.value #{article.comment_count}
+                  .user(data-left="1")
+                    a(href="/user/#{article.user_id}",data-original-title="#{article.user_nick}")
+                      img(src="#{article.user_headpic}")
+                    .time #{moment(article.createdAt).fromNow()}
+
+      include page
+    script(src="#{assets_head}/js/queuedo.js")
+    script(src="#{assets_head}/js/svg.js")
+    script.
+      $('.user a').tooltip({
+          placement:"bottom"
+      })
+      var users = $(".post .user");
+      var userEles = [];
+      users.each(function(i,user){
+        userEles.push(user)
+        })
+      userEles = userEles.sort(function(u1,u2){
+        return $(u1).offset().top - $(u2).offset().top
+        })
+
+      //- for(var i=1;i<userEles.length;i++){
+      //-   var last = $(userEles[i-1]).offset().top;
+      //-   var now = $(userEles[i]).offset().top;
+      //-   if(now-last<40){
+      //-     $(userEles[i]).css({
+      //-       top:30+40-now+last
+      //-       })
+      //-   }
+      //- }
+      var draw = SVG('canvas')
+      draw.attr({ stroke: '#ff6700' })
+      QueueDo(userEles,function(userEle,next,context,i){
+        if(i==0){
+          next.call(context)
+          return;
+        }
+        var last = $(userEles[i-1]).offset().top;
+        var now = $(userEles[i]).offset().top;
+
+        if(now-last<80){
+          $(userEles[i]).animate({
+            top:30+80-now+last
+            },200)
+          now = now+80-now+last
+        }
+        var lastLeft = ($(userEles[i-1]).attr("data-left")==1)?455:475;
+        var nowLeft = ($(userEles[i]).attr("data-left")==1)?455:475;
+        setTimeout(function(){
+           next.call(context)
+          },50)
+        },function(){
+
+        })
+        setTimeout(function(){
+           QueueDo(userEles,function(userEle,next,context,i){
+        if(i==0){
+          next.call(context)
+          return;
+        }
+        var last = $(userEles[i-1]).offset().top;
+        var now = $(userEles[i]).offset().top;
+
+        var lastLeft = ($(userEles[i-1]).attr("data-left")==1)?457:480;
+        var nowLeft = ($(userEles[i]).attr("data-left")==1)?457:480;
+        draw.line(lastLeft, last-80, nowLeft, now-80).stroke({ width: 1 ,color:"#5bb793"})
+        setTimeout(function(){
+           next.call(context)
+          },100)
+        },function(){
+
+        })
+           },200)
+
+    include footer

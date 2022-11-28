@@ -1,0 +1,35 @@
+doctype html
+html
+  head
+    include head
+    title 前端乱炖-admin
+    style.
+      .types a{float:left;margin-right:10px;}
+      .types a.active{color:#aaa;}
+      td a{margin-right:10px;}
+  body#articles
+    - var pageId = 3;
+    include header
+    include ./../page
+    table.table.table-bordered.table-striped
+      tr
+        th id
+        th status
+        th title
+        th 操作
+      for act in acts
+
+        tr
+          td #{act.id}
+          td #{act.is_publish?"已发布":"待审核"}
+          td
+            a(href="/act/#{act.id}") #{act.title}
+          td
+            if !act.is_publish
+              a(href="/admin/act/#{act.id}/update?is_publish=1") 通过审核
+            else
+              a(href="/admin/act/#{act.id}/update?is_publish=0") 下线
+
+            a(href="/admin/act/#{act.id}/del") kill
+
+    

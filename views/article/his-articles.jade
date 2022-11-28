@@ -1,0 +1,153 @@
+doctype html
+html(xmlns:wb='http://open.weibo.com/wb')
+  head
+    include ../head
+    title #{locals.who.nick}的专栏 - 前端乱炖
+    |<meta name="description" content="用于展示各种原创文章，原创翻译文章，知识性比较强，内容比较专业和系统。专栏这个称呼是一个总称，而其内部，可以分很多独立的专栏，有私人的，也有公开可以投稿的。每个人都可以申请创建一个专栏，但是需要审核。一个专栏是同一系列文章的一个集合，而这个系列可以是一个技术点（例如NodeJS入门系列），也可以是一种抽象的类别（例如情感专栏）。">
+    script(src='#{assets_head}/js/bootstrap/bootstrap-transition.js')
+    script(src='#{assets_head}/js/bootstrap/bootstrap-modal.js')
+    script(src='#{assets_head}/js/bootstrap/bootstrap-tooltip.js')
+    style.
+    script(src='http://tjs.sjs.sinajs.cn/open/api/js/wb.js')
+  body#articles
+    - locals.pageId=1;
+    include ../header
+    #content.clearfix
+
+      if !locals.who
+          //- .column-list.clearfix.module
+          //-   .bd
+          //-     if locals.columns
+          //-       each column in columns
+          //-         .column-item
+          //-           a.title(href="/article/column/#{column.id}") #{column.name}
+          //-           .user.hidden <a href="/user/#{column.user.id}">#{column.user.nick}</a>
+          //-           .others
+          //-             span.item
+          //-               span.key <i class="icon-white icon-list"></i>
+          //-               span.value #{column.article_count}
+          //-             span.item
+          //-               span.key <i class="icon-white icon-eye-open"></i>
+          //-               span.value #{column.visit_count}
+          //-             //- span.item
+          //-             //-   span.key <i class="icon-white icon-heart"></i>
+          //-             //-   span.value #{column.zan_count}
+          //-             if !column.is_public
+          //-               span.item
+          //-                 span.key <i class="icon-white icon-lock"></i>
+          //-           .actions.hidden
+          //-             if locals.user&&locals.user.id == column.user.id
+          //-               a 编辑
+          //-   .other-column
+          //-     //- a.column-item.more-column(href="/article/column") <i class="icon-show-thumbnails"></i>更多专栏
+          //-     a.btn(href="/article/column/add") <i class="icon-white icon-book-open"></i> 创建专栏
+          //-     a.btn(href="/article/add",data-original-title="",style="margin-right:10px;")
+          //-       i.icon-plus.icon-white
+          //-       |  发表文章
+        else
+          ul.breadcrumb
+            li
+              a(href="/") 首页
+              span.divider /
+            li
+              a(href="/article/") 专栏
+              span.divider /
+            li.active
+              span #{locals.who.nick}的原创文章
+
+
+      .content
+
+        if articles && articles.length
+          .articles
+            each article,i in articles
+              article(id="post-#{article.id}",class="#{i%2==0?'yooo':''}")
+                .lft
+                  .line
+                    i.icon-thumbs-up
+                    span.count #{article.zan_count}
+                  .line
+                    i.icon-heart
+                    span.count #{article.fav_count}
+                .rht
+                  h2.entry-title
+
+                      a.real-title(href='/article/#{article.id}', title='#{article.title}', rel='bookmark') #{article.title}
+                      span.column-col
+                        if article['column']
+                          |[
+                          a.column-title(href="/article/column/#{article['column']['id']}")
+                            |#{article['column']['name']}
+                          |]
+                  if article.desc
+                    .entry-content.hidden.clearfix
+                      |!{article.desc.replace(/<[^>]*?>/g," ").substr(0,200)}
+                      a(href="/article/#{article.id}")  阅读更多>>
+                  .entry-foot
+                    div.others
+                      span.author.vcard.item
+                        span.index
+                          i.icon-user
+                        a.value.url.fn(rel='author', href='/user/#{article.user_id}') #{article.user_nick}
+
+
+                      span.time.item
+                        span.index
+                          i.icon-clock
+                        a.value #{moment(article.publish_time*1000).fromNow()}
+
+                      if locals.user && (user.is_admin||user.id==article.user_id)
+                        span.views.item
+                          a.value(href="/article/#{article.id}/edit") 编辑
+                        span.views.item
+                          span.index
+                            i.icon-thumbs-up
+                          a.value #{article.zan_count}
+                        //- span.views.item
+                        //-   span.index
+                        //-     i.icon-signal
+                        //-   a.value #{article.visit_count}
+                      div.user
+                        a(data-original-title="#{article.user_nick}",href="/user/#{article.user_id}")
+                          img(src="#{article.user_headpic}")
+                          if article.user&&article.user.sex
+                            if article.user.sex == '男'
+                              .sex.nan
+                            else
+                              .sex.nv
+        else
+          .articles 暂无文章
+        include ../page
+
+    script.
+      $('.actions a').tooltip({
+          placement:"bottom"
+      })
+      $('.t-user').tooltip({
+          placement:"bottom"
+      })
+      $(".tip-trigger").tooltip({
+          placement:"bottom"
+      })
+      $("#info_read").click(function(e){
+        e.preventDefault();
+        $.ajax({
+          url:"/info/read",
+          type:"post",
+          success:function(){
+          setTimeout(function(){
+            window.location.href=window.location.href+"";
+            },5000)
+
+          }
+          })
+        })
+    include ../footer
+    if locals.column
+      p.
+        <script id="bdshare_js" data="type=tools&amp;uid=2555549" ></script>
+        <script type="text/javascript" id="bdshell_js"></script>
+        <script>
+          var bds_config={"bdText":"分享一个@前端乱炖 的系列文章专栏「#{column.name}」，欢迎邮件订阅更新，所有者：@#{column.user.nick}，专栏简介：#{column.desc_html.replace(/<[^>]*?>/g,'').replace(/\s/g,'')}","snsKey":{'tsina':'659341943','tqq':'','t163':'','tsohu':''}}
+          document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date()/3600000)
+        </script>

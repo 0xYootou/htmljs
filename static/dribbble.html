@@ -1,0 +1,124 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="Shortcut Icon" href="http://img.souche.com/test/c758920bc5d91f5c9a38cb9ad57055ef.png">
+    <link href="http://img.souche.com/test/c758920bc5d91f5c9a38cb9ad57055ef.png" rel="shortcut icon" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link href="http://htmljs.b0.upaiyun.com/css/yan.css" rel="stylesheet" type="text/css"/>
+    <meta name="keywords" content="前端, 前端开发, web前端, web前端开发, 前端开发工程师, 前端开发攻城师,设计, 开发, 前端资源, CSS, JavaScript, Ajax, jQuery, html,html5,css3,浏览器兼容, 前端开发工具, 前端招聘, jQuery API, CSS整形和优化工具 , JS压缩工具 , JS格式化工具 , CSS参考手册 ,HTML参考手册 , 多重搜索 , nodejs , node , boostrap , sublime"/>
+    <title> Nymbl - All in one place - 设计搞App</title>
+   <script src="http://htmljs.b0.upaiyun.com//js/jquery.js"></script>
+    <style>
+
+        #app-header{height:80px;background:#eee;display:block;color:#333;}
+        .app-icon{margin:10px;margin-left:15px;width:60px;height:60px;float:left;border-radius: 10px;}
+        .app-desc{margin-top:15px;float:left;font-size:16px;overflow:hidden;}
+        .app-use{font-size:12px;margin-top:8px;color:#999;}
+        .app-download{position:absolute;right:10px;top:30px;height:25px;line-height:25px;
+            background: #0088CC;
+            background-image: -webkit-linear-gradient(top, #00a3f5 0%, #0088CC 100%);
+            background-image: linear-gradient(to bottom, #00a3f5 0%, #0088CC 100%);
+            color:#fff;
+            padding:0 10px;
+            font-size:12px;
+            border-radius:5px;
+        }
+        .hidden{display:none !important;}
+        .app-open{position:fixed;width:100%;top:0;left:0;}
+        .cccc{background:#fff;opacity:0.7;position:fixed;width:100%;top:0;left:0;height:10000px;}
+        .app-open img{position:fixed;width:100%;top:0;left:0;}
+        .mod-3 .partner-bd a{line-height:35px;width:100%;}
+
+    </style>
+    <script>
+        function parseUrlParam(){
+            // 取querystring
+            var search = window.location.search;
+            var queryString = search.slice(1);
+            if(queryString){
+                // 以&分割
+                var kvPairs = queryString.split('&');
+                var param = {};
+                kvPairs.forEach(function(kv){
+                    // 以=分割
+                    var arr = kv.split('=');
+                    // key = value
+                    param[arr[0]] = arr[1];
+                });
+                return param;
+            }
+            else{
+                return {};
+            }
+        }
+        var urlParam = parseUrlParam();
+    </script>
+</head>
+<body >
+<script>document.write("<img src='"+urlParam.pic+"' style='position:absolute;width:400px;height:400px;left:-500px;top:-500px;'/>")</script>
+<a id="app-header" href="https://itunes.apple.com/us/app/%E8%AE%BE%E8%AE%A1%E6%90%9E/id1282966969?l=zh&ls=1&mt=8">
+    <img src="http://yutou.oss-cn-hangzhou.aliyuncs.com/users/43762/screenshots/3831183/dribbble_export_1.gif" class="app-icon dr-user-pic" >
+    <div class="app-desc">
+        <div class="app-title dr-title">Nymbl - All in one place</div>
+        <div class="app-use dr-name">设计师：Seth Eckert</div>
+    </div></a>
+<div id="content">
+    <div style="padding:20px;">
+        <img src="https://yutou.oss-cn-hangzhou.aliyuncs.com/users/43762/screenshots/3831183/dribbble_export_1.gif" style="width:100%;" class="dr-pic"/>
+    </div>
+    <div class="mod-3 mod" style="background:#fff;">
+        <div class="wrapper">
+            <div class="partner-hd" style="font-size:13px;">更多精品设计稿请下载『设计搞 app』</div>
+            <div class="partner-bd">
+                <a href="https://itunes.apple.com/us/app/%E8%AE%BE%E8%AE%A1%E6%90%9E/id1282966969?l=zh&ls=1&mt=8"><img src="http://img.souche.com/test/ce9e047237b2b7fb4b2823894396513c.png"/>设计搞 - 一个国内 cdn 图片加速的 dribbble 客户端</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    $(".dr-title").html(decodeURI(urlParam.title))
+    $(".dr-name").html('设计师：'+decodeURI(urlParam.name))
+    $(".dr-user-pic").attr('src',urlParam.user_pic)
+    $(".dr-pic").attr('src',urlParam.pic)
+    $(".app-desc").css("width",window.screen.width - 100);
+    try{
+        document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+            WeixinJSBridge.on('menu:share:timeline', function(argv){
+                WeixinJSBridge.invoke('shareTimeline',{
+                    "img_url":urlParam.pic,
+                    "img_width":"120",
+                    "img_height":"120",
+                    "link":window.location.href,
+                    "desc": "设计师："+urlParam.name,
+                    "title":"发现一只上好的设计稿《"+urlParam.title+"》from 设计搞App"
+                }, function(res){});
+            });
+            WeixinJSBridge.on('menu:share:appmessage', function(argv){
+                WeixinJSBridge.invoke('sendAppMessage',{
+                    "img_url":urlParam.pic,
+                    "img_width":"120",
+                    "img_height":"120",
+                    "link":window.location.href,
+                    "desc": "设计师："+urlParam.name,
+                    "title":"发现一只上好的设计稿《"+urlParam.title+"》from 设计搞App"
+                }, function(res){});
+            });
+        });
+    }catch(e){}
+</script>
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?2fc2fae0509f820259c1760fce28d7d2";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</body>
+</html>

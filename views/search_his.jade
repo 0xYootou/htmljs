@@ -1,0 +1,59 @@
+doctype html
+html
+  head
+    include head
+    title 前端乱炖, 最专业的前端技术内容社区
+    |<meta name="description" content="前端乱炖，这里是最专业的前端知识平台，汇集国内大部分前端开发人员的前端花名册，最精彩的原创文章专栏，最专业的问答平台，最火热的话题频道，最丰富的线下线上活动。html,js,css,nodejs,前端开发,前端招聘,jquery">
+    style.
+      #bdshare a{}
+      #content .left .module .bd{
+        width:700px;
+      }
+      #content .search input{height:22px;width:490px;}
+      #content .search button{height:32px;width:80px;}
+      .results .title{font-size:14px;color:#444;line-height:30px;margin:0;}
+      .results .con{font-size:12px;color:#999;line-height:20px;}
+      .results em{color:#f27369;font-weight:bold;font-style:normal;}
+      .result{margin:10px 0;border-bottom:1px solid #eee;}
+      .results .title a{color:#2288cf;}
+      .hot a{padding:0 10px;color:#666;background:#eee;border-radius:10px;line-height:20px;display:inline-block;margin-top:5px;margin-right:5px;text-decoration:none;}
+      .hot a:hover{background:#5bb793;color:#fff;}
+    script(src='#{assets_head}/js/bootstrap/bootstrap-tooltip.js')
+    script(src='#{assets_head}/js/lazyload.js')
+  body#index
+    - locals.pageId=0;
+    include header
+
+    #content.clearfix
+      .content
+        .left
+          .module.search
+            .bd(style="margin:0;")
+              form(action="/search",method="get",style="margin:0;")
+                fieldset
+                  .input-append(style="margin:0;")
+                    input#keyword.span2.input-large(type="text",name="q",placeholder="请输入关键词查询")
+                    button.btn 搜索
+              if locals.relative_words&&relative_words.length
+                span 推荐搜索：
+                  for w,i in relative_words
+                    a(href="/search?q=#{w}",style="margin-right:10px;") #{w}
+          .module.hot
+            .hd 搜索历史
+            .bd
+              if locals.recent_words
+                each w in recent_words
+                  a(href="/search?q=#{w.word}",rel="nofollow") #{w.word}
+              include page
+      .right
+        .module.hot
+          .hd 热门搜索
+          .bd
+            if locals.hot_words
+              each w in hot_words
+                a(href="/search?q=#{w.word}",rel="nofollow") #{w.word}(#{w.count})
+
+    include footer
+    script.
+      $("#keyword").focus()
+    

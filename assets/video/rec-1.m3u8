@@ -1,0 +1,16 @@
+#EXTM3U
+#EXT-X-PLAYLIST-TYPE:EVENT
+#EXT-X-TARGETDURATION:5
+#EXT-X-MEDIA-SEQUENCE:0
+#EXTINF:4.030533,
+mdir-1/chunk0.ts
+#EXTINF:3.921056,
+mdir-1/chunk1.ts
+#EXTINF:3.916875,
+mdir-1/chunk2.ts
+#EXTINF:3.906998,
+mdir-1/chunk3.ts
+#EXTINF:3.925482,
+mdir-1/chunk4.ts
+#EXTINF:3.916544,
+mdir-1/chunk5.ts

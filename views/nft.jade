@@ -1,0 +1,41 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    title 前端乱炖花名册 NFT
+    include ./head
+    script(src='#{assets_head}/codemirror.js')
+    link(rel="stylesheet",href="#{assets_head}/codemirror.css?22",type="text/css")
+    style.
+
+
+  body#add-card
+    - locals.pageId=2;
+    include ./header
+    #content.clearfix
+      .module
+        textarea#code(style="width:auto;").
+
+            //
+            // 前端乱炖10周年
+            // 纪念章 NFT
+            // #00001
+            const user        = new 乱炖er();
+            user.nick         = '芋头';
+            user.sex          = '男';
+            user.joinAt       = '2021-02-03'; 
+            user.joinFromNow  = '10年前';
+
+            user.score        = 100;
+            user.rank         = 1;
+            user.visitCount   = 1000;
+            user.articleCount = 10;
+    script.
+        var editor = CodeMirror.fromTextArea(document.getElementById('code'), {
+             lineNumbers: true,
+            matchBrackets: true,
+            mode: "text/typescript",
+            width:'auto',
+            height:'auto'
+        });
+        editor.setOption("theme", 'one-dark');

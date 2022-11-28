@@ -1,0 +1,73 @@
+#footer
+  .wrapper
+    //- .module.support
+    //-     .hd 赞助商
+    //-     .bd
+    //-       ul.clearfix(style="margin-left:0;")
+    //-         li
+    //-           a(href="http://www.imooc.com/course/list?c=fe",target="_blank",title="免费的IT技能学习平台")
+    //-             img(src="http://htmljs.b0.upaiyun.com/uploads/1419232355686-未标题-1.png")
+    //-             .desc 免费的IT技能学习平台
+
+    //-         li.hidden
+    //-           a(href="https://www.upyun.com",target="_blank")
+    //-             img(src="http://htmljs.b0.upaiyun.com/uploads/1385469219452-Snip20131126_10.png")
+    //-             .desc 高速稳定的存储服务
+    //-         li
+    //-           a(href="http://oneapm.com/",target="_blank",title="优秀的性能分析工具")
+    //-             img(src="http://htmljs.b0.upaiyun.com/uploads/1461145246085-01db76d06153cac4578ef04abf05dc05.jpg")
+    //-             .desc 优秀的性能分析工具
+    //-         li
+    //-           a(href="http://www.jiankongbao.com/")
+    //-             img(src="http://htmljs.b0.upaiyun.com/uploads/1413168456981-%E6%9C%AA%E6%A0%87%E9%A2%98-1.png")
+    //-             .desc 端到端应用性能管理专家
+    //-         li
+    //-           a(href="http://appcan.cn/")
+    //-             img(src="http://htmljs.b0.upaiyun.com/uploads/1423040565748-AppCan-logo蓝色.png")
+    //-             .desc 一站式移动开发服务平台
+    //-         li.hidden
+    //-           a(href="http://apicloud.com/")
+    //-             img(src="http://htmljs.b0.upaiyun.com/uploads/1423880680956-小logo.png")
+    //-             .desc 重新定义移动应用开发
+    //-         li
+    //-           a(href="https://www.upyun.com/")
+    //-             img(src="http://img.souche.com/test/55a718a661d796fd31d924ed2a64e4ce.jpg")
+    //-             .desc 领先企业级云服务商
+    //-       .add
+    //-         a(href="http://www.html-js.com/topic/827") 我也要赞助
+    .module
+      div(style="font-size:12px;line-height:20px;") Power By NodeJS，本站所有代码的地址在<a href="https://github.com/xinyu198736/htmljs" target="_blank">这里</a>  <a href="https://beian.miit.gov.cn">浙ICP备12047043号</a> 
+ <a href="/friendlink">友情链接</a>  <a href="https://f2e.souche.com/blog" target="_blank">大搜车前端团队博客</a>
+
+#coin-fixed
+  span#gotop
+    i.icon-airplane
+  if locals.user
+    span.coin-count.hidden
+      i.icon-coins
+      em #{user.bi}
+    span.history-trigger.hidden
+      |收支记录
+      i.icon-chevron-left
+      ul.history-list.hidden
+  span.my-favs
+    i.icon-heart
+    a(href="/user/fav")  我的收藏
+
+
+script.
+  try{
+    $('.tooltip-trigger').tooltip({
+          placement:"bottom"
+          });
+  }catch(e){};
+
+
+
+.hidden
+  script.
+    var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+    document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F2fc2fae0509f820259c1760fce28d7d2' type='text/javascript'%3E%3C/script%3E"));
+
+//- #gotop TOP
+

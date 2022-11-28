@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+
+<!-- target-densitydpi=device-dpi,  -->
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-touch-fullscreen" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="format-detection" content="telephone=no" />
+<title>微店 - 导航</title>
+ <script type="text/javascript" src="../js/zepto.js"></script>
+ <script src="../js/zepto.ect.fn.js"></script>
+
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=fVBbD8lM66HRMCTyerBXo18y"></script>
+</head>
+<body>
+<style>
+    *{ margin:0; padding: 0;}
+    body, html,#drowAdd {width: 100%;height: 100%;overflow: hidden;margin:0;}
+
+
+</style>
+
+
+	
+<div id="drowAdd">
+	
+
+
+
+</div>	
+
+
+
+</body>
+</html>
+
+<script>
+	
+    function updateLocation(position) {
+        // 百度地图API功能        
+        var addmsc=$.trim(localStorage.getItem("add"))
+        var longitude = position.coords.longitude;  //经度
+        var latitude = position.coords.latitude;    //纬度        
+        var map = new BMap.Map("drowAdd");      
+        var myP1 = new BMap.Point(longitude,latitude);
+        var myGeo = new BMap.Geocoder();
+         var infoWindow = new BMap.InfoWindow(addmsc);  // 创建信息窗口对象 
+         myGeo.getPoint(addmsc,function(addmsc){           
+            map.centerAndZoom(addmsc, 55);
+            map.addOverlay(new BMap.Marker(addmsc));
+            map.openInfoWindow(infoWindow,addmsc); //开启信息窗口            
+           })
+        var driving = new BMap.DrivingRoute(map, {renderOptions:{map: map, autoViewport: false}});
+        driving.search(myP1, addmsc); //起点，终点
+        driving.setSearchCompleteCallback(function(){
+            var pts = driving.getResults().getPlan(0).getRoute(0).getPath();    //通过驾车实例，获得一系列点的数组
+            var polyline = new BMap.Polyline(pts);     
+            map.addOverlay(polyline);
+        })
+        navigator.geolocation.clearWatch(watchId)
+      
+    }
+    function handleeLocationError(error)
+    {
+        switch (error.code) {
+            case 0: console.log(error.message); break;
+            case 1: console.log(error.message); break;
+            case 2: console.log(error.message); break;
+            case 3: console.log(error.message); break;
+        }
+    }
+
+    //navigator.geolocation.clearWatch(); //停止更新 
+
+    if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(updateLocation,handleeLocationError,{            
+            enableHighAcuracy: true,// 浏览器获取高精度的位置 
+        });
+    }else{
+        alert("您的浏览器不支持定位功能");
+    }
+
+
+
+
+
+ </script>

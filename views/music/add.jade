@@ -1,0 +1,111 @@
+doctype html
+html
+  head
+    include ../head
+    link(href='#{assets_head}/css/Markdown.Editor.css?ddd2', type='text/css', rel='stylesheet', charset='utf-8')
+    script(src='#{assets_head}/js/jquery.js')
+    script(src='#{assets_head}/js/pcaunzip.js')
+    include ../editor_head
+    title 添加简历
+    style.
+      #content textarea {
+        height: 200px;
+      }
+  body#job
+    - locals.pageId=50;
+    include ../music_header
+    #content.clearfix
+      .content
+        .left
+          .module
+            form.form-horizontal#form(method='post')
+              fieldset
+                if locals.resume
+                  legend 编辑故事
+                else
+                  legend 添加故事
+                if locals.music
+                  input(type='hidden', value = "#{music.id}",name='id')
+                .control-group
+                  input#title.input-xlarge(type='text', value = "#{locals.music?locals.music.title:''}",name='title', placeholder='故事名字',required)
+                .control-group
+                  input#index.input-xlarge(type='text', value = "#{locals.music?locals.music.index:''}",name='index', placeholder='故事编号',required)
+                .control-group
+                  textarea#desc.input-xlarge(type='text', name='desc', placeholder='故事介绍',required) #{locals.music?locals.music.desc:''}
+                .control-group
+                  input#desc.input-xlarge(type='text', name='isbn', placeholder='isbn',required,value="#{locals.music ? locals.music.isbn : ''}")
+                .control-group
+                  input.input-xlarge(type='text', name='author', placeholder='作者',required,value="#{locals.music ? locals.music.author : '卓老师'}")
+                .control-group
+                  input.input-xlarge(type='text', name='zip', placeholder='绘本地址',value="#{locals.music ? locals.music.zip : ''}")
+                .control-group
+                  input.input-xlarge(type='text', name='zip_time', placeholder='绘本更新时间',value="#{(locals.music&&locals.music.zip_time) ? moment(locals.music.zip_time).format('YYYY-MM-DD hh:mm:ss') : ''}")
+                .control-group
+                  label mp3音频
+                  input#audio.input-xlarge(type='file',name="pic", placeholder='mp3音频')
+                  input#audio_result(type="text",name="audio",required,value="#{locals.music?music.audio:''}")
+                  span#audio_success.alert.hidden 上传成功
+                .control-group
+                  label 封面图片
+                  input#cover.input-xlarge(type='file',name="pic", placeholder='封面图片')
+                  input#cover_result(type="text",name="cover",required,value="#{locals.music?music.cover:''}")
+                  span#cover_success.alert.hidden 上传成功
+                .control-group
+                  button.btn(type='submit') 添加
+      .right
+        .module
+          .hd 提示
+          .bd
+            //- div 提交专栏添加申请后，需要管理员审核后方能使用。
+            //- div 专栏可以设置私有和共有。
+            div 请准确填写所有信息
+    include ../footer
+    script(src='#{assets_head}/js/ajaxfileupload.js')
+    script(src='#{assets_head}/js/loadingTip.js')
+    script(src='#{assets_head}/js/messageTip.js')
+    script.
+
+      $("#cover")[0].onchange=function(){
+          $.ajaxFileUpload({
+            url:"/upload",
+            secureuri:false,
+            fileElementId:'cover',
+            dataType: 'json',
+            success: function (data, status)
+            {
+              if(data.success){
+                $("#cover_result").val(data.data.filename)
+                $("#cover_success").removeClass("hidden");
+                $("#cover").addClass("hidden")
+              }else{
+                messageTip.show(data.info)
+              }
+              loadingTip.hide()
+            },
+            error:function(){
+              loadingTip.hide()
+            }
+          })
+        };
+      $("#audio")[0].onchange=function(){
+          $.ajaxFileUpload({
+            url:"/upload",
+            secureuri:false,
+            fileElementId:'audio',
+            dataType: 'json',
+            success: function (data, status)
+            {
+              if(data.success){
+                $("#audio_result").val(data.data.filename)
+                $("#audio_success").removeClass("hidden");
+                $("#audio").addClass("hidden")
+              }else{
+                messageTip.show(data.info)
+              }
+              loadingTip.hide()
+            },
+            error:function(){
+              loadingTip.hide()
+            }
+          })
+        };

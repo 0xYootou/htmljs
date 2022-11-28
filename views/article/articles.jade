@@ -1,0 +1,219 @@
+doctype html
+html(xmlns:wb='http://open.weibo.com/wb')
+  head
+    include ../head
+    title 前端乱炖, 最专业的前端技术内容社区
+    | <meta name="description" content="前端乱炖，这里是最专业的前端知识平台，汇集国内大部分前端开发人员的前端花名册，最精彩的原创文章专栏，最专业的问答平台，最火热的话题频道，最丰富的线下线上活动。html,js,css,nodejs,前端开发,前端招聘,jquery,qianduan">
+    script(src='#{assets_head}/js/bootstrap/bootstrap-transition.js')
+    script(src='#{assets_head}/js/bootstrap/bootstrap-modal.js')
+    script(src='#{assets_head}/js/bootstrap/bootstrap-tooltip.js')
+    style.
+    script(src='http://tjs.sjs.sinajs.cn/open/api/js/wb.js')
+  body#articles
+    - locals.pageId=1;
+    include ../header
+    #content.clearfix
+      if locals.weekTopUsers
+        .module
+          .hd 本周贡献榜
+          .bd
+            each h in weekTopUsers
+              div.user
+                a(data-original-title="#{h.user.nick}",href="/user/#{h.user.id}")
+                  img(src="#{h.user.head_pic}")
+      if !locals.column
+          //- .column-list.clearfix.module
+          //-   .bd
+          //-     if locals.columns
+          //-       each column in columns
+          //-         .column-item
+          //-           a.title(href="/article/column/#{column.id}") #{column.name}
+          //-           .user.hidden <a href="/user/#{column.user.id}">#{column.user.nick}</a>
+          //-           .others
+          //-             span.item
+          //-               span.key <i class="icon-white icon-list"></i>
+          //-               span.value #{column.article_count}
+          //-             span.item
+          //-               span.key <i class="icon-white icon-eye-open"></i>
+          //-               span.value #{column.visit_count}
+          //-             //- span.item
+          //-             //-   span.key <i class="icon-white icon-heart"></i>
+          //-             //-   span.value #{column.zan_count}
+          //-             if !column.is_public
+          //-               span.item
+          //-                 span.key <i class="icon-white icon-lock"></i>
+          //-           .actions.hidden
+          //-             if locals.user&&locals.user.id == column.user.id
+          //-               a 编辑
+          //-   .other-column
+          //-     //- a.column-item.more-column(href="/article/column") <i class="icon-show-thumbnails"></i>更多专栏
+          //-     a.btn(href="/article/column/add") <i class="icon-white icon-book-open"></i> 创建专栏
+          //-     a.btn(href="/article/add",data-original-title="",style="margin-right:10px;")
+          //-       i.icon-plus.icon-white
+          //-       |  发表文章
+        else
+          ul.breadcrumb
+            li
+              a(href="/") 首页
+              span.divider /
+            li
+              a(href="/article/") 专栏
+              span.divider /
+            li.active
+              span #{column.name}
+
+        .my_columns.mod-white
+          .hd 我的专栏
+          .bd
+            - var now = new Date().getTime();
+            if locals.my_columns && my_columns.length
+              each column in my_columns
+                .my_column
+                  .title
+                    a(href="/article/column/#{column.id}") #{column.name}（#{column.article_count}）
+                    //- a.go(href="/article/add?column_id=#{column.id}") 添加文章
+
+              .publish-tip.alert(style="margin-bottom:10px;") 如要发表文章，请点击专栏名进入之后，再发表到此专栏。
+              div
+                a.btn.small-btn(href="/article/column/add") 创建新专栏
+            else
+              .no 还没有专栏，先创建专栏再发表原创文章吧！
+                a(href="/article/column/add") 创建专栏
+
+          if locals.nopublish_articles&&locals.nopublish_articles.length
+            .hd 我的草稿
+            .bd.nopublish_articles
+              each article in locals.nopublish_articles
+                div
+                  a.t(href="") #{article.title}
+                  a(href="/article/#{article.id}/edit") 继续编辑
+                  a(href="/article/#{article.id}/delete") 删除
+
+      .content
+
+          .left()
+            if articles && articles.length
+              .articles.mod-white
+                each article,i in articles
+                  article(id="post-#{article.id}",class="#{i%2==0?'yooo':''}")
+                    div.title-wrapper
+                      a.entry-title(href='/article/#{article.pinyin?article.pinyin:article.id}', title='#{article.title}', rel='bookmark')
+                        span.real-t(class="real-title-#{Math.floor(Math.random()*100)}")
+                            if article.is_jian
+                                |<i class="t-tip tip-jing">精</i>
+                            |#{article.title}
+                    //span.column-col
+                      if article['column']
+                        |[
+                        a.column-title(href="/article/column/#{article['column']['id']}")
+                          |#{article['column']['name']}
+                        |]
+                    .entry-foot
+                      //- div.others
+                      //-   .author.vcard
+                      //-     div.user
+                      //-       a(data-original-title="#{article.user_nick}",href="/user/#{article.user_id}")
+                      //-         img(src="#{article.user_headpic}")
+
+                      .other-r
+                        span.views.item
+                          a.username.value.url.fn(rel='author', href='/user/#{article.user_id}') #{article.user_nick}
+                        span.views.item
+                          span.index 浏览：
+                          a.value #{article.visit_count}
+                        span.views.item
+                          span.index 评论：
+                          a.value #{article.comment_count}
+                        span.views.item
+                          a.value #{moment(article.createdAt).fromNow()}
+                        if locals.user && (user.is_admin||user.id==article.user_id)
+                          span.views.item
+                            a.value(href="/article/#{article.id}/edit") 编辑
+                        if locals.user && (user.is_admin||user.id==article.user_id)
+                          span.views.item
+                            a.value(href="/article/#{article.id}/delete") 删除
+                        if locals.user && user.is_admin
+                          span.views.item
+                            if article.sort == 100000
+                              a.value(href="/article/#{article.id}/update?sort=#{article.id}") 取消置顶
+                            else
+                              a.value(href="/article/#{article.id}/update?sort=100000") 置顶
+                          span.views.item
+                            if article.is_jian == 1
+                              a.value(href="/article/#{article.id}/update?is_jian=0") 不荐
+                            else
+                              a.value(href="/article/#{article.id}/update?is_jian=1") 荐
+                        if article.tags
+                          each tag in article.tags.split(",")
+                            if ts[tag]
+                              a.views.item.tag(href="/tag/#{tag}/articles") #{ts[tag].name}
+                          //- span.views.item
+                          //-   span.index
+                          //-     i.icon-signal
+                          //-   a.value #{article.visit_count}
+
+            else
+              .articles 暂无文章
+            include ../page
+        .right
+          .mod-white.top-columns
+            each column in columns
+              .column
+                .title
+                  div.user
+                    a(data-original-title="#{column.user.nick}",href="/user/#{column.user.id}")
+                      img(src="#{column.user.head_pic}")
+                  a(href="/article/column/#{column.id}",style="color:#444;") #{column.name}  专栏
+
+                .others
+                  span 文章数：#{column.article_count}
+                  span 访问数：#{column.visit_count}
+                .desc !{column.desc_html.replace(/<[^>]*?>/g,'').replace(/\s/g,'').substr(0,60)}
+
+    script(src="#{assets_head}/js/messageTip.js")
+    script(src="#{assets_head}/js/loadingTip.js")
+    script.
+      $('.actions a').tooltip({
+          placement:"bottom"
+      })
+      $('.t-user').tooltip({
+          placement:"bottom"
+      })
+      $(".rss-btn").click(function(e){
+        e.preventDefault();
+        var href= $(this).attr("href")
+        HtmlJS.util.ajax(href,{
+
+            },"post",function(data){
+                loadingTip.hide()
+                if(data.success){
+                  messageTip.show("订阅成功！")
+                }else{
+                  alert(data.info)
+                }
+            },function(){
+              HtmlJS.util.ajax(href,{
+
+              },"post",function(data){
+                  loadingTip.hide()
+                  if(data.success){
+                    messageTip.show("订阅成功！")
+                  }else{
+                    alert(data.info)
+                  }
+              },function(){
+
+
+            })
+
+          })
+        })
+    include ../footer
+    if locals.column
+      p.
+        <script id="bdshare_js" data="type=tools&amp;uid=2555549" ></script>
+        <script type="text/javascript" id="bdshell_js"></script>
+        <script>
+          var bds_config={"bdText":"分享一个@前端乱炖 的系列文章专栏【#{column.name}】，所有者：@#{column.user.nick}，专栏简介：#{column.desc_md.replace(/\s/g,'')}","snsKey":{'tsina':'659341943','tqq':'','t163':'','tsohu':''}}
+          document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date()/3600000)
+        </script>

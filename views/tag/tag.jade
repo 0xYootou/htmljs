@@ -1,0 +1,160 @@
+doctype html
+html
+  head
+    include ./../head
+    title #{tag.name} - 标签 - 前端乱炖
+    script(src='#{assets_head}/js/bootstrap/bootstrap-tooltip.js')
+    |<meta name="description" content="#{tag.desc.replace(/<[^>]*>/g,"").substr(0,140)}">
+  body#tag
+    - locals.pageId=8;
+    include ./../header
+    #content.clearfix
+      .content
+          .module
+            h1.tag-name(href="") #{tag.name}
+              a.tag-edit(href="/tag/#{tag.id}/edit") <i class="icon-edit icon-gray" style="background:none;font-size:13px;"></i>
+            .tag-keywords 别名：#{tag.keywords}
+            .tag-desc !{tag.desc}
+            .tag-action
+          .module
+            .hd 相关问题
+            .bd
+              if locals.qts
+                .qa-list
+                  each qt,i in qts
+                    if qt.question
+                      .qa-item(class="#{i%2==1?'yooo':''} #{qt.question.answer_count==0?'unanswered':''}")
+                        .entry-title
+                          h2.title
+                            a(href='/qa/#{qt.question.id}', title='#{qt.question.title}', rel='bookmark')
+                              |#{qt.question.title}
+                          div.others
+                            //
+                              span.author.vcard.item
+                                span.index 提问者：
+                                a.value.url.fn(rel='author', href='/user/#{qt.question.user_id}') #{qt.question.user_nick}
+
+                            span.views.item
+                              span.index View：
+                              a.value #{qt.question.visit_count}
+                            span.views.item
+                              span.index 回答：
+                              a.value #{qt.question.answer_count}
+                            if qt.question.tagNames
+                              - var tags = qt.question.tagNames.split(",")
+                              span.tags.item
+                                each tag in tags
+                                  a.value(href="/tag/n/#{tag}") #{tag}
+                            span.time.item
+                              a.value #{moment(qt.question.createdAt).fromNow()}
+                          div.user
+                            a(data-original-title="#{qt.question.user_nick}")
+                              img(src="#{qt.question.user_headpic}")
+          .module.comment
+            .hd 讨论
+            .bd
+              .publish
+                textarea.input-block-level#comment-text(placeholder="参与讨论。支持markdown语法")
+                .btn.comment-submit#comment-submit 发表评论
+              .comment-list
+          .comment-layer.hidden
+            span.count
+              i.icon-comment
+              |#{tag.comment_count}
+            span.input 看着不错？点评几句把，TA需要您的鼓励和支持。
+              script#comment-tpl(type="text/template")
+                .comment-item.clearfix
+                  a.headpic
+                    img(src="{{user_headpic}}",width=70,height=70)
+                  .comment-right
+                    div.con
+                      span.author.vcard.item
+                        a.value.url.fn(rel='author', href='/user/{{user_id}}') {{user_nick}}：
+                      | {{{html}}}
+                    .time {{createdAt}}
+
+    include ../footer
+    script.
+      $('.user a').tooltip({
+          placement:"bottom"
+      })
+
+    script(src="#{assets_head}/js/mustache.js")
+    script(src="#{assets_head}/js/messageTip.js")
+    script(src="#{assets_head}/js/loadingTip.js")
+    script.
+      //- $(window).scroll(function(){
+      //-   if($(window).scrollTop()+$(window).height()>=$(".comment").offset().top){
+      //-     $(".comment-layer").addClass("hidden")
+      //-   }else{
+      //-   $(".comment-layer").removeClass("hidden")
+      //-   }
+      //-   })
+      $(".comment-layer").click(function(){
+        $("html,body").animate({
+          scrollTop:$(".comment").offset().top-200
+          })
+        $(".comment textarea").focus()
+        })
+      var comment_tpl = $("#comment-tpl").html()
+      loadingTip.show("评论加载中")
+      $.ajax({
+        url:"/comment/tag_#{tag.id}",
+        type:"get",
+        dataType:"json",
+        success:function(data){
+          loadingTip.hide("正在提交中")
+            if(data.success){
+            for(var i=0;i<data.comments.length;i++){
+            var comment = data.comments[i]
+              var html = Mustache.render(comment_tpl,comment);
+              $(".comment-list").append(html)
+            }
+            }else{
+            alert(data.info)
+            }
+
+        }
+        })
+      $("#comment-submit").click(function(){
+        var text = $("#comment-text").val();
+        if(!text){
+          messageTip.show("请输入评论内容");
+        }else{
+          loadingTip.show("正在提交中")
+
+          HtmlJS.util.ajax("/comment/add",{
+              md:text,
+              target_id:"tag_#{tag.id}"
+            },"post",function(data){
+              loadingTip.hide()
+                if(data.success){
+                $("#comment-text").val("")
+                var html = Mustache.render(comment_tpl,data.comment);
+                  $(".comment-list").prepend(html)
+                }else{
+                  alert(data.info)
+                }
+            },function(){
+
+            },null,function(){
+            HtmlJS.util.ajax("/comment/add",{
+              md:text,
+              target_id:"tag_#{tag.id}"
+            },"post",function(data){
+              loadingTip.hide()
+                if(data.success){
+                $("#comment-text").val("")
+                var html = Mustache.render(comment_tpl,data.comment);
+                  $(".comment-list").prepend(html)
+                }else{
+                  alert(data.info)
+                }
+            },function(){
+
+            },null,function(){
+
+          })
+          })
+        }
+        })

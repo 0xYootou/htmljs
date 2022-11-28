@@ -1,0 +1,72 @@
+<script src="http://www.html-js.com/assets/js/camera.js"></script>
+<img src="" id="img"/>
+<script>
+camera.init({
+        width: 160,
+        height: 120,
+        fps: 30,
+        mirror: true,
+
+        onFrame: function(canvas) {
+            var context = canvas.getContext("2d");
+            var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+            gray(imageData)
+            context.putImageData(imageData, 0, 0);  
+            document.getElementById("img").src=canvas.toDataURL()
+        },
+
+        onSuccess: function() {
+            //document.getElementById("info").style.display = "none";
+
+            // capturing = true;
+            // document.getElementById("pause").style.display = "block";
+            // document.getElementById("pause").onclick = function() {
+            //     if (capturing) {
+            //         camera.pause();
+            //     } else {
+            //         camera.start();
+            //     }
+            //     capturing = !capturing;
+            // };
+        },
+
+        onError: function(error) {
+            // TODO: log error
+        },
+
+        onNotSupported: function() {
+            document.getElementById("info").style.display = "none";
+            asciiContainer.style.display = "none";
+            document.getElementById("notSupported").style.display = "block";
+        }
+    });
+
+var gray = function(canvasData){
+    for ( var x = 0; x < canvasData.width; x++) {    
+        for ( var y = 0; y < canvasData.height; y++) {    
+            // Index of the pixel in the array    
+            var idx = (x + y * canvasData.width) * 4;    
+            var r = canvasData.data[idx + 0];    
+                var g = canvasData.data[idx + 1];    
+                var b = canvasData.data[idx + 2];    
+                // calculate gray scale value    
+                var gray = .299 * r + .587 * g + .114 * b;    
+                if(gray<110){
+                    gray = 0;
+                }
+            // assign gray scale value    
+            canvasData.data[idx + 0] = gray; // Red channel    
+            canvasData.data[idx + 1] = gray; // Green channel    
+            canvasData.data[idx + 2] = gray; // Blue channel    
+            canvasData.data[idx + 3] = 255; // Alpha channel    
+            // add black border    
+            if(x < 8 || y < 8 || x > (canvasData.width - 8) || y > (canvasData.height - 8))     
+            {    
+                canvasData.data[idx + 0] = 0;    
+                canvasData.data[idx + 1] = 0;    
+                canvasData.data[idx + 2] = 0;    
+            }    
+        }    
+}  
+}
+</script>

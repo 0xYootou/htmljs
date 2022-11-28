@@ -1,0 +1,283 @@
+doctype html
+html
+  head
+    include ./../head
+    title #{act.title} - 活动 - 前端乱炖
+    |<meta name="description" content="#{act.desc_html.replace(/<[^>]*>/g,'').substr(0,140)}">
+    script(src='#{assets_head}/js/bootstrap/bootstrap-transition.js')
+    script(src='#{assets_head}/js/bootstrap/bootstrap-modal.js')
+    script(src='#{assets_head}/js/bootstrap/bootstrap-tooltip.js')
+    style.
+      #act_desc p,#act_desc em,#act_desc strong{font-size:14px;line-height:25px;}
+  body#act
+    - locals.pageId=5;
+    include ./../header
+    #content.clearfix
+      #main_banner.clearfix
+        .infos
+          .inner
+            h2.title #{act.title}
+            if act.time.getTime()
+              div.item
+                span.key 时间：
+                span.value #{moment(act.time.getTime()-8000*60*60).format("LLL")}
+            div.item
+              span.key 地点：
+              span.value #{act.location}
+                a(target="_blank",href="#{act.map_url} ",style="margin-left:10px;") 查看地图
+            div.item
+              span.key 规模：
+              span.value 限制#{act.person_limit}人
+            div.item.clearfix
+              span.key 分享：
+              div.share#bdshare.bdshare_t.bds_tools.get-codes-bdshare.clearfix(style="width:300px;margin-top:10px;float:none;margin-left:70px;")
+                a.bds_tsina
+                a.bds_qzone
+                a.bds_douban
+                a.bds_renren
+                a.shareCount
+      #joiners.module
+        .hd 报名（#{joiners.length}/#{act.person_limit}）
+        .bd
+          .joiners.users
+            - locals.is_bao = false;
+            for joiner in joiners
+              if locals.user && joiner.user && joiner.user.id == locals.user.id
+                - locals.is_bao = true;
+              a.user(href="/user/#{joiner.user_id}",target="_blank",data-original-title="#{joiner.user_nick}")
+                img(src="#{joiner.user_headpic}",width=50,height=50)
+                if joiner.user
+                  if joiner.user.sex
+                    if joiner.user.sex == '男'
+                      .sex.nan
+                    else
+                      .sex.nv
+            if !joiners.length
+              div 还没有人报名，快点抢占吧！
+          .me-join
+            if is_bao
+              a.btn.disabled() 您已经成功报名！
+            else if act.is_down
+              a.btn.disabled() 活动已结束
+            else
+              if joiners.length >= act.person_limit
+                a.btn.disabled() 名额已满
+              else
+                if !act.is_goods
+                  a#join_submit.btn(data-original-title="报名的前提是登录并且创建花名册并且具有手机，email等联系方式") 报名
+                else
+                  a#join_submit.btn(data-original-title="报名的前提是登录并且创建花名册并且具有手机，email等联系方式") 报名&付款（￥#{act.price}）
+            if !act.is_goods
+              p
+                .alert 希望报名后可以准时参加，现场会签到记录，不能参加提前告知。
+      .module
+        .bd.
+          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+          <ins class="adsbygoogle"
+               style="display:inline-block;width:970px;height:90px"
+               data-ad-client="ca-pub-8166279959459646"
+               data-ad-slot="8754719750"></ins>
+          <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+          </script>
+      #act_desc.module
+        .bd !{act.desc_html}
+
+      //
+        #supporters.module
+          .hd 赞助商
+          .bd
+            p.alert 活动中产生的吃喝费用，场地费用，讲师补贴。由第三方企业赞助。谢谢他们对前端事业的支持。
+              a(href="") 我是企业我要赞助
+              a(href="") 个人赞助
+            .logos.
+              !{act.partner}
+      //
+        #speaker.module
+          .hd 讲师&主题
+          .bd.clearfix
+            .head_pic
+              img(src="http://img02.taobaocdn.com/tps/i2/T1OA6hXgxbXXXMNuYv-150-150.jpg",width="150")
+            .infos
+              h2.who
+                | <em>莫大（孙悟空）</em>
+                a.btn(href="",target="_blank") 他的名片
+              .topic 主题：<em>《第一次分享第一次分享》</em>
+              .desc 介绍：五一前我说要把前端乱炖整个改版的，其实我本地已经在跑一个新的前端乱炖了，跟现在的已经完全不是一个东西了，变成了一个平台化的产品，只是自
+
+      .module.comment
+        .hd 讨论
+        .bd
+          .publish
+            textarea.input-block-level#comment-text(placeholder="参与讨论。支持markdown语法")
+            .btn.comment-submit#comment-submit 发表评论
+          .comment-list
+            if comments.length
+              each comment in comments
+                .comment-item.clearfix
+                  a.headpic
+                    img(src="#{comment.user_headpic}",width=70,height=70)
+                  .comment-right
+                    div.con
+                      span.author.vcard.item
+                        a.value.url.fn(rel='author', href='/user/#{comment.user_id}') #{comment.user_nick}：
+                      | !{comment.html}
+                    .time #{moment(comment.createdAt).fromNow()}
+                      a.reply(data-nick="#{comment.user_nick}") 回复
+            else
+              div 暂无评论
+          script#comment-tpl(type="text/template")
+            .comment-item.clearfix
+              a.headpic
+                img(src="{{user_headpic}}",width=70,height=70)
+              .comment-right
+                div.con
+                  span.author.vcard.item
+                    a.value.url.fn(rel='author', href='/user/{{user_id}}') {{user_nick}}：
+                  | {{{html}}}
+                .time {{createdAt}}
+    include ../footer
+    - var share_txt = "@前端乱炖 又举办线下活动啦！"+moment(act.time.getTime()-8000*60*60).format('LLL')+"，一起来报名参加吧！【"+act.title+"】-----》";
+    - if(act.share_text){share_txt=act.share_text}
+    p.
+      <script id="bdshare_js" data="type=tools&amp;uid=2555549" ></script>
+      <script type="text/javascript" id="bdshell_js"></script>
+      <script type="text/javascript">
+      var bds_config={"bdText":"#{share_txt}","bdPic":"","snsKey":{'tsina':'659341943','tqq':'','t163':'','tsohu':''}}
+      document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date()/3600000)
+      </script>
+    script.
+      $('.btn').tooltip({
+          placement:"bottom"
+      })
+      $("#join_submit").click(function(){
+
+        HtmlJS.util.ajax("/act/#{act.id}/join",{},"post",function(data){
+                if(data.redirect){
+                  alert("本活动需要付费，点确定去支付宝付款！")
+                  window.location.href=data.redirect;
+                }else if(data.success){
+                  alert("报名成功！")
+                  window.location.href=window.location.href;
+                }else if(data.code==101){
+                  alert(data.info);
+                   window.location.href="/add-card"
+                }else if(data.code==102){
+                  alert(data.info);
+                   window.location.href="/edit-card"
+                }else{
+                alert(data.info)
+                }
+            },function(){
+
+            },null,function(){
+            HtmlJS.util.ajax("/act/#{act.id}/join",{},"post",function(data){
+              if(data.redirect){
+                  alert("本活动需要付费，点确定去支付宝付款！")
+                  window.location.href=data.redirect;
+                }else if(data.success){
+                alert("报名成功！")
+                  window.location.href=window.location.href;
+                }else if(data.code==101){
+                  alert(data.info);
+                   window.location.href="/add-card"
+                }else if(data.code==102){
+                  alert(data.info);
+                   window.location.href="/edit-card"
+                }else{
+                alert(data.info)
+                }
+            },function(){
+
+            },null,function(){
+
+          })
+          })
+        })
+    script(src="#{assets_head}/js/mustache.js")
+    script(src="#{assets_head}/js/messageTip.js")
+    script(src="#{assets_head}/js/loadingTip.js")
+    script.
+      $('.user').tooltip({
+          placement:"bottom"
+      })
+      //- $(window).scroll(function(){
+      //-   if($(window).scrollTop()+$(window).height()>=$(".comment").offset().top){
+      //-     $(".comment-layer").addClass("hidden")
+      //-   }else{
+      //-   $(".comment-layer").removeClass("hidden")
+      //-   }
+      //-   })
+      $(".comment-layer").click(function(){
+        $("html,body").animate({
+          scrollTop:$(".comment").offset().top-200
+          })
+        $(".comment textarea").focus()
+        })
+      var comment_tpl = $("#comment-tpl").html()
+      //- loadingTip.show("评论加载中")
+      //- $.ajax({
+      //-   url:"/comment/act_#{act.id}",
+      //-   type:"get",
+      //-   dataType:"json",
+      //-   success:function(data){
+      //-     loadingTip.hide("正在提交中")
+      //-       if(data.success){
+      //-       for(var i=0;i<data.comments.length;i++){
+      //-       var comment = data.comments[i]
+      //-         var html = Mustache.render(comment_tpl,comment);
+      //-         $(".comment-list").append(html)
+      //-       }
+      //-       }else{
+      //-       alert(data.info)
+      //-       }
+
+      //-   }
+      //-   })
+        $(".reply").click(function(){
+        $("#comment-text").val("@"+$(this).attr("data-nick")+" ").focus()
+         $("#comment-text")[0].setSelectionRange($("#comment-text")[0].value.length, $("#comment-text")[0].value.length)
+        })
+      $("#comment-submit").click(function(){
+        var text = $("#comment-text").val();
+        if(!text){
+          messageTip.show("请输入评论内容");
+        }else{
+          loadingTip.show("正在提交中")
+
+          HtmlJS.util.ajax("/comment/add",{
+              md:text,
+              target_id:"act_#{act.id}"
+            },"post",function(data){
+              loadingTip.hide()
+                if(data.success){
+                $("#comment-text").val("")
+                var html = Mustache.render(comment_tpl,data.comment);
+                  $(".comment-list").prepend(html)
+                }else{
+                  alert(data.info)
+                }
+            },function(){
+
+            },null,function(){
+            HtmlJS.util.ajax("/comment/add",{
+              md:text,
+              target_id:"act_#{act.id}"
+            },"post",function(data){
+              loadingTip.hide()
+                if(data.success){
+                $("#comment-text").val("")
+                var html = Mustache.render(comment_tpl,data.comment);
+                  $(".comment-list").prepend(html)
+                }else{
+                  alert(data.info)
+                }
+            },function(){
+
+            },null,function(){
+
+          })
+          })
+        }
+        })
+

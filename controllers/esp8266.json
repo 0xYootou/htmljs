@@ -1,0 +1,100 @@
+{
+  "16541582": {
+    "DEVICE_NAME": "Device_A",
+    "DEVICE_SECRET": "M5QHGhL9sXdy1FpdoEamyXXbrOyARoqy",
+    "WIFI_SSID":"十一",
+    "WIFI_PASSWD":"keaide_11"
+  },
+  "16553283": {
+    "DEVICE_NAME": "Device_B",
+    "DEVICE_SECRET": "DSXPNSY7DY3eKyqZhTC8MXifCFvcMips"
+  },
+  "16541334": {
+    "DEVICE_NAME": "Device_C",
+    "DEVICE_SECRET": "clrKSmt6Eijzx7T2duaeezlXRmySm0Al"
+  },
+  "16542654": {
+    "DEVICE_NAME": "Device_D",
+    "DEVICE_SECRET": "lsOE2nxWJMgkeP19JsWEUtyCKlsnbX8b"
+  },
+  "16539988": {
+    "DEVICE_NAME": "Device_E",
+    "DEVICE_SECRET": "WEuD93mLKOUCpoNLDa1EJb1PTxrBiYjS"
+  },
+  "16540643": {
+    "DEVICE_NAME": "Device_F_chashuijian2",
+    "DEVICE_SECRET": "g5U6tlaFYgZkSpRaRgdu6XVJN2o9WTDC"
+  },
+  "1550769": {
+    "DEVICE_NAME": "Device_G_jichujiagou",
+    "DEVICE_SECRET": "uwdRGL2X4L9bhyMmPoenykJ0Q0BQ4w3z"
+  },
+  "16543348": {
+    "DEVICE_NAME": "Device_H_wuxianyewupingtai",
+    "DEVICE_SECRET": "ifGi7rx8YXaalMLhvsptZrlUhrYMHDLT"
+  },
+  "16542177": {
+    "DEVICE_NAME": "Device_I_wuxiangongxiangpingtai",
+    "DEVICE_SECRET": "GrZHN3ZOpk7z6V1JWX81XNfTGvmRIhd7"
+  },
+  "13364233": {
+    "DEVICE_NAME": "Device_J_zhifu1",
+    "DEVICE_SECRET": "To9J2GsDgJSW79ptSZxxVpJ48X9FmgsG"
+  },
+  "13361966": {
+    "DEVICE_NAME": "Device_K_zhifu2",
+    "DEVICE_SECRET": "UpkJsrYmsbBxCayo6ar0NQCJr03aEqkp"
+  },
+  "16553241": {
+    "DEVICE_NAME": "Device_L_chanpinguihua",
+    "DEVICE_SECRET": "GNIjMzmWzK5c2hX9L0loOCmJanlkaCKc"
+  },
+  "13332905": {
+    "DEVICE_NAME": "Device_O_gongxiang3",
+    "DEVICE_SECRET": "8ZVa1zQaCtljhJ9VzocLrN5go0DXK5u0"
+  },
+  "12891444": {
+    "DEVICE_NAME": "Device_P_shuju1",
+    "DEVICE_SECRET": "5xW7hPHQSvZqQ2kPqPOGhyPopN1e6kJu"
+  },
+  "13321972": {
+    "DEVICE_NAME": "Device_Q_fengkong",
+    "DEVICE_SECRET": "iUX21phA9jkBktzXQ2srM03tqZD7IwSO"
+  },
+  "13371944": {
+    "DEVICE_NAME": "Device_S_xiangmuguanli",
+    "DEVICE_SECRET": "MHN74RoHmHSzlu270FwnNCqNqIW4ltR3"
+  },
+  "16543450":{
+    "DEVICE_NAME": "Device_R_shuju2",
+    "DEVICE_SECRET": "1okcGTfKvrEFtbIfziMNXhR1F70aTAo0"
+  },
+  "12891651": {
+    "DEVICE_NAME": "Device_T_yewupingtai",
+    "DEVICE_SECRET": "NZVmCcxnO8inBlfbMWXtEIBppuaewLtI"
+  },
+  "16541113": {
+    "DEVICE_NAME": "Device_N_gongxiang2",
+    "DEVICE_SECRET": "3n3wXuutFQRTx6uf1tLZmYoKWAxt2ITh"
+  },
+  "16542126": {
+    "DEVICE_NAME": "Device_M_gongxiang1",
+    "DEVICE_SECRET": "yf41m5ABiPzDSc8Ou0deQj6k2zFPp1NY"
+  },
+  "12891643": {
+    "DEVICE_NAME": "Device_V_yunxingbaozhang2",
+    "DEVICE_SECRET": "Cyx2riDYB9qlthnqdkgHa4t27olMWgVI"
+  },
+  "16541758": {
+    "DEVICE_NAME": "Device_W_huaiming",
+    "DEVICE_SECRET": "C1mDsdhNk3XwYD9auzoK5s6K4ptdTqsK"
+  },
+  "2832128": {
+    "DEVICE_NAME": "Device_X_huaishu",
+    "DEVICE_SECRET": "E7H089xDPJYAorzPGGZpxh4peyDl7TUI"
+  },
+  "16553233":{
+    "DEVICE_NAME": "Device_Z_gongchengxiaolv",
+    "DEVICE_SECRET": "xALDxe6Z2DqCynlSS9EgvYqFEIMQ50v7"
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "name": "htmljs",
+  "version": "0.0.1",
+  "description": "前端乱炖的repo",
+  "main": "run.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xinyu198736/htmljs"
+  },
+  "keywords": [
+    "html",
+    "js"
+  ],
+  "author": "yutou",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/xinyu198736/htmljs/issues"
+  },
+  "homepage": "https://github.com/xinyu198736/htmljs",
+  "dependencies": {
+    "MD5": "1.2.1",
+    "alipay": "0.0.4",
+    "async": "1.4.0",
+    "baidu-aip-sdk": "^2.4.6",
+    "coffee-script": "1.7.1",
+    "consolidate": "0.10.0",
+    "dd-msg": "^0.1.11",
+    "dependparser": "0.0.8",
+    "eventproxy": "0.3.1",
+    "express": "3.4.8",
+    "form-data": "0.1.4",
+    "formatjson": "0.0.1",
+    "glob": "4.0.2",
+    "iced-coffee-script": "1.7.1-f",
+    "jade": "1.3.1",
+    "jpush-sdk": "^3.4.5",
+    "less": "1.7.3",
+    "less-middleware": "0.1.9",
+    "lodash": "*",
+    "log4js": "0.6.14",
+    "methods": "1.0.1",
+    "min": "^0.1.17",
+    "moment": "2.7.0",
+    "mu2": "0.5.20",
+    "mustache": "0.8.2",
+    "mysql": "^2.15.0",
+    "node-uuid": "1.4.1",
+    "pagedown-htmljs": "1.1.0",
+    "phantomjs": "2.0.1",
+    "queuedo": "0.9.8",
+    "rainbow": "0.2.1",
+    "readof": "0.9.5",
+    "redis": "0.10.3",
+    "request": "1.9.0",
+    "rss": "^1.2.2",
+    "segment": "0.0.5",
+    "sequelize": "1.7.9",
+    "snserror": "0.0.2",
+    "underscore": "1.6.0",
+    "upyun": "1.1.3",
+    "urllib": "0.5.16",
+    "walk": "2.3.3",
+    "wechat": "0.6.8",
+    "weibov2": "0.9.3",
+    "xss": "0.1.9"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.16.0",
+    "eslint-plugin-nns": "0.0.1"
+  }
+}

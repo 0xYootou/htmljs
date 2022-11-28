@@ -1,0 +1,94 @@
+doctype html
+html
+  head
+    include ./../head
+    title 前端乱炖-活动
+
+    script(src='#{assets_head}/js/jquery.js')
+    include ./../editor_head
+  body#act-add
+    - locals.pageId=5;
+    include ./../header
+    #content.clearfix
+      form(action="",method="post")
+        fieldset
+          label 活动名称
+          input.input-xxlarge(type="text",placeholder="活动名称",name="title",value="#{locals.act&&act.title}")
+          label 人数限制
+          input.input-small(type="number",placeholder="人数限制",name="person_limit",value="#{locals.act&&act.person_limit}")
+          label 时间
+          input(type="datetime-local",placeholder="时间",name="time",value="#{locals.act&&moment(act.time+8000*60*60).format("YYYY-MM-DDThh:mm:ss")}")
+          label 地址
+          input.input(type="text",placeholder="地址",name="location",value="#{locals.act&&act.location}")
+          label 地图地址
+          input.input(type="text",placeholder="地图地址",name="map_url",value="#{locals.act&&act.map_url}")
+          label banner地址
+          input.input-xxlarge(type="text",placeholder="banner地址",name="banner",value="#{locals.act&&act.banner}")
+          label 赞助商html
+          textarea.input-xxlarge(placeholder="赞助商html",name="partners",value="#{locals.act&&act.partners}")
+          label 介绍
+          .control-group#wmd-editor-parent
+            .wmd-panel#wmd-editor-con
+              .padding
+                #wmd-bar-parent
+                  #wmd-button-bar
+                textarea.expand.wmd-input#wmd-input(name="desc_md",placeholder="文章内容，markdown语法。如果没有写完，可以直接关闭页面，下次打开内容仍然会在。") #{locals.act&&act.desc_md}
+          .control-group#wmd-preview-parent
+            .wmd-panel.wmd-preview#wmd-preview-con
+              .padding
+                #wmd-preview
+          input#desc_html(type="hidden",name="desc_html",value="#{locals.act&&act.desc_html}")
+
+          div
+            button.btn(type="submit") 提交
+      #myModal.modal.hide.fade.
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="myModalLabel">插入图片</h3>
+        </div>
+        <div class="modal-body">
+            <input type="file" name="pic" id="file" />
+        </div>
+        <div class="modal-footer">
+          <button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
+          <button class="btn btn-primary">插入</button>
+        </div>
+    script(src='#{assets_head}/js/ajaxfileupload.js')
+    script(src='#{assets_head}/js/loadingTip.js')
+    script(src='#{assets_head}/js/messageTip.js')
+    script.
+      var converter1 = Markdown.getSanitizingConverter();
+      var editor1 = new Markdown.Editor(converter1);
+      editor1.run();
+
+      editor1.hooks.chain("onPreviewRefresh", function () {
+        $("#desc_html").val($("#wmd-preview").html())
+      });
+      editor1.hooks.set('insertImageDialog', function(callback) {
+        $("#myModal").modal("show");
+        $("#file")[0].onchange=function(){
+          $.ajaxFileUpload({
+            url:"/upload",
+            secureuri:false,
+            fileElementId:'file',
+            dataType: 'json',
+            success: function (data, status)
+            {
+              if(data.success){
+                callback("/uploads/"+data.data.filename)
+                $("#myModal").modal("hide");
+              }else{
+                messageTip.show(data.info)
+
+              }
+              loadingTip.hide()
+            },
+            error:function(){
+
+              loadingTip.hide()
+            }
+          })
+        };
+        return true; // tell the editor that we'll take care of getting the image url
+      });
+

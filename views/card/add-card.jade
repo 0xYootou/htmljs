@@ -1,0 +1,127 @@
+doctype html
+html
+  head
+    include ../head
+    style.
+      #content input{
+      border-radius:3px;
+      }
+      .label-warning{
+      margin:0 5px;
+      }
+  body
+    - locals.pageId=2;
+    include ../header
+    #content
+      .module
+        form.form-horizontal(method='post')
+          fieldset
+            legend 填写以下信息
+            p.alert(style='margin-bottom: 20px;') 您的关键信息不会被暴露，我们只会在《前端花名册》中显示极少量信息，请放心填写。我们会利用这些信息来为您推荐工作、推荐活动、和其他服务。
+            input(type="hidden",name="head_pic",value="#{locals.weibo_info&&weibo_info.profile_image_url}")
+            .control-group
+              label.control-label
+                | 真实姓名
+                span(style='color: #ff0000;') *
+
+              .controls
+                input(type='text', name='name', placeholder='用作联系方式',required)
+                span.label.label-warning 保密
+            .control-group
+              label.control-label
+                | 网名，昵称
+                span(style='color: #ff0000;') *
+              .controls
+                input(type='text', name='nick', placeholder='常用网名',value="#{locals.weibo_info&&weibo_info.screen_name}",required)
+            .control-group
+              label.control-label
+                | 常用邮箱
+                span(style='color: #ff0000;') *
+
+              .controls
+                input(type='email', name='email', placeholder='重要！发送通知和联系您的途径',required,value="#{user.email}")
+                span.label.label-warning 保密
+
+            .control-group
+              label.control-label
+                | 手机
+                span(style='color: #ff0000;') *
+              .controls
+                input(type='text', name='tel', placeholder='用于联系方式，请务必填写正确',required)
+                span.label.label-warning 保密
+            .control-group
+              label.control-label
+                | 性别
+                span(style='color: #ff0000;') *
+              .controls
+                label.radio.inline
+                  input(type='radio', name='sex', value='男')
+                  | 男
+                label.radio.inline
+                  input(type='radio', name='sex', value='女')
+                  | 女
+            .control-group
+              label.control-label
+                | 感情状况
+                span(style='color: #ff0000;') *
+              .controls
+                label.radio.inline
+                  input(type='radio', name='is_dan', value='单身')
+                  | 单身
+                label.radio.inline
+                  input(type='radio', name='is_dan', value='已婚')
+                  | 已婚
+                label.radio.inline
+                  input(type='radio', name='is_dan', value='恋爱中')
+                  | 恋爱中
+            .control-group
+              label.control-label
+                | 所在城市
+                span(style='color: #ff0000;') *
+              .controls
+                input(type='text', name='city', placeholder='',value="#{locals.weibo_info&&weibo_info.location}",required)
+            .control-group
+              label.control-label 公司或大学
+              .controls
+                input(type='text', name='gongsi', placeholder='')
+            .control-group
+              label.control-label
+                | 目前职位
+                span(style='color: #ff0000;') *
+              .controls
+                input(type='text', name='zhiwei', placeholder='',required)
+
+
+
+
+            .control-group
+              label.control-label 博客地址（带上http://）
+              .controls
+                input(type='text', name='blog', placeholder='')
+
+            .control-group.hidden
+              label.control-label 微博地址（带上http://）
+              .controls
+                input(type='text', name='weibo', placeholder='',value="http://weibo.com/#{locals.weibo_info&&weibo_info.id}")
+            .control-group
+              label.control-label github地址（带上http://）
+              .controls
+                input(type='text', name='github', placeholder='')
+            .control-group
+              label.control-label
+                |介绍下自己
+                span(style='color: #ff0000;') *
+              .controls
+                textarea(name='desc', style='width: 400px; height: 100px;') #{locals.weibo_info&&weibo_info.description}
+
+            .control-group
+              .controls
+                button.btn(type='submit') 提交
+    if !locals.user
+      #layer
+      #login_popup
+        span 请先用新浪微博登录
+        a(href="/user/login")
+    script.
+      $("#layer").css({width:$(document.body).width(),height:$(document.body).height()})
+      $("#login_popup").css({left:$(window).width()/2-125})

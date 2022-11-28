@@ -1,0 +1,149 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    link(rel="Shortcut Icon",href="#{assets_head}/images/logo.ico?123")
+    link(href="#{assets_head}/amazeui/css/amazeui.min.css",rel="stylesheet",type="image/x-icon")
+    link(href="#{assets_head}/amazeui/css/app.css",rel="stylesheet",type="image/x-icon")
+    title
+    style.
+      .ds-comments{padding:0;}
+      .ds-comments li{list-style: none;border-bottom:1px dashed #dedede;}
+      .ds-post{}
+      .ds-avatar{width:10%;display: inline-block;}
+      .ds-avatar img{width:30px;height:30px;border-radius: 30px;margin-top:5px;vertical-align:top;margin-left:5px;}
+      .ds-comment-body{width:80%;display:inline-block;}
+      .ds-user-name{font-size:12px;line-height: 30px;}
+      .ds-time{color:#999;margin-left:10px;font-size:12px;}
+      .ds-comment-body p{font-size:12px;line-height:20px;}
+    |<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+   body
+     script(type="text/x-handlebars-template",id="list-tpl").
+         <div data-am-widget="titlebar" class="am-titlebar am-titlebar-default">
+           <h2 class="am-titlebar-title">{{title}}</h2>
+         </div>
+         <article data-am-widget="paragraph" class="am-paragraph am-paragraph-default"
+               data-am-paragraph="\{ tableScrollable: true, pureview: true \}">
+          {{{html}}}
+          </article>
+     script(type="text/x-handlebars-template",id="comment-tpl").
+       {{#comments}}
+       <li class="ds-post clearfix" data-post-id="1163513100117216283">
+         <div class="ds-post-self" data-post-id="1163513100117216283" data-thread-id="1163513100117217799" data-root-id="0" data-source="duoshuo">
+           <div class="ds-avatar">
+             <img src="{{user_headpic}}" alt="{{user_nick}}">
+           </div>
+           <div class="ds-comment-body">
+             <div class="ds-comment-header">
+             <span class="ds-user-name" data-qqt-account="">{{user_nick}}</span>
+             <span class="ds-time" datetime="2014-12-17T15:54:17+08:00" title="2014年12月17日 下午3:54:17">12月17日</span>
+             </div>
+             <p>{{{html}}}</p>
+             <div class="ds-comment-footer ds-comment-actions">
+
+             </div>
+           </div>
+         </div>
+       </li>
+       {{/comments}}
+     script(type="text/x-handlebars-template",id="amz-tpl").
+        {{>header header}}
+        <div id="tui_article">
+
+        </div>
+        <div id="">
+          <div  class="am-duoshuo am-duoshuo-default" data-ds-short-name="amazeui">
+            <div class="ds-thread">
+              <ul class="ds-comments" id="tui_comments">
+
+              </ul>
+            </div>
+          </div>
+        </div>
+
+
+     div.
+       <script src="#{assets_head}/amazeui/js/jquery.min.js"></script>
+       <script src="#{assets_head}/amazeui/js/amazeui.js"></script>
+       <script src="#{assets_head}/amazeui/js/handlebars.min.js"></script>
+       <script src="#{assets_head}/amazeui/js/amazeui.widgets.helper.js"></script>
+     script.
+       var list_tpl = $("#list-tpl").html();
+        var list_template = Handlebars.compile(list_tpl);
+        var comment_tpl = $("#comment-tpl").html();
+        var comment_template = Handlebars.compile(comment_tpl);
+       $.ajax({
+            url:"/article/#{id}.json",
+            dataType:"json",
+            success:function(data){
+                $("#tui_article").append(list_template(data.data.article))
+                $("#tui_comments").append(comment_template(data.data))
+            }
+        })
+       $(function() {
+         var $tpl = $('#amz-tpl'),
+           source = $tpl.text(),
+             template = Handlebars.compile(source),
+            data = {
+            header: {
+              "content": {
+                "title": "前端乱炖移动版"
+              }
+            },
+
+
+            list1: {
+                      "options": {
+                        "type": "thumb",
+                        "thumbPosition": "left"
+                      },
+                      "content": {
+                     "header": {
+                       "title": "栏目标题",
+                       "link": "###",
+                       "moreText": "更多 &raquo;",
+                       "morePosition": "top"
+                     },
+                     "main": [
+                       {
+                         "title": "我很囧，你保重....晒晒旅行中的那些囧！",
+                         "link": "http://www.douban.com/online/11614662/",
+                         "desc": "囧人囧事囧照，人在囧途，越囧越萌。标记《带你出发，陪我回家》http://book.douban.com/subject/25711202/为“想读”“在读”或“读过”，有机会获得此书本活动进行3个月，每月送出三本书。会有不定期bonus！"
+                       },
+                       {
+                         "title": "我最喜欢的一张画",
+                         "link": "http://www.douban.com/online/11624755/",
+                         "desc": "你最喜欢的艺术作品，告诉大家它们的------名图画，色彩，交织，撞色，线条雕塑装置当代古代现代作品的照片美我最喜欢的画群296795413进群发画，少说多发图，"
+                       },
+                       {
+                         "title": "“你的旅行，是什么颜色？” 晒照片，换北欧梦幻极光之旅！",
+                         "link": "http://www.douban.com/online/11645411/"
+                       }
+                     ]
+                     }
+            },
+
+
+            footer: {
+              "options": {
+                "modal": true,
+                "techSupportCo": "XXX",
+                "techSupportSite": "http://www.yunshipei.com/"
+              },
+              "content": {
+                "owner": "前端乱炖"
+
+              }
+            }
+          },
+          html = template(data);
+
+        $tpl.before(html);
+
+        // var reflow = $('body')[0].offsetHeight;
+
+        $.each([ 'footer', 'navbar'], function(i, m) {
+        var module = $.AMUI[m];
+        module && module.init && module.init();
+        })
+        });
