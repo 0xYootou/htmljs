@@ -1,16 +1,16 @@
-htmljs
+声明：为了响应国家互联网服务评论先审后发的要求，并且个人论坛无法完成等保认证等服务，今（2022年11余额28日）在辖区派出所要求下关闭运行10年的“前端乱炖”技术论坛（https://www.html-js.com），故将代码重新上传 github，仅做留念。
 ======
 
 前端乱炖博客的repo。http://www.html-js.com
 
 本站代码仅供参考，缺少配置文件在本地不能运行，基于express，rainbow，sequelize，jade，coffeescript，less，moment等技术和框架。
 
-update:本站代码比较老，比较初级，不建议参考，请不要再 star 这个项目了，哈哈。
+update:本站代码比较老，比较初级，不建议参考。
 
 约定模式：
 ==
 * 整个系统从数据到最终逻辑分为五层：1.models，2.functions，3.filters，4.routes，5.views
-d
+
 各部分的功能：
 ==
 * models，使用sequelize将数据库操作抽象化，使用其规定格式定义数据对象，完全不需要关心数据库的问题。
