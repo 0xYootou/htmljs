@@ -8,7 +8,7 @@
 
 本站代码仅供参考，缺少配置文件在本地不能运行，基于express，rainbow，sequelize，jade，coffeescript，less，moment等技术和框架。
 
-update:本站代码比较老，比较初级，不建议参考。
+update:本站代码比较老（2012年），比较初级，不建议参考。
 
 约定模式：
 ==
